@@ -14,7 +14,7 @@
 		"dev": "mise run dev",
 		"format": "mise run format",
 		"lint": "mise run lint",
-		"prepare": "mise run --no-prepare prepare",
+		"prepare": "mise run --no-deps prepare",
 		"preview": "mise run preview",
 		"storybook": "mise run storybook",
 		"test": "mise run test",
