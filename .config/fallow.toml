@@ -1,0 +1,32 @@
+# Runtime/tooling entry points that are invoked from mise tasks instead of imported.
+# FSD layer index files are architectural public APIs for slices/modules.
+# Test and mock barrels are intentionally not included here.
+entry = [
+	"scripts/**/*.ts",
+	"src/app/routes.ts",
+	"src/entities/*/index.ts",
+	"src/features/*/index.ts",
+	"src/pages/*/index.ts",
+	"src/widgets/*/index.ts",
+	"src/shared/{api,model,reatom}/index.ts",
+]
+
+# Park UI and generated assets are committed vendor/generated code; keep them out of findings.
+ignorePatterns = [
+	"public/mockServiceWorker.js",
+	"src/paraglide/**",
+	"src/shared/components/index.ts",
+	"src/shared/components/ui/**",
+	"src/shared/styled-system/**",
+	"theme/recipes/**",
+]
+
+[duplicates]
+ignore = ["messages/**", "src/**/*.stories.tsx", "src/**/mocks/**"]
+ignoreImports = true
+
+[audit]
+gate = "new-only"
+deadCodeBaseline = "fallow-baselines/dead-code.json"
+healthBaseline = "fallow-baselines/health.json"
+dupesBaseline = "fallow-baselines/dupes.json"

@@ -16,7 +16,7 @@ function createBase(ctx: () => StoryContext): BaseActor {
 
 	function activeCanvas(): Canvas {
 		if (scopeStack.length > 0) {
-			return withinElement(scopeStack[scopeStack.length - 1]!)
+			return withinElement(scopeStack.at(-1)!)
 		}
 		return ctx().canvas
 	}

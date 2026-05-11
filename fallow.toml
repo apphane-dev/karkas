@@ -1,25 +1,3 @@
-# Runtime/tooling entry points that are invoked from mise tasks instead of imported.
-entry = ["scripts/**/*.ts"]
-
-# Park UI and generated assets are committed vendor/generated code; keep them out of findings.
-ignorePatterns = [
-	"public/mockServiceWorker.js",
-	"src/paraglide/**",
-	"src/shared/components/index.ts",
-	"src/shared/components/ui/**",
-	"src/shared/styled-system/**",
-	"theme/recipes/**",
-]
-
-# Route modules are registered by evaluating this barrel; most names are intentionally not imported from it.
-ignoreExports = [{ file = "src/app/routes.ts", exports = ["*"] }]
-
-[duplicates]
-ignore = ["messages/**", "src/**/*.stories.tsx", "src/**/mocks/**"]
-ignoreImports = true
-
-[audit]
-gate = "new-only"
-deadCodeBaseline = "fallow-baselines/dead-code.json"
-healthBaseline = "fallow-baselines/health.json"
-dupesBaseline = "fallow-baselines/dupes.json"
+# Fallow only auto-discovers config files from the project root.
+# Keep the actual policy with the rest of repo tooling under .config/.
+extends = ["./.config/fallow.toml"]
