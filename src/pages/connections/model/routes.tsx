@@ -2,6 +2,7 @@ import { retryComputed, wrap } from '@reatom/core'
 
 import { fetchConnectionById, fetchConnections } from '#entities/connection'
 import { m } from '#paraglide/messages.js'
+import { isApiError } from '#shared/api'
 import { rootRoute } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 import { MasterDetails } from '#widgets/master-details'
@@ -62,7 +63,17 @@ export const connectionDetailRoute = connectionsRoute.reatomRoute(
 		loader: ({ connectionId }) => fetchConnectionById(connectionId),
 		render: (self) => {
 			const { isPending, data: connection } = self.loader.status()
+			const error = self.loader.error()
 			if (isPending) return <ConnectionDetailLoadingState />
+			if (error && !(isApiError(error) && error.status === 404)) {
+				return (
+					<PageError
+						title={m.connections_error_title()}
+						description={m.connections_error_description()}
+						onRetry={wrap(() => retryComputed(self.loader))}
+					/>
+				)
+			}
 			return connection ? (
 				<ConnectionDetail connection={connection} />
 			) : (

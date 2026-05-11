@@ -2,6 +2,7 @@ import { retryComputed, wrap } from '@reatom/core'
 
 import { fetchConversationById, fetchConversations } from '#entities/conversation'
 import { m } from '#paraglide/messages.js'
+import { isApiError } from '#shared/api'
 import { rootRoute } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 import { MasterDetails } from '#widgets/master-details'
@@ -62,7 +63,17 @@ export const chatConversationRoute = chatRoute.reatomRoute(
 		loader: ({ conversationId }) => fetchConversationById(conversationId),
 		render: (self) => {
 			const { isPending, data: conversation } = self.loader.status()
+			const error = self.loader.error()
 			if (isPending) return <MessageThreadLoadingState />
+			if (error && !(isApiError(error) && error.status === 404)) {
+				return (
+					<PageError
+						title={m.chat_error_title()}
+						description={m.chat_error_description()}
+						onRetry={wrap(() => retryComputed(self.loader))}
+					/>
+				)
+			}
 			return conversation ? (
 				<MessageThread conversation={conversation} />
 			) : (

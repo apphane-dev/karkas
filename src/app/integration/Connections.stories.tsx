@@ -189,14 +189,14 @@ export const HandlesConnectionDetailServerError = meta.story({
 })
 
 HandlesConnectionDetailServerError.test(
-	'shows not found when connection detail request fails',
+	'shows error state when connection detail request fails',
 	async () => {
 		await I.click(link(/Stripe API/i))
 		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(heading('Connection not found'))
-			await I.see(text(/No connection exists for id/))
+			await I.see(heading('Could not load connections'))
+			await I.see(text("We couldn't load the connection list. Try again in a moment."))
 		})
 	},
 )
@@ -209,14 +209,14 @@ export const HandlesConnectionDetailServerErrorMobile = meta.story({
 })
 
 HandlesConnectionDetailServerErrorMobile.test(
-	'[mobile] shows not found when connection detail request fails',
+	'[mobile] shows error state when connection detail request fails',
 	async () => {
 		await I.click(link(/Stripe API/i))
 		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(heading('Connection not found'))
-			await I.see(text(/No connection exists for id/))
+			await I.see(heading('Could not load connections'))
+			await I.see(text("We couldn't load the connection list. Try again in a moment."))
 		})
 	},
 )

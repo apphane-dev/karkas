@@ -227,14 +227,14 @@ export const HandlesArticleDetailServerError = meta.story({
 })
 
 HandlesArticleDetailServerError.test(
-	'shows not found when article detail request fails',
+	'shows error state when article detail request fails',
 	async () => {
 		await I.click(link(/Quarterly report/i))
 		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(heading('Article not found'))
-			await I.see(text(/No article exists for id/))
+			await I.see(heading('Could not load articles'))
+			await I.see(text("We couldn't load the article list. Try again in a moment."))
 		})
 	},
 )
@@ -247,14 +247,14 @@ export const HandlesArticleDetailServerErrorMobile = meta.story({
 })
 
 HandlesArticleDetailServerErrorMobile.test(
-	'[mobile] shows not found when article detail request fails',
+	'[mobile] shows error state when article detail request fails',
 	async () => {
 		await I.click(link(/Quarterly report/i))
 		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(heading('Article not found'))
-			await I.see(text(/No article exists for id/))
+			await I.see(heading('Could not load articles'))
+			await I.see(text("We couldn't load the article list. Try again in a moment."))
 		})
 	},
 )

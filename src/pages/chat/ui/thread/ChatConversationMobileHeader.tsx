@@ -8,7 +8,6 @@ import { ConversationHeaderContent } from './ConversationHeaderContent'
 import { ConversationHeaderContentLoading } from './ConversationHeaderContentLoading'
 
 export const ChatConversationMobileHeader = reatomComponent(() => {
-	if (!chatConversationRoute.match()) return null
 	const conversation = chatConversationRoute.loader.data()
 	const isLoadingConversation = chatConversationRoute.loader.pending() > 0
 	return (

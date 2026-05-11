@@ -2,6 +2,7 @@ import { retryComputed, wrap } from '@reatom/core'
 
 import { fetchArticles, fetchArticleById } from '#entities/article'
 import { m } from '#paraglide/messages.js'
+import { isApiError } from '#shared/api'
 import { rootRoute } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 import { MasterDetails } from '#widgets/master-details'
@@ -62,7 +63,17 @@ export const articleDetailRoute = articlesRoute.reatomRoute(
 		loader: ({ articleId }) => fetchArticleById(articleId),
 		render: (self) => {
 			const { isPending, data: article } = self.loader.status()
+			const error = self.loader.error()
 			if (isPending) return <ArticleDetailLoadingState />
+			if (error && !(isApiError(error) && error.status === 404)) {
+				return (
+					<PageError
+						title={m.articles_error_title()}
+						description={m.articles_error_description()}
+						onRetry={wrap(() => retryComputed(self.loader))}
+					/>
+				)
+			}
 			return article ? (
 				<ArticleDetail article={article} />
 			) : (

@@ -14,13 +14,12 @@ Use extensions to add behavior at the atom/action boundary: validation, persiste
 | ------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | `src/shared/model/locale.ts`                                        | `withParams` + `withLocalStorage` + `withChangeHook` composition |
 | `src/shared/model/theme.ts`                                         | enum coercion and persisted preferences                          |
-| `src/pages/items/ui/ItemsPage.tsx`                                  | URL-bound filters via `withSearchParams`                         |
+| `src/pages/items/model/filters.ts`                                  | URL-bound filters via `withSearchParams`                         |
 | `src/entities/conversation/model/unreadCount.ts`                    | async read model with `withAsyncData` + `withConnectHook`        |
 | `src/pages/timer/model/atoms.ts`                                    | action lifecycle with `withAbort` and change hooks               |
 | `src/shared/model/headerTrail.ts`                                   | custom domain extension (`withMatch*`) and cleanup mechanics     |
 | `node_modules/@reatom/core/build/src/extensions/withConnectHook.js` | connect/disconnect runtime behavior                              |
 | `node_modules/@reatom/core/build/src/extensions/withChangeHook.js`  | state-change hook scheduling semantics                           |
-| `AGENTS.md`                                                         | Project conventions for Reatom naming and patterns               |
 
 ## Rules
 
@@ -44,7 +43,7 @@ Use extensions to add behavior at the atom/action boundary: validation, persiste
 | Resource lifecycle on first/last subscriber | `withConnectHook`/`withDisconnectHook`  | `src/entities/conversation/model/unreadCount.ts`, `src/shared/model/headerTrail.ts` |
 | Async state (`pending/data/error/retry`)    | `withAsync`, `withAsyncData`            | `src/entities/conversation/model/unreadCount.ts`                                    |
 | Concurrency/abort strategy                  | `withAbort`                             | `src/pages/timer/model/atoms.ts`                                                    |
-| URL query synchronization                   | `withSearchParams`                      | `src/pages/items/ui/ItemsPage.tsx`                                                  |
+| URL query synchronization                   | `withSearchParams`                      | `src/pages/items/model/filters.ts`                                                  |
 | Custom cross-cutting behavior               | custom `Ext<T>` + helpers               | `src/shared/model/headerTrail.ts`                                                   |
 
 ## Workflows
@@ -90,4 +89,5 @@ Use extensions to add behavior at the atom/action boundary: validation, persiste
 - `withChangeHook` alone is not a connect/disconnect lifecycle primitive.
 - Forgetting `unhook()` from `addChangeHook` will leak middleware permanently.
 - URL/persistence extensions can create cross-tab or history side effects; use intentionally.
+- Pure API helpers are not extension points; keep Reatom imports at model, route, and UI binding boundaries.
 - For long-lived async resources, isolate scope with `withConnectHook` cleanup and abort-aware flows.

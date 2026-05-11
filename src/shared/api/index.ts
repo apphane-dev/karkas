@@ -8,7 +8,7 @@ export function composeApiUrl(path = '') {
 	return `${API_PREFIX}${normalized}`
 }
 
-class ApiError extends Error {
+export class ApiError extends Error {
 	readonly status: number
 	readonly payload: unknown
 
@@ -18,6 +18,10 @@ class ApiError extends Error {
 		this.status = status
 		this.payload = payload
 	}
+}
+
+export function isApiError(error: unknown): error is ApiError {
+	return error instanceof ApiError
 }
 
 type RequestOptions = Omit<RequestInit, 'body'> & {

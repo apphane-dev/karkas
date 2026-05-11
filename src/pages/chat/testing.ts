@@ -1,6 +1,7 @@
 import { button, createActor, heading, link, role } from '#shared/test'
 
 export const chatLoc = {
+	conversationErrorHeading: heading('Could not load conversations'),
 	conversationNotFoundHeading: heading('Conversation not found'),
 	messageThreadLoading: role('status', 'Loading message thread'),
 }

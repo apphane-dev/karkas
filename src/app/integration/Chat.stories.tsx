@@ -131,14 +131,14 @@ export const HandlesConversationDetailServerError = meta.story({
 })
 
 HandlesConversationDetailServerError.test(
-	'shows not found when conversation detail request fails',
+	'shows error state when conversation detail request fails',
 	async () => {
 		await I.click(link(/Engineering/))
 		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(loc.conversationNotFoundHeading)
-			await I.see(text(/No conversation exists for id/))
+			await I.see(loc.conversationErrorHeading)
+			await I.see(text("We couldn't load the conversations. Try again in a moment."))
 		})
 	},
 )
@@ -151,14 +151,14 @@ export const HandlesConversationDetailServerErrorMobile = meta.story({
 })
 
 HandlesConversationDetailServerErrorMobile.test(
-	'[mobile] shows not found when conversation detail request fails',
+	'[mobile] shows error state when conversation detail request fails',
 	async () => {
 		await I.click(link(/Engineering/))
 		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(loc.conversationNotFoundHeading)
-			await I.see(text(/No conversation exists for id/))
+			await I.see(loc.conversationErrorHeading)
+			await I.see(text("We couldn't load the conversations. Try again in a moment."))
 		})
 	},
 )

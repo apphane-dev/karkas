@@ -1,7 +1,6 @@
 import { createListCollection } from '@ark-ui/react/select'
-import { atom, reatomEnum, wrap } from '@reatom/core'
-import { reatomComponent } from '@reatom/react'
-import type { ChangeEvent } from 'react'
+import { wrap } from '@reatom/core'
+import { bindField, reatomComponent } from '@reatom/react'
 
 import { m } from '#paraglide/messages.js'
 import { Button, Input, Select, Switch, VisuallyHidden } from '#shared/components'
@@ -13,30 +12,16 @@ import {
 	showThemeSwitcherInTopBarAtom,
 	themePreferenceAtom,
 } from '#shared/model'
-import { withCoerce } from '#shared/reatom'
 import { styled } from '#styled-system/jsx'
 
+import type {
+	Density,
+	DesktopNotification,
+	EmailNotification,
+	SettingsPageModel,
+} from '../model/settingsForm'
 import { FieldRow } from './FieldRow'
 import { Section } from './Section'
-
-// Profile atoms
-const displayNameAtom = atom('Alex Johnson', 'settings.displayName')
-const emailAtom = atom('alex@example.com', 'settings.email')
-const profileDirtyAtom = atom(false, 'settings.profileDirty')
-
-// Notifications atoms
-const emailNotifAtom = reatomEnum(['all', 'important', 'none'], 'settings.emailNotif').extend(
-	withCoerce('all'),
-)
-const desktopNotifAtom = reatomEnum(['enabled', 'disabled'], 'settings.desktopNotif').extend(
-	withCoerce('enabled'),
-)
-const notifDirtyAtom = atom(false, 'settings.notifDirty')
-
-// Appearance atoms
-const densityAtom = reatomEnum(['compact', 'comfortable', 'spacious'], 'settings.density').extend(
-	withCoerce('compact'),
-)
 
 const emailNotificationsCollection = reatomLoc(
 	() =>
@@ -106,7 +91,9 @@ const languageCollection = reatomLoc(
 	'settings.languageCollection',
 )
 
-export const SettingsPage = reatomComponent(() => {
+export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageModel }) => {
+	const { profileForm, saveProfile, notificationsForm, saveNotifications, appearanceForm } = model
+
 	return (
 		<styled.div p="8" maxW="800px">
 			<VisuallyHidden as="h1">{m.settings_title()}</VisuallyHidden>
@@ -114,32 +101,18 @@ export const SettingsPage = reatomComponent(() => {
 			<Section
 				title={m.settings_profile()}
 				footer={
-					profileDirtyAtom() ? (
-						<Button size="sm" onClick={wrap(() => profileDirtyAtom.set(false))}>
+					profileForm.focus().dirty ? (
+						<Button size="sm" onClick={wrap(() => saveProfile())}>
 							{m.settings_save_changes()}
 						</Button>
 					) : null
 				}
 			>
 				<FieldRow label={m.settings_display_name()} description={m.settings_display_name_desc()}>
-					<Input
-						value={displayNameAtom()}
-						size="sm"
-						onChange={wrap((e: ChangeEvent<HTMLInputElement>) => {
-							displayNameAtom.set(e.target.value)
-							profileDirtyAtom.set(true)
-						})}
-					/>
+					<Input {...bindField(profileForm.fields.displayName)} size="sm" />
 				</FieldRow>
 				<FieldRow label={m.settings_email()} description={m.settings_email_desc()}>
-					<Input
-						value={emailAtom()}
-						size="sm"
-						onChange={wrap((e: ChangeEvent<HTMLInputElement>) => {
-							emailAtom.set(e.target.value)
-							profileDirtyAtom.set(true)
-						})}
-					/>
+					<Input {...bindField(profileForm.fields.email)} size="sm" />
 				</FieldRow>
 				<FieldRow label={m.settings_role()}>
 					<styled.span fontSize="sm" color="muted">
@@ -151,8 +124,8 @@ export const SettingsPage = reatomComponent(() => {
 			<Section
 				title={m.settings_notifications()}
 				footer={
-					notifDirtyAtom() ? (
-						<Button size="sm" onClick={wrap(() => notifDirtyAtom.set(false))}>
+					notificationsForm.focus().dirty ? (
+						<Button size="sm" onClick={wrap(() => saveNotifications())}>
 							{m.settings_save_changes()}
 						</Button>
 					) : null
@@ -166,10 +139,9 @@ export const SettingsPage = reatomComponent(() => {
 						collection={emailNotificationsCollection()}
 						size="sm"
 						w="100%"
-						value={[emailNotifAtom()]}
+						value={[notificationsForm.fields.emailNotif.value()]}
 						onValueChange={wrap(({ value }) => {
-							emailNotifAtom.set(value[0])
-							notifDirtyAtom.set(true)
+							notificationsForm.fields.emailNotif.change((value[0] ?? 'all') as EmailNotification)
 						})}
 						positioning={{ sameWidth: true }}
 					>
@@ -202,10 +174,11 @@ export const SettingsPage = reatomComponent(() => {
 						collection={desktopNotificationsCollection()}
 						size="sm"
 						w="100%"
-						value={[desktopNotifAtom()]}
+						value={[notificationsForm.fields.desktopNotif.value()]}
 						onValueChange={wrap(({ value }) => {
-							desktopNotifAtom.set(value[0])
-							notifDirtyAtom.set(true)
+							notificationsForm.fields.desktopNotif.change(
+								(value[0] ?? 'enabled') as DesktopNotification,
+							)
 						})}
 						positioning={{ sameWidth: true }}
 					>
@@ -307,8 +280,10 @@ export const SettingsPage = reatomComponent(() => {
 						collection={densityCollection()}
 						size="sm"
 						w="100%"
-						value={[densityAtom()]}
-						onValueChange={wrap(({ value }) => void densityAtom.set(value[0]))}
+						value={[appearanceForm.fields.density.value()]}
+						onValueChange={wrap(({ value }) => {
+							appearanceForm.fields.density.change((value[0] ?? 'compact') as Density)
+						})}
 						positioning={{ sameWidth: true }}
 					>
 						<Select.Control>

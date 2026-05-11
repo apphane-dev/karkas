@@ -1,14 +1,14 @@
 import { createListCollection } from '@ark-ui/react/select'
-import { reatomEnum, withSearchParams, wrap } from '@reatom/core'
+import { wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
 
 import type { Category, Item } from '#entities/item'
 import { m } from '#paraglide/messages.js'
 import { Badge, Button, Select, VisuallyHidden } from '#shared/components'
 import { reatomLoc } from '#shared/model'
-import { withCoerce } from '#shared/reatom'
 import { styled } from '#styled-system/jsx'
 
+import { categoryFilterAtom, sortDirAtom, sortFieldAtom, stockFilterAtom } from '../model/filters'
 import { CategoryBadge } from './CategoryBadge'
 
 const sortFieldCollection = reatomLoc(
@@ -55,26 +55,6 @@ const stockCollection = reatomLoc(
 			itemToValue: (item) => item.value,
 		}),
 	'items.stockCollection',
-)
-
-const sortFieldAtom = reatomEnum(['name', 'price'], 'items.sortField').extend(
-	withCoerce('name'),
-	withSearchParams('sort'),
-)
-
-const sortDirAtom = reatomEnum(['asc', 'desc'], 'items.sortDir').extend(
-	withCoerce('asc'),
-	withSearchParams('dir'),
-)
-
-const categoryFilterAtom = reatomEnum(
-	['all', 'electronics', 'furniture', 'clothing', 'food'],
-	'items.categoryFilter',
-).extend(withCoerce('all'), withSearchParams('category'))
-
-const stockFilterAtom = reatomEnum(['all', 'in-stock', 'out-of-stock'], 'items.stockFilter').extend(
-	withCoerce('all'),
-	withSearchParams('stock'),
 )
 
 type Props = {
