@@ -68,8 +68,8 @@ export const connectionDetailRoute = connectionsRoute.reatomRoute(
 			if (error && !(isApiError(error) && error.status === 404)) {
 				return (
 					<PageError
-						title={m.connections_error_title()}
-						description={m.connections_error_description()}
+						title={m.connection_detail_error_title()}
+						description={m.connection_detail_error_description()}
 						onRetry={wrap(() => retryComputed(self.loader))}
 					/>
 				)

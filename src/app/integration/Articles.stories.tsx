@@ -233,8 +233,8 @@ HandlesArticleDetailServerError.test(
 		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(heading('Could not load articles'))
-			await I.see(text("We couldn't load the article list. Try again in a moment."))
+			await I.see(heading('Could not load article'))
+			await I.see(text("We couldn't load this article. Try again in a moment."))
 		})
 	},
 )
@@ -253,8 +253,8 @@ HandlesArticleDetailServerErrorMobile.test(
 		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(heading('Could not load articles'))
-			await I.see(text("We couldn't load the article list. Try again in a moment."))
+			await I.see(heading('Could not load article'))
+			await I.see(text("We couldn't load this article. Try again in a moment."))
 		})
 	},
 )

@@ -55,6 +55,20 @@ Use these files as the primary documentation.
 
 ## Story Conventions
 
+### Quality bar
+
+Story tests should validate user-observable behavior, not implementation details or whatever the current markup happens to render.
+
+Prefer assertions that are:
+
+- **Accessible**: query by role, accessible name, heading, link, button, or visible text before falling back to lower-level DOM access.
+- **Meaningful**: cover the behavior the story name promises, including important positive and negative expectations.
+- **Source-backed**: expected fixture data should come from mocks, messages, or documented UX copy—not arbitrary strings invented to satisfy the current component output.
+- **Scoped**: use `I.scope(...)` / `.within(...)` for master-detail pages so list assertions do not accidentally pass against detail content, or vice versa.
+- **Stable**: wait for explicit loading/status transitions instead of adding broad sleeps or waiting for unrelated UI.
+
+Avoid tests that only assert a generic element exists when a specific expectation is available. For example, prefer `link(/Storage/).options({ current: 'page' })` over a bare `link().options({ current: 'page' })`.
+
 ### Naming
 
 | Variant                | Name pattern                               |
@@ -75,6 +89,16 @@ Mobile test titles still use `[mobile]` prefix in `.test(...)` names.
 3. For stories that intentionally keep loading visible (`*.loading` handlers), do not use `waitExit` for that loading target.
 4. For detail requests triggered by user action, click first, then wait for the relevant status to exit, then assert detail content.
 
+### Error-state expectations
+
+List/page load failures and detail load failures are different user states. Test them separately and expect copy that matches the failed operation:
+
+- list request failure: page/list error title and description, plus retry affordance
+- detail request failure: detail-specific error title and description, scoped to `role('main')` on master-detail pages
+- persistent loading: loading status remains visible and unrelated terminal states are absent
+
+If a test exposes that the UI copy is misleading, fix the product copy and update messages/mocks accordingly instead of weakening the assertion to match the old behavior.
+
 ## Actor and Locator Guidance
 
 The actor is codecept-style and should stay declarative. Extend per-page actors in `src/pages/<page>/testing.ts`.
@@ -89,6 +113,19 @@ Key base methods:
 - `I.selectOption(locator, value)`
 - `I.scope(locator, callback)`
 - `I.resolveLocator(locator)`
+
+### Page actor guidance
+
+Keep reusable expectations in `src/pages/<page>/testing.ts` when they describe page-level behavior shared by multiple stories. This keeps stories readable and prevents duplicated strings from drifting.
+
+Good candidates for page actors:
+
+- page/list/detail loading checks
+- page/list/detail error checks, including descriptions and retry buttons
+- canonical happy-path content checks
+- common mobile navigation actions such as `goBack()`
+
+Keep story-local helpers only when they are specific to one component story or one-off interaction.
 
 ### When to use `.wait()`
 
@@ -146,6 +183,7 @@ Excluded from coverage:
 1. Create typed mock data in `src/entities/<entity>/mocks/data.ts`.
 2. Add `default` / `error` / `loading` handlers in `src/entities/<entity>/mocks/handlers.ts`.
 3. Register defaults in `src/app/mocks/handlers.ts`.
-4. Create `src/pages/<page>/testing.ts` with page actor methods.
+4. Create `src/pages/<page>/testing.ts` with page actor methods for reusable content, loading, error, and navigation expectations.
 5. Add `src/app/integration/<Page>.stories.tsx` with `Default`, `Default (Mobile)`, error, and loading variants.
 6. Add `play: () => I.waitExit(role('status'))` to loaded-state and async error variants, but not to persistent-loading stories.
+7. Review the tests against the quality bar above: assertions should be specific, accessible, scoped, and backed by the intended UX/mocks.

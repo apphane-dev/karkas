@@ -44,8 +44,8 @@ ActiveUsageRoute.test(
 )
 
 ActiveUsageRoute.test('marks usage card as current page in sidebar', async () => {
-	// TODO: more specific
-	await I.see(link().options({ current: 'page' }))
+	await I.see(link(/Storage/).options({ current: 'page' }))
+	await I.dontSee(link(/Upgrade to Pro/).options({ current: 'page' }))
 })
 
 export const ActivePricingRoute = meta.story({
@@ -63,6 +63,6 @@ ActivePricingRoute.test(
 )
 
 ActivePricingRoute.test('marks pricing banner as current page in sidebar', async () => {
-	// TODO: more specific
-	await I.see(link().options({ current: 'page' }))
+	await I.see(link(/Upgrade to Pro/).options({ current: 'page' }))
+	await I.dontSee(link(/Storage/).options({ current: 'page' }))
 })

@@ -81,10 +81,14 @@
 	"connection_loading_detail": "Cargando detalle de la conexión",
 	"articles_error_title": "No se pudieron cargar los artículos",
 	"articles_error_description": "No pudimos cargar la lista de artículos. Intenta de nuevo en un momento.",
+	"article_detail_error_title": "No se pudo cargar el artículo",
+	"article_detail_error_description": "No pudimos cargar este artículo. Intenta de nuevo en un momento.",
 	"articles_loading_page": "Cargando página de artículos",
 
 	"connections_error_title": "No se pudieron cargar las conexiones",
 	"connections_error_description": "No pudimos cargar la lista de conexiones. Intenta de nuevo en un momento.",
+	"connection_detail_error_title": "No se pudo cargar la conexión",
+	"connection_detail_error_description": "No pudimos cargar esta conexión. Intenta de nuevo en un momento.",
 	"connections_loading_page": "Cargando página de conexiones",
 
 	"connection_back_to_connections": "Volver a conexiones",
@@ -125,6 +129,8 @@
 	"chat_not_found_description": "No existe ninguna conversación para el id \"{conversationId}\".",
 	"chat_error_title": "No se pudieron cargar las conversaciones",
 	"chat_error_description": "No pudimos cargar las conversaciones. Intenta de nuevo en un momento.",
+	"chat_detail_error_title": "No se pudo cargar la conversación",
+	"chat_detail_error_description": "No pudimos cargar esta conversación. Intenta de nuevo en un momento.",
 	"chat_loading_page": "Cargando página de chat",
 	"chat_loading_message_thread": "Cargando hilo de mensajes",
 

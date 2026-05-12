@@ -2,11 +2,18 @@ import { expect } from 'storybook/test'
 
 import preview from '#.storybook/preview'
 import { itemsMockData } from '#entities/item/mocks/data'
-import { assert, createActor, heading, role, text } from '#shared/test'
+import { createActor, heading, role, text } from '#shared/test'
 
 import { ItemsPage } from './ItemsPage'
 
 const I = createActor().extend((I) => ({
+	checkPrices: async () => {
+		const priceElements = await I.resolveLocator(text(/^\$/).all())
+		if (!Array.isArray(priceElements)) {
+			throw new Error('Expected price locator to resolve to an array of elements')
+		}
+		return priceElements.map((el) => Number((el.textContent ?? '').replace('$', '')))
+	},
 	seeItem: async (name: string) => {
 		await I.see(text(name))
 	},
@@ -72,23 +79,17 @@ Default.test('filters by stock: Out of Stock', async () => {
 Default.test('sorts by price: Ascending', async () => {
 	await I.selectSort('Price')
 	// Default is Ascending
-	const items = await I.resolveLocator(text(/^\$/).all())
-	assert(Array.isArray(items), 'Expected an array of elements')
-	const prices = await Promise.all(items.map((el) => (el.textContent ?? '').replace('$', '')))
-	const numericPrices = prices.map(Number)
-	const sortedPrices = [...numericPrices].sort((a, b) => a - b)
-	expect(numericPrices).toEqual(sortedPrices)
+	const prices = await I.checkPrices()
+	const sortedPrices = [...prices].sort((a, b) => a - b)
+	expect(prices).toEqual(sortedPrices)
 })
 
 Default.test('sorts by price: Descending', async () => {
 	await I.selectSort('Price')
 	await I.toggleSortDirection()
-	const items = await I.resolveLocator(text(/^\$/).all())
-	assert(Array.isArray(items), 'Expected an array of elements')
-	const prices = await Promise.all(items.map((el) => (el.textContent ?? '').replace('$', '')))
-	const numericPrices = prices.map(Number)
-	const sortedPrices = [...numericPrices].sort((a, b) => b - a)
-	expect(numericPrices).toEqual(sortedPrices)
+	const prices = await I.checkPrices()
+	const sortedPrices = [...prices].sort((a, b) => b - a)
+	expect(prices).toEqual(sortedPrices)
 })
 
 Default.test('shows no items message when filters match nothing', async () => {

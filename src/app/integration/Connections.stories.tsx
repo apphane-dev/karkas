@@ -195,8 +195,8 @@ HandlesConnectionDetailServerError.test(
 		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(heading('Could not load connections'))
-			await I.see(text("We couldn't load the connection list. Try again in a moment."))
+			await I.see(heading('Could not load connection'))
+			await I.see(text("We couldn't load this connection. Try again in a moment."))
 		})
 	},
 )
@@ -215,8 +215,8 @@ HandlesConnectionDetailServerErrorMobile.test(
 		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(heading('Could not load connections'))
-			await I.see(text("We couldn't load the connection list. Try again in a moment."))
+			await I.see(heading('Could not load connection'))
+			await I.see(text("We couldn't load this connection. Try again in a moment."))
 		})
 	},
 )

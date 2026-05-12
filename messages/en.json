@@ -81,10 +81,14 @@
 	"connection_loading_detail": "Loading connection detail",
 	"articles_error_title": "Could not load articles",
 	"articles_error_description": "We couldn't load the article list. Try again in a moment.",
+	"article_detail_error_title": "Could not load article",
+	"article_detail_error_description": "We couldn't load this article. Try again in a moment.",
 	"articles_loading_page": "Loading articles page",
 
 	"connections_error_title": "Could not load connections",
 	"connections_error_description": "We couldn't load the connection list. Try again in a moment.",
+	"connection_detail_error_title": "Could not load connection",
+	"connection_detail_error_description": "We couldn't load this connection. Try again in a moment.",
 	"connections_loading_page": "Loading connections page",
 
 	"connection_back_to_connections": "Back to connections",
@@ -125,6 +129,8 @@
 	"chat_not_found_description": "No conversation exists for id \"{conversationId}\".",
 	"chat_error_title": "Could not load conversations",
 	"chat_error_description": "We couldn't load the conversations. Try again in a moment.",
+	"chat_detail_error_title": "Could not load conversation",
+	"chat_detail_error_description": "We couldn't load this conversation. Try again in a moment.",
 	"chat_loading_page": "Loading conversations page",
 	"chat_loading_message_thread": "Loading message thread",
 

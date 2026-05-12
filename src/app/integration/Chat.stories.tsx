@@ -19,7 +19,7 @@ export const Default = meta.story({
 })
 
 Default.test('renders conversation list', async () => {
-	await I.see(link(/Engineering/i))
+	await I.seeConversationList()
 })
 
 Default.test('shows no-selection message when no conversation selected', async () => {
@@ -42,7 +42,7 @@ export const DefaultMobile = meta.story({
 })
 
 DefaultMobile.test('[mobile] renders conversation list', async () => {
-	await I.see(link(/Engineering/))
+	await I.seeConversationList()
 })
 
 DefaultMobile.test('[mobile] shows message thread when conversation is clicked', async () => {
@@ -73,7 +73,6 @@ export const HandlesChatLoadServerError = meta.story({
 
 HandlesChatLoadServerError.test('shows error state when conversations request fails', async () => {
 	await I.seeError()
-	await I.see(text("We couldn't load the conversations. Try again in a moment."))
 })
 
 export const HandlesChatLoadServerErrorMobile = meta.story({
@@ -87,7 +86,6 @@ HandlesChatLoadServerErrorMobile.test(
 	'[mobile] shows error state when conversations request fails',
 	async () => {
 		await I.seeError()
-		await I.see(text("We couldn't load the conversations. Try again in a moment."))
 	},
 )
 
@@ -137,8 +135,7 @@ HandlesConversationDetailServerError.test(
 		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(loc.conversationErrorHeading)
-			await I.see(text("We couldn't load the conversations. Try again in a moment."))
+			await I.seeDetailError()
 		})
 	},
 )
@@ -157,8 +154,7 @@ HandlesConversationDetailServerErrorMobile.test(
 		await I.waitExit(role('status'))
 
 		await I.scope(role('main'), async () => {
-			await I.see(loc.conversationErrorHeading)
-			await I.see(text("We couldn't load the conversations. Try again in a moment."))
+			await I.seeDetailError()
 		})
 	},
 )

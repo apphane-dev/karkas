@@ -68,8 +68,8 @@ export const chatConversationRoute = chatRoute.reatomRoute(
 			if (error && !(isApiError(error) && error.status === 404)) {
 				return (
 					<PageError
-						title={m.chat_error_title()}
-						description={m.chat_error_description()}
+						title={m.chat_detail_error_title()}
+						description={m.chat_detail_error_description()}
 						onRetry={wrap(() => retryComputed(self.loader))}
 					/>
 				)
