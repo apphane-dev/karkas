@@ -26,27 +26,56 @@ const plans = [
 	},
 ]
 
-function PlanCard({
-	name,
-	price,
-	features,
-	highlighted,
-	isCurrent,
-}: {
+type PlanCardProps = {
 	name: string
 	price: string
 	features: string[]
 	highlighted?: boolean
 	isCurrent?: boolean
-}) {
-	let buttonLabel: string
-	if (isCurrent) {
-		buttonLabel = m.pricing_current_plan()
-	} else if (highlighted) {
-		buttonLabel = m.pricing_upgrade_pro()
-	} else {
-		buttonLabel = m.pricing_get_plan({ name })
-	}
+}
+
+const getPlanButtonLabel = ({ name, highlighted, isCurrent }: PlanCardProps) => {
+	if (isCurrent) return m.pricing_current_plan()
+	if (highlighted) return m.pricing_upgrade_pro()
+	return m.pricing_get_plan({ name })
+}
+
+const CurrentPlanBadge = ({ isCurrent }: { isCurrent: boolean | undefined }) => {
+	if (!isCurrent) return null
+
+	return (
+		<Badge
+			bg="green.subtle.bg"
+			color="green.subtle.fg"
+			borderWidth="1px"
+			borderColor="green.subtle.fg"
+			size="sm"
+		>
+			{m.pricing_current_plan()}
+		</Badge>
+	)
+}
+
+const PlanFeatures = ({ features }: { features: string[] }) => (
+	<styled.ul display="flex" flexDirection="column" gap="2">
+		{features.map((feature) => (
+			<styled.li
+				key={feature}
+				fontSize="sm"
+				color="muted"
+				display="flex"
+				alignItems="center"
+				gap="2"
+			>
+				<styled.span color="green.9">✓</styled.span>
+				{feature}
+			</styled.li>
+		))}
+	</styled.ul>
+)
+
+function PlanCard(props: PlanCardProps) {
+	const { name, price, features, highlighted, isCurrent } = props
 
 	return (
 		<styled.div
@@ -64,30 +93,13 @@ function PlanCard({
 					<styled.span fontSize="lg" fontWeight="semibold">
 						{name}
 					</styled.span>
-					{isCurrent && (
-						<Badge
-							bg="green.subtle.bg"
-							color="green.subtle.fg"
-							borderWidth="1px"
-							borderColor="green.subtle.fg"
-							size="sm"
-						>
-							{m.pricing_current_plan()}
-						</Badge>
-					)}
+					<CurrentPlanBadge isCurrent={isCurrent} />
 				</styled.div>
 				<styled.div fontSize="2xl" fontWeight="bold">
 					{price}
 				</styled.div>
 			</styled.div>
-			<styled.ul display="flex" flexDirection="column" gap="2">
-				{features.map((f) => (
-					<styled.li key={f} fontSize="sm" color="muted" display="flex" alignItems="center" gap="2">
-						<styled.span color="green.9">✓</styled.span>
-						{f}
-					</styled.li>
-				))}
-			</styled.ul>
+			<PlanFeatures features={features} />
 			<Button
 				mt="auto"
 				w="full"
@@ -95,7 +107,7 @@ function PlanCard({
 				variant={isCurrent ? 'subtle' : highlighted ? 'solid' : 'outline'}
 				disabled={isCurrent}
 			>
-				{buttonLabel}
+				{getPlanButtonLabel(props)}
 			</Button>
 		</styled.div>
 	)

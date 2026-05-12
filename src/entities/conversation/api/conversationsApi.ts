@@ -12,31 +12,33 @@ export async function fetchConversationById(conversationId: string) {
 	return apiClient.get<Conversation>(`${CONVERSATIONS_API_PATH}/${conversationId}`)
 }
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+	Boolean(value) && typeof value === 'object'
+
+const getUnreadFromConversation = (conversation: unknown) => {
+	if (!isRecord(conversation)) return 0
+	return typeof conversation['unread'] === 'number' ? conversation['unread'] : 0
+}
+
+const getUnreadFromObject = (response: Record<string, unknown>): number | undefined => {
+	const fields = ['unreadCount', 'count', 'total']
+	const found = fields.find((field) => typeof response[field] === 'number')
+	return found ? (response[found] as number) : undefined
+}
+
+const normalizeUnreadCountResponse = (response: unknown): number | undefined => {
+	if (typeof response === 'number') return response
+	if (Array.isArray(response)) {
+		return response.reduce<number>((total, item) => total + getUnreadFromConversation(item), 0)
+	}
+	if (isRecord(response)) return getUnreadFromObject(response)
+	return undefined
+}
+
 export async function fetchConversationsUnreadCount() {
 	const response = await apiClient.get<unknown>(CONVERSATIONS_UNREAD_COUNT_API_PATH)
+	const unreadCount = normalizeUnreadCountResponse(response)
 
-	if (typeof response === 'number') {
-		return response
-	}
-
-	if (Array.isArray(response)) {
-		return response.reduce<number>((totalUnread, conversation) => {
-			const unread =
-				conversation &&
-				typeof conversation === 'object' &&
-				typeof (conversation as Record<string, unknown>)['unread'] === 'number'
-					? ((conversation as Record<string, unknown>)['unread'] as number)
-					: 0
-			return totalUnread + unread
-		}, 0)
-	}
-
-	if (response && typeof response === 'object') {
-		const normalized = response as Record<string, unknown>
-		if (typeof normalized['unreadCount'] === 'number') return normalized['unreadCount']
-		if (typeof normalized['count'] === 'number') return normalized['count']
-		if (typeof normalized['total'] === 'number') return normalized['total']
-	}
-
+	if (unreadCount !== undefined) return unreadCount
 	throw new Error('Unexpected unread count response shape')
 }

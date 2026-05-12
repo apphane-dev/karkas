@@ -12,15 +12,16 @@ import { ItemNotFound } from '../ui/detail/ItemNotFound'
 import { ItemsPage } from '../ui/ItemsPage'
 import { ItemsPageLoading } from '../ui/ItemsPageLoading'
 
+const isItemsLoading = (isFirstPending: boolean, isPending: boolean, items: unknown) =>
+	isFirstPending || (isPending && !items)
+
 export const itemsRoute = rootRoute.reatomRoute(
 	{
 		path: 'items',
 		loader: fetchItems,
 		render: (self) => {
 			const { isFirstPending, isPending, data: items } = self.loader.status()
-			if (isFirstPending || (isPending && !items)) {
-				return <ItemsPageLoading />
-			}
+			if (isItemsLoading(isFirstPending, isPending, items)) return <ItemsPageLoading />
 			if (!items) {
 				return (
 					<PageError
@@ -31,8 +32,9 @@ export const itemsRoute = rootRoute.reatomRoute(
 				)
 			}
 			// If a child route is active (e.g. /items/:id), render it full page
-			if (itemDetailRoute()) {
-				return self.outlet().at(0) ?? <ItemNotFound itemId={itemDetailRoute()?.itemId ?? ''} />
+			const detailMatch = itemDetailRoute()
+			if (detailMatch) {
+				return self.outlet().at(0) ?? <ItemNotFound itemId={detailMatch.itemId} />
 			}
 			// Otherwise render the full-width list
 			return (

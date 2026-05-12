@@ -10,11 +10,6 @@
 				"count": 1
 			}
 		},
-		"src/entities/conversation/api/conversationsApi.ts": {
-			"crap_high": {
-				"count": 1
-			}
-		},
 		"src/pages/articles/model/routes.tsx": {
 			"crap_high": {
 				"count": 1
@@ -80,11 +75,8 @@
 			}
 		},
 		"src/pages/items/model/routes.tsx": {
-			"crap_high": {
-				"count": 1
-			},
 			"crap_moderate": {
-				"count": 1
+				"count": 2
 			}
 		},
 		"src/pages/items/ui/ItemsPage.tsx": {
@@ -93,7 +85,7 @@
 			}
 		},
 		"src/pages/pricing/ui/PricingPage.tsx": {
-			"crap_high": {
+			"crap_moderate": {
 				"count": 1
 			}
 		},
@@ -127,5 +119,5 @@
 		}
 	},
 	"runtime_coverage_findings": [],
-	"target_keys": []
+	"target_keys": ["src/entities/conversation/api/conversationsApi.ts:high impact"]
 }
