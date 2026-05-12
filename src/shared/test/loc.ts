@@ -94,25 +94,65 @@ export interface FluentLocator<T extends QueryType = QueryType> extends BaseFlue
 	all(): FluentAllLocator<T>
 }
 
+const mergedOptions = <T extends QueryType>(config: LocatorConfig<T>): OptsMap[T] | undefined =>
+	config.options
+		? ({ ...config.initialOptions, ...config.options } as OptsMap[T])
+		: config.initialOptions
+
+function invokeRoleSingle(canvas: Canvas, config: LocatorConfig<'role'>, mode: 'get'): HTMLElement
+function invokeRoleSingle(
+	canvas: Canvas,
+	config: LocatorConfig<'role'>,
+	mode: 'find',
+): Promise<HTMLElement>
+function invokeRoleSingle(
+	canvas: Canvas,
+	config: LocatorConfig<'role'>,
+	mode: 'query',
+): HTMLElement | null
+function invokeRoleSingle(
+	canvas: Canvas,
+	config: LocatorConfig<'role'>,
+	mode: QueryMode,
+): HTMLElement | Promise<HTMLElement> | null
+function invokeRoleSingle(canvas: Canvas, config: LocatorConfig<'role'>, mode: QueryMode) {
+	const opts = mergedOptions(config)
+	if (mode === 'get') return canvas.getByRole(config.arg, opts)
+	if (mode === 'find') return canvas.findByRole(config.arg, opts)
+	return canvas.queryByRole(config.arg, opts)
+}
+
+function invokeTextSingle(canvas: Canvas, config: LocatorConfig<'text'>, mode: 'get'): HTMLElement
+function invokeTextSingle(
+	canvas: Canvas,
+	config: LocatorConfig<'text'>,
+	mode: 'find',
+): Promise<HTMLElement>
+function invokeTextSingle(
+	canvas: Canvas,
+	config: LocatorConfig<'text'>,
+	mode: 'query',
+): HTMLElement | null
+function invokeTextSingle(
+	canvas: Canvas,
+	config: LocatorConfig<'text'>,
+	mode: QueryMode,
+): HTMLElement | Promise<HTMLElement> | null
+function invokeTextSingle(canvas: Canvas, config: LocatorConfig<'text'>, mode: QueryMode) {
+	const opts = mergedOptions(config)
+	if (mode === 'get') return canvas.getByText(config.arg, opts)
+	if (mode === 'find') return canvas.findByText(config.arg, opts)
+	return canvas.queryByText(config.arg, opts)
+}
+
 // Type-safe canvas dispatch — single element
 function invokeSingle(canvas: Canvas, config: LocatorConfig, mode: 'get'): HTMLElement
 function invokeSingle(canvas: Canvas, config: LocatorConfig, mode: 'find'): Promise<HTMLElement>
 function invokeSingle(canvas: Canvas, config: LocatorConfig, mode: 'query'): HTMLElement | null
 function invokeSingle(canvas: Canvas, config: LocatorConfig, mode: QueryMode) {
-	if (config.type === 'role') {
-		const opts = config.options
-			? { ...config.initialOptions, ...config.options }
-			: config.initialOptions
-		if (mode === 'get') return canvas.getByRole(config.arg, opts)
-		if (mode === 'find') return canvas.findByRole(config.arg, opts)
-		return canvas.queryByRole(config.arg, opts)
-	}
-	const opts = config.options
-		? { ...config.initialOptions, ...config.options }
-		: config.initialOptions
-	if (mode === 'get') return canvas.getByText(config.arg, opts)
-	if (mode === 'find') return canvas.findByText(config.arg, opts)
-	return canvas.queryByText(config.arg, opts)
+	return config.type === 'role'
+		? invokeRoleSingle(canvas, config, mode)
+		: invokeTextSingle(canvas, config, mode)
 }
 
 // Type-safe canvas dispatch — all elements

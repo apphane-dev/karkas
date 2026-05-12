@@ -11,11 +11,8 @@
 			}
 		},
 		"src/pages/articles/model/routes.tsx": {
-			"crap_high": {
-				"count": 1
-			},
 			"crap_moderate": {
-				"count": 1
+				"count": 2
 			}
 		},
 		"src/pages/calculator/ui/CalculatorPage.tsx": {
@@ -42,7 +39,7 @@
 			}
 		},
 		"src/pages/chat/ui/thread/MessageThread.tsx": {
-			"crap_high": {
+			"crap_moderate": {
 				"count": 1
 			}
 		},
@@ -110,9 +107,6 @@
 			}
 		},
 		"src/shared/test/loc.ts": {
-			"crap_high": {
-				"count": 1
-			},
 			"crap_moderate": {
 				"count": 1
 			}

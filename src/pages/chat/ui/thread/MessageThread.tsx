@@ -7,6 +7,65 @@ import { styled } from '#styled-system/jsx'
 
 import { ConversationHeaderContent } from './ConversationHeaderContent'
 
+type Message = Conversation['messages'][number]
+
+const MessageSender = ({ message }: { message: Message }) => {
+	if (message.isOwn) return null
+
+	return (
+		<styled.span fontSize="xs" fontWeight="medium" mb="1" color="muted">
+			{message.sender}
+		</styled.span>
+	)
+}
+
+const MessageBubble = ({ message }: { message: Message }) => (
+	<styled.div
+		px="4"
+		py="2.5"
+		borderRadius="xl"
+		bg={message.isOwn ? 'colorPalette.9' : 'gray.3'}
+		color={message.isOwn ? 'white' : 'inherit'}
+		fontSize="sm"
+		lineHeight="relaxed"
+		borderBottomRightRadius={message.isOwn ? 'sm' : 'xl'}
+		borderBottomLeftRadius={message.isOwn ? 'xl' : 'sm'}
+	>
+		{message.text}
+	</styled.div>
+)
+
+const MessageItem = ({ message }: { message: Message }) => (
+	<styled.div
+		display="flex"
+		flexDirection="column"
+		alignItems={message.isOwn ? 'flex-end' : 'flex-start'}
+		maxW="75%"
+		alignSelf={message.isOwn ? 'flex-end' : 'flex-start'}
+	>
+		<MessageSender message={message} />
+		<MessageBubble message={message} />
+		<styled.span fontSize="2xs" color="muted" mt="1">
+			{message.time}
+		</styled.span>
+	</styled.div>
+)
+
+const MessageLog = ({ conversation }: { conversation: Conversation }) => (
+	<styled.div
+		role="log"
+		aria-label={conversation.name}
+		mt="auto"
+		display="flex"
+		flexDirection="column"
+		gap="4"
+	>
+		{conversation.messages.map((message) => (
+			<MessageItem key={message.id} message={message} />
+		))}
+	</styled.div>
+)
+
 export function MessageThread({ conversation }: { conversation: Conversation }) {
 	return (
 		<styled.div display="flex" flexDirection="column" h="calc(100dvh - var(--app-header-h, 0px))">
@@ -23,47 +82,7 @@ export function MessageThread({ conversation }: { conversation: Conversation }) 
 			</styled.div>
 
 			<styled.div flex="1" overflowY="auto" p="6" display="flex" flexDirection="column">
-				<styled.div
-					role="log"
-					aria-label={conversation.name}
-					mt="auto"
-					display="flex"
-					flexDirection="column"
-					gap="4"
-				>
-					{conversation.messages.map((message) => (
-						<styled.div
-							key={message.id}
-							display="flex"
-							flexDirection="column"
-							alignItems={message.isOwn ? 'flex-end' : 'flex-start'}
-							maxW="75%"
-							alignSelf={message.isOwn ? 'flex-end' : 'flex-start'}
-						>
-							{!message.isOwn && (
-								<styled.span fontSize="xs" fontWeight="medium" mb="1" color="muted">
-									{message.sender}
-								</styled.span>
-							)}
-							<styled.div
-								px="4"
-								py="2.5"
-								borderRadius="xl"
-								bg={message.isOwn ? 'colorPalette.9' : 'gray.3'}
-								color={message.isOwn ? 'white' : 'inherit'}
-								fontSize="sm"
-								lineHeight="relaxed"
-								borderBottomRightRadius={message.isOwn ? 'sm' : 'xl'}
-								borderBottomLeftRadius={message.isOwn ? 'xl' : 'sm'}
-							>
-								{message.text}
-							</styled.div>
-							<styled.span fontSize="2xs" color="muted" mt="1">
-								{message.time}
-							</styled.span>
-						</styled.div>
-					))}
-				</styled.div>
+				<MessageLog conversation={conversation} />
 			</styled.div>
 
 			<styled.form

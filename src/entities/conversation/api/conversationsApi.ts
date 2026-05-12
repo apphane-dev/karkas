@@ -13,7 +13,7 @@ export async function fetchConversationById(conversationId: string) {
 }
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
-	Boolean(value) && typeof value === 'object'
+	Boolean(value) && typeof value === 'object' && !Array.isArray(value)
 
 const getUnreadFromConversation = (conversation: unknown) => {
 	if (!isRecord(conversation)) return 0

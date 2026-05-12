@@ -14,6 +14,9 @@ import { ArticleNoSelection } from '../ui/detail/ArticleNoSelection'
 import { ArticleNotFound } from '../ui/detail/ArticleNotFound'
 import { ArticleList } from '../ui/list/ArticleList'
 
+const isArticlesLoading = (isFirstPending: boolean, isPending: boolean, articles: unknown) =>
+	isFirstPending || (isPending && !articles)
+
 export const articlesRoute = rootRoute.reatomRoute(
 	{
 		path: 'articles',
@@ -21,7 +24,7 @@ export const articlesRoute = rootRoute.reatomRoute(
 		render: (self) => {
 			const selectedArticleId = articleDetailRoute()?.articleId
 			const { isFirstPending, isPending, data: articles } = self.loader.status()
-			if (isFirstPending || (isPending && !articles)) {
+			if (isArticlesLoading(isFirstPending, isPending, articles)) {
 				return <ArticlesPageLoading showDetail={selectedArticleId !== undefined} />
 			}
 
