@@ -35,6 +35,7 @@ export const ConnectionDetail = reatomComponent(({ model }: { model: ConnectionD
 			</Text>
 			<styled.div display="grid" gap="4" mt="6">
 				{connection.details.map((paragraph, index) => (
+					// oxlint-disable-next-line react/no-array-index-key
 					<Text key={index} color="muted" fontSize="sm" lineHeight="relaxed">
 						{paragraph}
 					</Text>

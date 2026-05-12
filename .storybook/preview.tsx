@@ -27,7 +27,7 @@ function ReatomDecorator({
 	children,
 	initialPath = '',
 }: PropsWithChildren<{ initialPath?: string }>) {
-	const frame = useMemo(() => setupStorybookUrl(initialPath), [])
+	const frame = useMemo(() => setupStorybookUrl(initialPath), [initialPath])
 	return <reatomContext.Provider value={frame}>{children}</reatomContext.Provider>
 }
 

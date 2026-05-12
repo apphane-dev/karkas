@@ -23,6 +23,7 @@ export function ArticleDetail({ article }: { article: Article }) {
 			</Text>
 			<styled.div display="grid" gap="4" mt="6">
 				{article.content.map((paragraph, index) => (
+					// oxlint-disable-next-line react/no-array-index-key
 					<Text key={index} color="muted" fontSize="sm" lineHeight="relaxed">
 						{paragraph}
 					</Text>
