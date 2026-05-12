@@ -4,7 +4,7 @@ import { expect, waitFor, within as withinElement } from 'storybook/test'
 
 import type { AnyLocator, Canvas, DefiniteLocator, FluentLocator } from './loc'
 
-export { assert, waitFor }
+export { assert }
 
 // Inspired by codecept.js
 function createBase(ctx: () => StoryContext): BaseActor {

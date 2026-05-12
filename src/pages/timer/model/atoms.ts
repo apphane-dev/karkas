@@ -1,6 +1,6 @@
 import { action, atom, computed, sleep, withAbort, withChangeHook, wrap } from '@reatom/core'
 
-export const timerDurationAtom = atom(300, 'timer.duration')
+const timerDurationAtom = atom(300, 'timer.duration')
 export const timerRemainingAtom = atom(300, 'timer.remaining')
 
 const tick = action(async () => {

@@ -1,4 +1,4 @@
-export { assert, createActor, waitFor, type BaseActor } from './actor'
+export { assert, createActor, type BaseActor } from './actor'
 export {
 	button,
 	heading,
