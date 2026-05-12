@@ -4,7 +4,7 @@ import { reatomComponent } from '@reatom/react'
 
 import type { Category, Item } from '#entities/item'
 import { m } from '#paraglide/messages.js'
-import { Badge, Button, Select, VisuallyHidden } from '#shared/components'
+import { Badge, Button, CollectionSelect, VisuallyHidden } from '#shared/components'
 import { reatomLoc } from '#shared/model'
 import { styled } from '#styled-system/jsx'
 
@@ -89,33 +89,13 @@ export const ItemsPage = reatomComponent(({ items }: Props) => {
 			<styled.div display="flex" flexWrap="wrap" gap="3" mb="6" alignItems="center">
 				<styled.label fontSize="sm" fontWeight="medium" display="flex" alignItems="center" gap="2">
 					{m.items_sort_by()}
-					<Select.Root
+					<CollectionSelect
 						collection={sortFieldCollection()}
 						size="sm"
 						value={[sortField]}
 						onValueChange={wrap(({ value }) => sortFieldAtom.set(value[0]))}
 						positioning={{ sameWidth: true }}
-					>
-						<Select.Control>
-							<Select.Trigger>
-								<Select.ValueText />
-								<Select.IndicatorGroup>
-									<Select.Indicator />
-								</Select.IndicatorGroup>
-							</Select.Trigger>
-						</Select.Control>
-						<Select.Positioner>
-							<Select.Content>
-								{sortFieldCollection().items.map((item) => (
-									<Select.Item key={item.value} item={item}>
-										<Select.ItemText>{item.label}</Select.ItemText>
-										<Select.ItemIndicator />
-									</Select.Item>
-								))}
-							</Select.Content>
-						</Select.Positioner>
-						<Select.HiddenSelect />
-					</Select.Root>
+					/>
 				</styled.label>
 
 				<Button
@@ -128,64 +108,24 @@ export const ItemsPage = reatomComponent(({ items }: Props) => {
 
 				<styled.label fontSize="sm" fontWeight="medium" display="flex" alignItems="center" gap="2">
 					{m.items_label_category()}
-					<Select.Root
+					<CollectionSelect
 						collection={categoryCollection()}
 						size="sm"
 						value={[categoryFilter]}
 						onValueChange={wrap(({ value }) => categoryFilterAtom.set(value[0]))}
 						positioning={{ sameWidth: true }}
-					>
-						<Select.Control>
-							<Select.Trigger>
-								<Select.ValueText />
-								<Select.IndicatorGroup>
-									<Select.Indicator />
-								</Select.IndicatorGroup>
-							</Select.Trigger>
-						</Select.Control>
-						<Select.Positioner>
-							<Select.Content>
-								{categoryCollection().items.map((item) => (
-									<Select.Item key={item.value} item={item}>
-										<Select.ItemText>{item.label}</Select.ItemText>
-										<Select.ItemIndicator />
-									</Select.Item>
-								))}
-							</Select.Content>
-						</Select.Positioner>
-						<Select.HiddenSelect />
-					</Select.Root>
+					/>
 				</styled.label>
 
 				<styled.label fontSize="sm" fontWeight="medium" display="flex" alignItems="center" gap="2">
 					{m.items_label_stock()}
-					<Select.Root
+					<CollectionSelect
 						collection={stockCollection()}
 						size="sm"
 						value={[stockFilter]}
 						onValueChange={wrap(({ value }) => stockFilterAtom.set(value[0]))}
 						positioning={{ sameWidth: true }}
-					>
-						<Select.Control>
-							<Select.Trigger>
-								<Select.ValueText />
-								<Select.IndicatorGroup>
-									<Select.Indicator />
-								</Select.IndicatorGroup>
-							</Select.Trigger>
-						</Select.Control>
-						<Select.Positioner>
-							<Select.Content>
-								{stockCollection().items.map((item) => (
-									<Select.Item key={item.value} item={item}>
-										<Select.ItemText>{item.label}</Select.ItemText>
-										<Select.ItemIndicator />
-									</Select.Item>
-								))}
-							</Select.Content>
-						</Select.Positioner>
-						<Select.HiddenSelect />
-					</Select.Root>
+					/>
 				</styled.label>
 			</styled.div>
 

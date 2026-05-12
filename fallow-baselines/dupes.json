@@ -1,14 +1,3 @@
 {
-	"clone_groups": [
-		"src/pages/articles/testing.ts:18-27|src/pages/connections/testing.ts:21-30",
-		"src/pages/articles/ui/detail/ArticleDetailLoadingState.tsx:12-28|src/pages/connections/ui/detail/ConnectionDetailLoadingState.tsx:13-29",
-		"src/pages/items/ui/ItemsPage.tsx:135-147|src/pages/items/ui/ItemsPage.tsx:166-178|src/pages/items/ui/ItemsPage.tsx:96-108|src/pages/settings/ui/SettingsPage.tsx:254-266",
-		"src/pages/items/ui/ItemsPage.tsx:109-125|src/pages/items/ui/ItemsPage.tsx:148-160|src/pages/items/ui/ItemsPage.tsx:179-190",
-		"src/pages/items/ui/ItemsPage.tsx:148-160|src/pages/items/ui/ItemsPage.tsx:179-190",
-		"src/pages/settings/ui/SettingsPage.tsx:144-157|src/pages/settings/ui/SettingsPage.tsx:180-194|src/pages/settings/ui/SettingsPage.tsx:254-266|src/pages/settings/ui/SettingsPage.tsx:285-298|src/pages/settings/ui/SettingsPage.tsx:316-328",
-		"src/pages/settings/ui/SettingsPage.tsx:158-170|src/pages/settings/ui/SettingsPage.tsx:267-278|src/pages/settings/ui/SettingsPage.tsx:299-310",
-		"src/pages/settings/ui/SettingsPage.tsx:195-208|src/pages/settings/ui/SettingsPage.tsx:329-341",
-		"src/pages/settings/ui/SettingsPage.tsx:254-266|src/pages/settings/ui/SettingsPage.tsx:316-328",
-		"src/shared/test/actor.ts:109-115|src/shared/test/actor.ts:90-96"
-	]
+	"clone_groups": []
 }

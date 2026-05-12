@@ -3,7 +3,7 @@ import { wrap } from '@reatom/core'
 import { bindField, reatomComponent } from '@reatom/react'
 
 import { m } from '#paraglide/messages.js'
-import { Button, Input, Select, Switch, VisuallyHidden } from '#shared/components'
+import { Button, CollectionSelect, Input, Switch, VisuallyHidden } from '#shared/components'
 import {
 	localeAtom,
 	reatomLoc,
@@ -135,7 +135,7 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 					label={m.settings_email_notifications()}
 					description={m.settings_email_notifications_desc()}
 				>
-					<Select.Root
+					<CollectionSelect
 						collection={emailNotificationsCollection()}
 						size="sm"
 						w="100%"
@@ -144,33 +144,13 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 							notificationsForm.fields.emailNotif.change((value[0] ?? 'all') as EmailNotification)
 						})}
 						positioning={{ sameWidth: true }}
-					>
-						<Select.Control>
-							<Select.Trigger>
-								<Select.ValueText />
-								<Select.IndicatorGroup>
-									<Select.Indicator />
-								</Select.IndicatorGroup>
-							</Select.Trigger>
-						</Select.Control>
-						<Select.Positioner>
-							<Select.Content>
-								{emailNotificationsCollection().items.map((item) => (
-									<Select.Item key={item.value} item={item}>
-										<Select.ItemText>{item.label}</Select.ItemText>
-										<Select.ItemIndicator />
-									</Select.Item>
-								))}
-							</Select.Content>
-						</Select.Positioner>
-						<Select.HiddenSelect />
-					</Select.Root>
+					/>
 				</FieldRow>
 				<FieldRow
 					label={m.settings_desktop_notifications()}
 					description={m.settings_desktop_notifications_desc()}
 				>
-					<Select.Root
+					<CollectionSelect
 						collection={desktopNotificationsCollection()}
 						size="sm"
 						w="100%"
@@ -181,27 +161,7 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 							)
 						})}
 						positioning={{ sameWidth: true }}
-					>
-						<Select.Control>
-							<Select.Trigger>
-								<Select.ValueText />
-								<Select.IndicatorGroup>
-									<Select.Indicator />
-								</Select.IndicatorGroup>
-							</Select.Trigger>
-						</Select.Control>
-						<Select.Positioner>
-							<Select.Content>
-								{desktopNotificationsCollection().items.map((item) => (
-									<Select.Item key={item.value} item={item}>
-										<Select.ItemText>{item.label}</Select.ItemText>
-										<Select.ItemIndicator />
-									</Select.Item>
-								))}
-							</Select.Content>
-						</Select.Positioner>
-						<Select.HiddenSelect />
-					</Select.Root>
+					/>
 				</FieldRow>
 			</Section>
 
@@ -246,37 +206,17 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 
 			<Section title={m.settings_appearance()}>
 				<FieldRow label={m.settings_theme()} description={m.settings_theme_desc()}>
-					<Select.Root
+					<CollectionSelect
 						collection={themeCollection()}
 						size="sm"
 						w="100%"
 						value={[themePreferenceAtom()]}
 						onValueChange={wrap(({ value }) => void themePreferenceAtom.set(value[0]))}
 						positioning={{ sameWidth: true }}
-					>
-						<Select.Control>
-							<Select.Trigger>
-								<Select.ValueText />
-								<Select.IndicatorGroup>
-									<Select.Indicator />
-								</Select.IndicatorGroup>
-							</Select.Trigger>
-						</Select.Control>
-						<Select.Positioner>
-							<Select.Content>
-								{themeCollection().items.map((item) => (
-									<Select.Item key={item.value} item={item}>
-										<Select.ItemText>{item.label}</Select.ItemText>
-										<Select.ItemIndicator />
-									</Select.Item>
-								))}
-							</Select.Content>
-						</Select.Positioner>
-						<Select.HiddenSelect />
-					</Select.Root>
+					/>
 				</FieldRow>
 				<FieldRow label={m.settings_density()} description={m.settings_density_desc()}>
-					<Select.Root
+					<CollectionSelect
 						collection={densityCollection()}
 						size="sm"
 						w="100%"
@@ -285,57 +225,17 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 							appearanceForm.fields.density.change((value[0] ?? 'compact') as Density)
 						})}
 						positioning={{ sameWidth: true }}
-					>
-						<Select.Control>
-							<Select.Trigger>
-								<Select.ValueText />
-								<Select.IndicatorGroup>
-									<Select.Indicator />
-								</Select.IndicatorGroup>
-							</Select.Trigger>
-						</Select.Control>
-						<Select.Positioner>
-							<Select.Content>
-								{densityCollection().items.map((item) => (
-									<Select.Item key={item.value} item={item}>
-										<Select.ItemText>{item.label}</Select.ItemText>
-										<Select.ItemIndicator />
-									</Select.Item>
-								))}
-							</Select.Content>
-						</Select.Positioner>
-						<Select.HiddenSelect />
-					</Select.Root>
+					/>
 				</FieldRow>
 				<FieldRow label={m.settings_language()} description={m.settings_language_desc()}>
-					<Select.Root
+					<CollectionSelect
 						collection={languageCollection()}
 						size="sm"
 						w="100%"
 						value={[localeAtom()]}
 						onValueChange={wrap((details) => void localeAtom.set(details.value[0]))}
 						positioning={{ sameWidth: true }}
-					>
-						<Select.Control>
-							<Select.Trigger>
-								<Select.ValueText />
-								<Select.IndicatorGroup>
-									<Select.Indicator />
-								</Select.IndicatorGroup>
-							</Select.Trigger>
-						</Select.Control>
-						<Select.Positioner>
-							<Select.Content>
-								{languageCollection().items.map((item) => (
-									<Select.Item key={item.value} item={item}>
-										<Select.ItemText>{item.label}</Select.ItemText>
-										<Select.ItemIndicator />
-									</Select.Item>
-								))}
-							</Select.Content>
-						</Select.Positioner>
-						<Select.HiddenSelect />
-					</Select.Root>
+					/>
 				</FieldRow>
 			</Section>
 		</styled.div>

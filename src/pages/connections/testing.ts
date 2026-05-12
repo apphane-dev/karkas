@@ -1,5 +1,13 @@
 import { button, createActor, heading, link, role, text } from '#shared/test'
 
+const CONNECTION_LINKS = [
+	/Stripe API/i,
+	/Analytics DB/i,
+	/Slack Notifications/i,
+	/Auth0 SSO/i,
+	/S3 Data Lake/i,
+] as const
+
 export const connectionsLoc = {
 	detailLoading: role('status', 'Loading connection detail'),
 }
@@ -19,11 +27,7 @@ export const connectionsActor = createActor().extend((I) => ({
 	},
 	seeConnectionList: async () => {
 		await I.scope(role('list', 'Connections'), async () => {
-			await I.see(link(/Stripe API/i))
-			await I.see(link(/Analytics DB/i))
-			await I.see(link(/Slack Notifications/i))
-			await I.see(link(/Auth0 SSO/i))
-			await I.see(link(/S3 Data Lake/i))
+			await Promise.all(CONNECTION_LINKS.map((name) => I.see(link(name))))
 		})
 	},
 	seeStatusBadges: async () => {

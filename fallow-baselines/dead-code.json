@@ -1,19 +1,7 @@
 {
 	"unused_files": [],
-	"unused_exports": [
-		"src/pages/timer/model/atoms.ts:timerDurationAtom",
-		"src/shared/test/actor.ts:waitFor",
-		"src/shared/test/index.ts:waitFor"
-	],
-	"unused_types": [
-		"src/shared/test/actor.ts:BaseActor",
-		"src/shared/test/index.ts:BaseActor",
-		"src/shared/test/index.ts:ArrayLocator",
-		"src/shared/test/index.ts:AnyLocator",
-		"src/shared/test/index.ts:DefiniteLocator",
-		"src/shared/test/index.ts:FluentLocator",
-		"src/shared/test/index.ts:Locator"
-	],
+	"unused_exports": [],
+	"unused_types": [],
 	"private_type_leaks": [],
 	"unused_dependencies": [],
 	"unused_dev_dependencies": [],

@@ -23,16 +23,24 @@ const PRESETS = [
 	{ label: '25m', seconds: 1500 },
 ] as const
 
+function parseCustomDuration(input: string): number | null {
+	const [rawMinutes = '0', rawSeconds = '0'] = input.split(':')
+	const minutes = Number.parseInt(rawMinutes, 10)
+	const seconds = Number.parseInt(rawSeconds, 10)
+	const duration = minutes * 60 + seconds
+
+	if (Number.isNaN(minutes) || Number.isNaN(seconds) || duration <= 0) {
+		return null
+	}
+	return duration
+}
+
 export const TimerPage = reatomComponent(() => {
 	const [customInput, setCustomInput] = useAtom('')
 
 	const handleCustomTimeCommit = wrap(() => {
-		const parts = customInput.split(':')
-		const minutes = parseInt(parts[0] ?? '0', 10)
-		const seconds = parseInt(parts[1] ?? '0', 10)
-		if (!isNaN(minutes) && !isNaN(seconds) && (minutes > 0 || seconds > 0)) {
-			setDuration(minutes * 60 + seconds)
-		}
+		const duration = parseCustomDuration(customInput)
+		if (duration !== null) setDuration(duration)
 		setCustomInput('')
 	})
 

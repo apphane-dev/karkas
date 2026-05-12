@@ -15,7 +15,6 @@ entry = [
 ignorePatterns = [
 	"public/mockServiceWorker.js",
 	"src/paraglide/**",
-	"src/shared/components/index.ts",
 	"src/shared/components/ui/**",
 	"src/shared/styled-system/**",
 	"theme/recipes/**",

@@ -66,6 +66,20 @@ function createBase(ctx: () => StoryContext): BaseActor {
 		await ctx().userEvent.click(el)
 	}
 
+	const editInput = async (
+		locator: DefiniteLocator,
+		expectedValue: string,
+		action: (el: HTMLInputElement, userEvent: StoryContext['userEvent']) => Promise<void>,
+	): Promise<StoryContext['userEvent']> => {
+		const { userEvent } = ctx()
+		const el = await resolveLocator(locator)
+		assert(el instanceof HTMLInputElement, 'Expected locator to resolve to an HTMLInputElement')
+		await userEvent.click(el)
+		await action(el, userEvent)
+		await waitFor(() => expect(el.value).toBe(expectedValue))
+		return userEvent
+	}
+
 	return {
 		resolveLocator,
 		see: async (locator: AnyLocator): Promise<HTMLElement> => {
@@ -88,16 +102,11 @@ function createBase(ctx: () => StoryContext): BaseActor {
 		},
 		click,
 		fill: async (locator: DefiniteLocator, value: string): Promise<void> => {
-			const { userEvent } = ctx()
-			await waitFor(async () => {
-				const el = await resolveLocator(locator)
-				assert(el instanceof HTMLInputElement, 'Expected locator to resolve to an HTMLInputElement')
-				await userEvent.click(el)
+			const userEvent = await editInput(locator, value, async (el, userEvent) => {
 				await userEvent.type(el, value, {
 					initialSelectionStart: 0,
 					initialSelectionEnd: el.value.length,
 				})
-				expect(el.value).toBe(value)
 			})
 			await userEvent.tab()
 		},
@@ -107,13 +116,8 @@ function createBase(ctx: () => StoryContext): BaseActor {
 			await click(() => global.getByRole('option', { name: value }))
 		},
 		clear: async (locator: DefiniteLocator): Promise<void> => {
-			const { userEvent } = ctx()
-			await waitFor(async () => {
-				const el = await resolveLocator(locator)
-				assert(el instanceof HTMLInputElement, 'Expected locator to resolve to an HTMLInputElement')
-				await userEvent.click(el)
+			await editInput(locator, '', async (el, userEvent) => {
 				await userEvent.clear(el)
-				expect(el.value).toBe('')
 			})
 		},
 		scope: async (locator: DefiniteLocator, callback: () => Promise<void>): Promise<void> => {
@@ -129,6 +133,7 @@ function createBase(ctx: () => StoryContext): BaseActor {
 	}
 }
 
+// fallow-ignore-next-line unused-type
 export interface BaseActor {
 	resolveLocator(locator: AnyLocator): Promise<HTMLElement | HTMLElement[] | null>
 	see(locator: AnyLocator): Promise<HTMLElement>

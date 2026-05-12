@@ -3,7 +3,9 @@
 
 [vars]
 codemod_workflow = ".config/codemods/park-ui-fixes/"
-codemod_target = "./src/shared/components/"
+# Park UI owns only generated/adapted primitives in src/shared/components/ui.
+# Keep our composite components outside ui/ so park:add and park:fix do not imply ownership.
+codemod_target = "./src/shared/components/ui/"
 codemod_base_args = " run -w {{ vars.codemod_workflow }} -t {{ vars.codemod_target }}"
 codemod_flags = "--allow-dirty --no-interactive --disable-analytics"
 

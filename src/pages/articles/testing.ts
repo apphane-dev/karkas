@@ -1,6 +1,14 @@
 import { m } from '#paraglide/messages.js'
 import { button, createActor, heading, link, role, text } from '#shared/test'
 
+const ARTICLE_LINKS = [
+	/Quarterly report/i,
+	/Hiring plan/i,
+	/Roadmap draft/i,
+	/Security audit/i,
+	/Design system update/i,
+] as const
+
 export const articlesActor = createActor().extend((I) => ({
 	seeError: async () => {
 		await I.see(heading('Could not load articles'))
@@ -16,11 +24,7 @@ export const articlesActor = createActor().extend((I) => ({
 	},
 	seeArticleList: async () => {
 		await I.scope(role('list', 'Articles'), async () => {
-			await I.see(link(/Quarterly report/i))
-			await I.see(link(/Hiring plan/i))
-			await I.see(link(/Roadmap draft/i))
-			await I.see(link(/Security audit/i))
-			await I.see(link(/Design system update/i))
+			await Promise.all(ARTICLE_LINKS.map((name) => I.see(link(name))))
 		})
 	},
 	seeStatusBadges: async () => {
