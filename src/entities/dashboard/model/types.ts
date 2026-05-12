@@ -1,4 +1,4 @@
-export type Trend = 'up' | 'down'
+type Trend = 'up' | 'down'
 
 export type StatCard = {
 	label: string

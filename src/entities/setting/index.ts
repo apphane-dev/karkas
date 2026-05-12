@@ -1,1 +1,3 @@
-export { patchProfile, SETTINGS_PROFILE_API_PATH } from './api/settingsApi'
+// fallow-ignore-file unused-file
+// barrel public api file required by steiger
+// remove comments once the file is filled with actual exports

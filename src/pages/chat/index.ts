@@ -20,5 +20,4 @@ chatConversationRoute.match.extend(
 	withMatchMobileHeaderOverride(ChatConversationMobileHeader),
 )
 
-export { chatRoute, chatConversationRoute }
 export { ChatNavItem } from './ui/ChatNavItem'

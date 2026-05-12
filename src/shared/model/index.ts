@@ -2,8 +2,8 @@ export {
 	headerTrailAtom,
 	breadcrumbsOverrideAtom,
 	mobileHeaderOverrideAtom,
-	setHeaderTrail,
 	withMatchHeaderTrail,
+	// fallow-ignore-next-line unused-export
 	withMatchHeaderBreadcrumbsOverride,
 	withMatchMobileHeaderOverride,
 } from './headerTrail'

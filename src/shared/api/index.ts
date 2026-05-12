@@ -8,7 +8,7 @@ export function composeApiUrl(path = '') {
 	return `${API_PREFIX}${normalized}`
 }
 
-export class ApiError extends Error {
+class ApiError extends Error {
 	readonly status: number
 	readonly payload: unknown
 

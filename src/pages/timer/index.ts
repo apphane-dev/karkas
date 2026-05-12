@@ -5,5 +5,4 @@ import { timerRoute } from './model/routes'
 
 timerRoute.match.extend(withMatchHeaderTrail(1, { label: () => m.nav_timer() }))
 
-export { timerRoute }
 export { TimerNavItem } from './ui/TimerNavItem'

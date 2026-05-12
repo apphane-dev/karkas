@@ -5,5 +5,4 @@ import { timelineRoute } from './model/routes'
 
 timelineRoute.match.extend(withMatchHeaderTrail(1, { label: () => m.nav_timeline() }))
 
-export { timelineRoute }
 export { TimelineNavItem } from './ui/TimelineNavItem'

@@ -18,5 +18,4 @@ articleDetailRoute.match.extend(
 	}),
 )
 
-export { articlesRoute, articleDetailRoute }
 export { ArticlesNavItem } from './ui/ArticlesNavItem'

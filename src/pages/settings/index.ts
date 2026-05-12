@@ -5,5 +5,4 @@ import { settingsRoute } from './model/routes'
 
 settingsRoute.match.extend(withMatchHeaderTrail(1, { label: () => m.nav_settings() }))
 
-export { settingsRoute }
 export { SettingsNavItem } from './ui/SettingsNavItem'

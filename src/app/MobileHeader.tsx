@@ -1,4 +1,4 @@
-import type { HeaderTrailDescriptor } from '#shared/model/headerTrail'
+import type { HeaderTrailDescriptor } from '#shared/model'
 
 import { reatomComponent } from '@reatom/react'
 

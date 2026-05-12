@@ -17,5 +17,4 @@ itemDetailRoute.match.extend(
 	}),
 )
 
-export { itemsRoute, itemDetailRoute }
 export { ItemsNavItem } from './ui/ItemsNavItem'

@@ -18,5 +18,4 @@ connectionDetailRoute.match.extend(
 	}),
 )
 
-export { connectionsRoute, connectionDetailRoute }
 export { ConnectionsNavItem } from './ui/ConnectionsNavItem'
