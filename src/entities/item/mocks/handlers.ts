@@ -21,7 +21,7 @@ const itemDetailResolver = (async ({ params }) => {
 	await delay()
 
 	const itemId = params['itemId']
-	const item = itemsMockData.find((item) => item.id === itemId)
+	const item = itemsMockData.find(({ id }) => id === itemId)
 	assert(item, `Item with id ${itemId} not found in mock data`, Error404)
 
 	return HttpResponse.json(item)

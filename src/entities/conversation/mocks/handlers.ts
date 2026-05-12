@@ -36,9 +36,7 @@ const conversationDetailResolver = (async ({ params }) => {
 	await delay()
 
 	const conversationId = params['conversationId']
-	const conversation = conversationsMockData.find(
-		(conversation) => conversation.id === conversationId,
-	)
+	const conversation = conversationsMockData.find(({ id }) => id === conversationId)
 	assert(conversation, `Conversation with id ${conversationId} not found in mock data`, Error404)
 
 	return HttpResponse.json(conversation)

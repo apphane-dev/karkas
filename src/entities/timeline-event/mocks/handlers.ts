@@ -21,9 +21,7 @@ const timelineEventDetailResolver = (async ({ params }) => {
 	await delay()
 
 	const timelineEventId = params['timelineEventId']
-	const timelineEvent = timelineEventsMockData.find(
-		(timelineEvent) => timelineEvent.id === timelineEventId,
-	)
+	const timelineEvent = timelineEventsMockData.find(({ id }) => id === timelineEventId)
 	assert(
 		timelineEvent,
 		`Timeline event with id ${timelineEventId} not found in mock data`,

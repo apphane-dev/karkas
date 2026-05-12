@@ -21,7 +21,7 @@ const connectionDetailResolver = (async ({ params }) => {
 	await delay()
 
 	const connectionId = params['connectionId']
-	const connection = connectionsMockData.find((connection) => connection.id === connectionId)
+	const connection = connectionsMockData.find(({ id }) => id === connectionId)
 	assert(connection, `Connection with id ${connectionId} not found in mock data`, Error404)
 
 	return HttpResponse.json(connection)

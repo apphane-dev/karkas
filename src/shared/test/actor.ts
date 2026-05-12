@@ -100,6 +100,7 @@ function createBase(ctx: () => StoryContext): BaseActor {
 		},
 		click,
 		fill: async (locator: DefiniteLocator, value: string): Promise<void> => {
+			// oxlint-disable-next-line no-shadow
 			const userEvent = await editInput(locator, value, async (el, userEvent) => {
 				await userEvent.type(el, value, {
 					initialSelectionStart: 0,

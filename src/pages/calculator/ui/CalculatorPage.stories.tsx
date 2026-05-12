@@ -6,12 +6,12 @@ import { CalculatorPage } from './CalculatorPage'
 const btn = (name: string | RegExp) => button(name)
 const display = (value: string) => text(value).options({ selector: 'span' })
 
-const I = createActor().extend((I) => ({
+const I = createActor().extend((targetI) => ({
 	press: async (label: string | RegExp) => {
-		await I.click(btn(label))
+		await targetI.click(btn(label))
 	},
 	seeDisplay: async (value: string) => {
-		await I.see(display(value))
+		await targetI.see(display(value))
 	},
 }))
 

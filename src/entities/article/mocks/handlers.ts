@@ -23,7 +23,7 @@ const articleDetailResolver = (async ({ params }) => {
 	await delay()
 
 	const articleId = params['articleId']
-	const article = articlesMockData.find((article) => article.id === articleId)
+	const article = articlesMockData.find(({ id }) => id === articleId)
 	assert(article, `Article with id ${articleId} not found in mock data`, Error404)
 
 	return HttpResponse.json(article)

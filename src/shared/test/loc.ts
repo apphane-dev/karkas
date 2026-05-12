@@ -242,11 +242,14 @@ function createLocator<T extends QueryType>(config: LocatorConfig<T>): FluentLoc
 	) as FluentLocator<T>
 }
 
-export const role = (role: AriaRole | (string & {}), name?: NameOption): FluentLocator<'role'> =>
+export const role = (
+	roleName: AriaRole | (string & {}),
+	name?: NameOption,
+): FluentLocator<'role'> =>
 	createLocator({
 		type: 'role',
-		arg: role,
-		initialOptions: name !== undefined ? { name } : undefined,
+		arg: roleName,
+		initialOptions: name === undefined ? undefined : { name },
 		options: undefined,
 		scope: undefined,
 	})

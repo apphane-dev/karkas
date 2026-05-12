@@ -6,31 +6,31 @@ import { createActor, heading, role, text } from '#shared/test'
 
 import { ItemsPage } from './ItemsPage'
 
-const I = createActor().extend((I) => ({
+const I = createActor().extend((targetI) => ({
 	checkPrices: async () => {
-		const priceElements = await I.resolveLocator(text(/^\$/).all())
+		const priceElements = await targetI.resolveLocator(text(/^\$/).all())
 		if (!Array.isArray(priceElements)) {
 			throw new Error('Expected price locator to resolve to an array of elements')
 		}
 		return priceElements.map((el) => Number((el.textContent ?? '').replace('$', '')))
 	},
 	seeItem: async (name: string) => {
-		await I.see(text(name))
+		await targetI.see(text(name))
 	},
 	dontSeeItem: async (name: string) => {
-		await I.dontSee(text(name))
+		await targetI.dontSee(text(name))
 	},
 	selectSort: async (option: string) => {
-		await I.selectOption(role('combobox', /Sort by/i), option)
+		await targetI.selectOption(role('combobox', /Sort by/i), option)
 	},
 	selectCategory: async (option: string) => {
-		await I.selectOption(role('combobox', /Category/i), option)
+		await targetI.selectOption(role('combobox', /Category/i), option)
 	},
 	selectStock: async (option: string) => {
-		await I.selectOption(role('combobox', /Stock/i), option)
+		await targetI.selectOption(role('combobox', /Stock/i), option)
 	},
 	toggleSortDirection: async () => {
-		await I.click(role('button', /Asc|Desc/))
+		await targetI.click(role('button', /Asc|Desc/))
 	},
 }))
 
