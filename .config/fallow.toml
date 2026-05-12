@@ -21,7 +21,7 @@ ignorePatterns = [
 ]
 
 [duplicates]
-ignore = ["messages/**", "src/**/*.stories.tsx", "src/**/mocks/**"]
+ignore = ["messages/**", "src/**/*.stories.tsx"]
 ignoreImports = true
 
 [audit]

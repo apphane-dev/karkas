@@ -156,9 +156,9 @@ Default handlers are aggregated in `src/app/mocks/handlers.ts` and used by Story
 
 Handlers like `.retrySucceeds` are factory functions (`()`) that close over mutable state (e.g. an error counter). The factory is required so each story gets its own isolated state.
 
-The canonical pattern uses `assert` with a stateful condition and `Error500` to produce error responses concisely. See `src/entities/item/mocks/handlers.ts` for the reference implementation.
+The canonical pattern keeps successful resolvers separate from their URL bindings, then composes retry handlers with `withRetrySuccess(resolver)`. See `src/entities/item/mocks/handlers.ts` for the reference implementation.
 
-Key details about `Error500` and other error classes are in `src/shared/mocks/utils.ts` — they extend `Error` but return an `HttpResponse` via `assign`, so throwing them inside an MSW handler produces the corresponding HTTP error response.
+Key details about `withRetrySuccess`, `Error500`, and other error classes are in `src/shared/mocks/utils.ts` — error classes extend `Error` but return an `HttpResponse` via `assign`, so throwing them inside an MSW handler produces the corresponding HTTP error response.
 
 ## Responsive Testing
 

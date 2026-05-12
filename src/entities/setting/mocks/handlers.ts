@@ -1,13 +1,15 @@
-import { HttpResponse, delay, http } from 'msw'
+import { HttpResponse, delay, http, type HttpResponseResolver } from 'msw'
 
 import { composeApiUrl } from '#shared/api'
 
 import { SETTINGS_PROFILE_API_PATH } from '../api/settingsApi'
 
-export const settingHandlers = [
-	http.patch(composeApiUrl(SETTINGS_PROFILE_API_PATH), async () => {
-		await delay()
+const updateProfileUrl = composeApiUrl(SETTINGS_PROFILE_API_PATH)
 
-		return HttpResponse.json({ ok: true })
-	}),
-]
+const updateProfileResolver = (async () => {
+	await delay()
+
+	return HttpResponse.json({ ok: true })
+}) satisfies HttpResponseResolver
+
+export const settingHandlers = [http.patch(updateProfileUrl, updateProfileResolver)]

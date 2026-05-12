@@ -1,5 +1,5 @@
-import { assign, noop } from '@reatom/core'
-import { HttpResponse } from 'msw'
+import { assert, assign, noop } from '@reatom/core'
+import { HttpResponse, type HttpResponseResolver } from 'msw'
 
 export function getParam(param: string | readonly string[] | undefined) {
 	if (typeof param === 'string') {
@@ -35,6 +35,18 @@ export const to404 = (message = 'Not Found') => {
 }
 export const to500 = (message = 'Internal Server Error') => {
 	throw new Error500(message)
+}
+
+export function withRetrySuccess<TResolver extends HttpResponseResolver>(
+	resolver: TResolver,
+	failures = 2,
+): TResolver {
+	let errorCount = 0
+
+	return ((info: Parameters<TResolver>[0]) => {
+		assert(errorCount++ >= failures, 'Simulated server error', Error500)
+		return resolver(info)
+	}) as TResolver
 }
 
 export async function neverResolve(): Promise<never> {
