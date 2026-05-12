@@ -1,4 +1,5 @@
 import type { BaseActor } from './actor'
+
 import { button, heading, role, text } from './loc'
 
 type LocatorName = string | RegExp

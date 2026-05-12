@@ -17,9 +17,8 @@
  * fresh build.
  */
 
-import { join } from 'node:path'
-
 import { Glob } from 'bun'
+import { join } from 'node:path'
 
 const root = join(import.meta.dir, '..')
 const distDir = join(root, '.var/dist/webapp/assets')

@@ -1,4 +1,5 @@
 import type { Item } from '#entities/item'
+
 import { m } from '#paraglide/messages.js'
 import { Badge, Heading } from '#shared/components'
 import { styled } from '#styled-system/jsx'

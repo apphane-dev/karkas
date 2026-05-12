@@ -1,6 +1,7 @@
 'use client'
-import { ScrollArea } from '@ark-ui/react/scroll-area'
 import type { ComponentProps } from 'react'
+
+import { ScrollArea } from '@ark-ui/react/scroll-area'
 
 import { createStyleContext } from '#styled-system/jsx'
 import { scrollArea } from '#styled-system/recipes'

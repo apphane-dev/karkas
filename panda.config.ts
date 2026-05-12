@@ -1,6 +1,5 @@
-import assert from 'node:assert'
-
 import { defineConfig } from '@pandacss/dev'
+import assert from 'node:assert'
 
 import { animationStyles } from '#theme/animation-styles.ts'
 import { blue } from '#theme/colors/blue'

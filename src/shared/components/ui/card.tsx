@@ -1,6 +1,7 @@
 'use client'
-import { ark } from '@ark-ui/react/factory'
 import type { ComponentProps } from 'react'
+
+import { ark } from '@ark-ui/react/factory'
 
 import { createStyleContext } from '#styled-system/jsx'
 import { card } from '#styled-system/recipes'

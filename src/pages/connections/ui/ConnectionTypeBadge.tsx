@@ -1,4 +1,5 @@
 import type { ConnectionType } from '#entities/connection'
+
 import { Badge } from '#shared/components'
 
 const typeConfig = {

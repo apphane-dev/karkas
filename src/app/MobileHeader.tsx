@@ -1,8 +1,9 @@
+import type { HeaderTrailDescriptor } from '#shared/model/headerTrail'
+
 import { reatomComponent } from '@reatom/react'
 
 import { Skeleton } from '#shared/components'
 import { headerTrailAtom, mobileHeaderOverrideAtom } from '#shared/model'
-import type { HeaderTrailDescriptor } from '#shared/model/headerTrail'
 import {
 	BackButton,
 	MobileHeader as MobileHeaderLayout,

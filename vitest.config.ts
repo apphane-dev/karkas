@@ -1,8 +1,7 @@
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
 import { playwright } from '@vitest/browser-playwright'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
 
 const testTimeout = Number(process.env['TEST_TIMEOUT'])

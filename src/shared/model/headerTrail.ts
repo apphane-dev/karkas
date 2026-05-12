@@ -1,6 +1,7 @@
-import { addChangeHook, atom, withConnectHook } from '@reatom/core'
 import type { AtomLike, Ext } from '@reatom/core'
 import type { ComponentType } from 'react'
+
+import { addChangeHook, atom, withConnectHook } from '@reatom/core'
 import { createElement } from 'react'
 
 export type HeaderTrailDescriptor = {

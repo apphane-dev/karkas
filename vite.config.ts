@@ -1,7 +1,6 @@
-import assert from 'node:assert'
-
 import { paraglideVitePlugin } from '@inlang/paraglide-js'
 import react from '@vitejs/plugin-react'
+import assert from 'node:assert'
 import { defineConfig } from 'vite'
 
 const outDir = process.env['WEBAPP_OUT_DIR']

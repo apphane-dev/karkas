@@ -31,15 +31,15 @@ run = [{ tasks = ["lint:fallow:dead-code", "lint:fallow:dupes", "lint:fallow:hea
 
 [tasks."lint:fallow:dead-code"]
 description = "Check for new dead-code findings against the Fallow baseline"
-run = "fallow dead-code --config .config/fallow.toml --baseline fallow-baselines/dead-code.json --fail-on-issues"
+run = "fallow dead-code --config .config/fallow.toml --fail-on-issues"
 
 [tasks."lint:fallow:dupes"]
 description = "Check for new duplicate-code findings against the Fallow baseline"
-run = "fallow dupes --config .config/fallow.toml --baseline fallow-baselines/dupes.json --fail-on-issues"
+run = "fallow dupes --config .config/fallow.toml --fail-on-issues"
 
 [tasks."lint:fallow:health"]
 description = "Check for new complexity findings against the Fallow baseline"
-run = "fallow health --config .config/fallow.toml --complexity --baseline fallow-baselines/health.json --fail-on-issues"
+run = "fallow health --config .config/fallow.toml --complexity --fail-on-issues"
 
 [tasks."lint:fallow:fix:preview"]
 description = "Preview Fallow's unused-export and dependency autofixes"

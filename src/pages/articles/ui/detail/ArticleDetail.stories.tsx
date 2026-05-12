@@ -1,5 +1,6 @@
-import preview from '#.storybook/preview'
 import type { Article } from '#entities/article'
+
+import preview from '#.storybook/preview'
 import { button, createActor, heading, text } from '#shared/test'
 
 import { ArticleDetail } from './ArticleDetail'

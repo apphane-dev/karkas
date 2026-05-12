@@ -1,4 +1,5 @@
 import type { Category } from '#entities/item'
+
 import { Badge } from '#shared/components'
 
 const categoryConfig = {

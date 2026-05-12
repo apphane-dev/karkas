@@ -1,6 +1,7 @@
+import type { Connection } from '#entities/connection'
+
 import { action, framePromise, sleep, withAbort, wrap } from '@reatom/core'
 
-import type { Connection } from '#entities/connection'
 import { m } from '#paraglide/messages.js'
 import { toaster } from '#shared/components'
 

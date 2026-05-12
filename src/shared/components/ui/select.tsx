@@ -1,11 +1,12 @@
 'use client'
+import type { HTMLStyledProps } from '#styled-system/types'
+
 import { ark } from '@ark-ui/react/factory'
 import { Select, type SelectRootComponentProps, useSelectItemContext } from '@ark-ui/react/select'
 import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react'
 
 import { createStyleContext } from '#styled-system/jsx'
 import { type SelectVariantProps, select } from '#styled-system/recipes'
-import type { HTMLStyledProps } from '#styled-system/types'
 
 const { withProvider, withContext } = createStyleContext(select)
 

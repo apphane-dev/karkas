@@ -1,3 +1,10 @@
+import type {
+	Density,
+	DesktopNotification,
+	EmailNotification,
+	SettingsPageModel,
+} from '../model/settingsForm'
+
 import { createListCollection } from '@ark-ui/react/select'
 import { wrap } from '@reatom/core'
 import { bindField, reatomComponent } from '@reatom/react'
@@ -15,12 +22,6 @@ import {
 import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
 
-import type {
-	Density,
-	DesktopNotification,
-	EmailNotification,
-	SettingsPageModel,
-} from '../model/settingsForm'
 import { FieldRow } from './FieldRow'
 import { Section } from './Section'
 

@@ -1,6 +1,7 @@
 'use client'
-import { Progress } from '@ark-ui/react/progress'
 import type { ComponentProps } from 'react'
+
+import { Progress } from '@ark-ui/react/progress'
 
 import { createStyleContext } from '#styled-system/jsx'
 import { progress } from '#styled-system/recipes'

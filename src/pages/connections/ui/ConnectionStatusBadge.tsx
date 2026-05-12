@@ -1,4 +1,5 @@
 import type { ConnectionStatus } from '#entities/connection'
+
 import { Badge } from '#shared/components'
 
 const statusConfig = {

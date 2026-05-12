@@ -3,7 +3,6 @@
 # Test and mock barrels are intentionally not included here.
 entry = [
 	"scripts/**/*.ts",
-	"src/app/routes.ts",
 	"src/entities/*/index.ts",
 	"src/features/*/index.ts",
 	"src/pages/*/index.ts",
@@ -23,9 +22,3 @@ ignorePatterns = [
 [duplicates]
 ignore = ["messages/**", "src/**/*.stories.tsx"]
 ignoreImports = true
-
-[audit]
-gate = "new-only"
-deadCodeBaseline = "fallow-baselines/dead-code.json"
-healthBaseline = "fallow-baselines/health.json"
-dupesBaseline = "fallow-baselines/dupes.json"

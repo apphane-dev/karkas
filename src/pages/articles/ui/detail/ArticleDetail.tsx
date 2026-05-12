@@ -1,4 +1,5 @@
 import type { Article } from '#entities/article'
+
 import { m } from '#paraglide/messages.js'
 import { Button, Heading, Text } from '#shared/components'
 import { styled } from '#styled-system/jsx'

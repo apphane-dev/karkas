@@ -1,7 +1,8 @@
 'use client'
+import type { ComponentProps } from 'react'
+
 import { ark } from '@ark-ui/react/factory'
 import { Fieldset } from '@ark-ui/react/fieldset'
-import type { ComponentProps } from 'react'
 
 import { createStyleContext } from '#styled-system/jsx'
 import { fieldset } from '#styled-system/recipes'

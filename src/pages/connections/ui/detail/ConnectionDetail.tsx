@@ -1,3 +1,5 @@
+import type { ConnectionDetailModel } from '../../model/connectionDetailModel'
+
 import { wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
 
@@ -5,7 +7,6 @@ import { m } from '#paraglide/messages.js'
 import { Button, Heading, Text } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
-import type { ConnectionDetailModel } from '../../model/connectionDetailModel'
 import { ConnectionStatusBadge } from '../ConnectionStatusBadge'
 import { ConnectionTypeBadge } from '../ConnectionTypeBadge'
 

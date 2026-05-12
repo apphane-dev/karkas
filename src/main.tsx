@@ -1,5 +1,7 @@
-import './index.css'
 import './setup' // import before any other reatom code!
+
+import './index.css'
+
 import { assert } from '@reatom/core'
 import { reatomContext } from '@reatom/react'
 import { createRoot } from 'react-dom/client'

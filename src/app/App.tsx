@@ -1,16 +1,17 @@
 import { urlAtom, withChangeHook } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
 
+import { dashboardRoute } from '#pages/dashboard'
 import { m } from '#paraglide/messages.js'
 import { Toaster } from '#shared/components'
 import { documentTitleAtom, localeAtom } from '#shared/model'
+import { rootRoute } from '#shared/router'
 import { styled } from '#styled-system/jsx'
 import { AppShell } from '#widgets/app-shell'
 
 import { HeaderBreadcrumbs } from './HeaderBreadcrumbs'
 import { MobileHeader } from './MobileHeader'
 import { OrgSwitcher } from './OrgSwitcher'
-import { dashboardRoute, rootRoute } from './routes'
 import { SidebarFooterNavigation } from './SidebarFooterNavigation'
 import { SidebarNavigation } from './SidebarNavigation'
 

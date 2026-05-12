@@ -1,7 +1,8 @@
 'use client'
+import type { ComponentProps } from 'react'
+
 import { Dialog } from '@ark-ui/react/dialog'
 import { ark } from '@ark-ui/react/factory'
-import type { ComponentProps } from 'react'
 
 import { createStyleContext } from '#styled-system/jsx'
 import { drawer } from '#styled-system/recipes'

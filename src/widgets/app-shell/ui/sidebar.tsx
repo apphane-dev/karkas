@@ -1,7 +1,8 @@
+import type { PropsWithChildren } from 'react'
+
 import { reatomBoolean, wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
 import { MenuIcon } from 'lucide-react'
-import type { PropsWithChildren } from 'react'
 
 import { m } from '#paraglide/messages.js'
 import { Drawer, IconButton } from '#shared/components'

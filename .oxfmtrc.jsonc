@@ -5,9 +5,20 @@
 	"semi": false,
 	"singleQuote": true,
 	"trailingComma": "all",
-	"experimentalSortImports": {
+	"sortImports": {
 		"internalPattern": ["#"],
+		"partitionByComment": true,
+		"groups": [
+			"side_effect",
+			"side_effect_style",
+			"type",
+			["builtin", "external"],
+			["internal", "subpath"],
+			["parent", "sibling", "index"],
+			"style",
+			"unknown",
+		],
 	},
-	"experimentalSortPackageJson": { "sortScripts": true },
+	"sortPackageJson": { "sortScripts": true },
 	"ignorePatterns": [],
 }

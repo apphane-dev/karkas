@@ -1,6 +1,5 @@
-import assert from 'node:assert'
-
 import { defineMain } from '@storybook/react-vite/node'
+import assert from 'node:assert'
 
 const base = process.env['STORYBOOK_BASE_URL']
 assert(base, 'STORYBOOK_BASE_URL env var is not set')

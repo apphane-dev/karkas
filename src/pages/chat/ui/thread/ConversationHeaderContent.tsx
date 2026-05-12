@@ -1,4 +1,5 @@
 import type { Conversation } from '#entities/conversation'
+
 import { Avatar } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 

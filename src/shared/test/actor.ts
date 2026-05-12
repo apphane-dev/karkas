@@ -1,8 +1,8 @@
-import { assert } from '@reatom/core'
-import type { StoryContext } from '@storybook/react-vite'
-import { expect, waitFor, within as withinElement } from 'storybook/test'
-
 import type { AnyLocator, Canvas, DefiniteLocator, FluentLocator } from './loc'
+import type { StoryContext } from '@storybook/react-vite'
+
+import { assert } from '@reatom/core'
+import { expect, waitFor, within as withinElement } from 'storybook/test'
 
 // Inspired by codecept.js
 function createBase(ctx: () => StoryContext): BaseActor {

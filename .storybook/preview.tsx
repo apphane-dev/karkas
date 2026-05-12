@@ -1,5 +1,7 @@
 import '../src/setup'
+
 import '../src/index.css'
+
 import { reatomContext } from '@reatom/react'
 import addonA11y from '@storybook/addon-a11y'
 import { definePreview } from '@storybook/react-vite'
@@ -48,6 +50,7 @@ const preview = definePreview({
 		a11y: { test: 'todo' },
 		msw: { handlers },
 	},
+	// fallow-ignore-next-line complexity
 	beforeEach: async ({ globals }) => {
 		if (!import.meta.env['VITEST']) return
 		const { page } = await import('vitest/browser')

@@ -1,6 +1,7 @@
+import type { DashboardData } from '#entities/dashboard'
+
 import { reatomComponent } from '@reatom/react'
 
-import type { DashboardData } from '#entities/dashboard'
 import { m } from '#paraglide/messages.js'
 import { VisuallyHidden } from '#shared/components'
 import { styled } from '#styled-system/jsx'
