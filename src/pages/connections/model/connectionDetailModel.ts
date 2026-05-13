@@ -34,7 +34,7 @@ async function showConnectionToast({
 	completed = true
 }
 
-export function createConnectionDetailModel(connection: Connection) {
+export function reatomConnectionDetailModel(connection: Connection) {
 	return {
 		connection,
 		testConnection: action(
@@ -58,4 +58,4 @@ export function createConnectionDetailModel(connection: Connection) {
 	}
 }
 
-export type ConnectionDetailModel = ReturnType<typeof createConnectionDetailModel>
+export type ConnectionDetailModel = ReturnType<typeof reatomConnectionDetailModel>

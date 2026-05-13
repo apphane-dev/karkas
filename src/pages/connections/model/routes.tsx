@@ -13,7 +13,7 @@ import { ConnectionDetailLoadingState } from '../ui/detail/ConnectionDetailLoadi
 import { ConnectionNoSelection } from '../ui/detail/ConnectionNoSelection'
 import { ConnectionNotFound } from '../ui/detail/ConnectionNotFound'
 import { ConnectionList } from '../ui/list/ConnectionList'
-import { createConnectionDetailModel } from './connectionDetailModel'
+import { reatomConnectionDetailModel } from './connectionDetailModel'
 
 export const connectionsRoute = rootRoute.reatomRoute(
 	{
@@ -62,7 +62,7 @@ export const connectionDetailRoute = connectionsRoute.reatomRoute(
 	{
 		path: ':connectionId',
 		loader: async ({ connectionId }) =>
-			createConnectionDetailModel(await fetchConnectionById(connectionId)),
+			reatomConnectionDetailModel(await fetchConnectionById(connectionId)),
 		render: (self) => {
 			const { isPending, data: model } = self.loader.status()
 			const error = self.loader.error()

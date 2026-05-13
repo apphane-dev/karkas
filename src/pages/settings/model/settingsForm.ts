@@ -4,7 +4,7 @@ export type EmailNotification = 'all' | 'important' | 'none'
 export type DesktopNotification = 'enabled' | 'disabled'
 export type Density = 'compact' | 'comfortable' | 'spacious'
 
-export function createSettingsPageModel() {
+export function reatomSettingsPageModel() {
 	const profileForm = reatomForm(
 		{
 			displayName: 'Alex Johnson',
@@ -45,4 +45,4 @@ export function createSettingsPageModel() {
 	}
 }
 
-export type SettingsPageModel = ReturnType<typeof createSettingsPageModel>
+export type SettingsPageModel = ReturnType<typeof reatomSettingsPageModel>
