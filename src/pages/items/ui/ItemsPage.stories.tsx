@@ -45,53 +45,88 @@ export default meta
 
 export const Default = meta.story({ name: 'Default' })
 
-Default.test('renders items list', async () => {
+Default.test('renders page heading and sample items', async () => {
 	await I.see(heading('Items'))
+	await I.seeNumberOfElements(role('link').all(), 12)
 	await I.seeItem('Wireless Headphones')
 	await I.seeItem('Standing Desk')
 })
 
-Default.test('filters by category: Electronics', async () => {
+export const FilteredByCategory = meta.story({ name: 'Filtered by Category' })
+
+FilteredByCategory.test('shows only electronics items', async () => {
 	await I.selectCategory('Electronics')
+	await I.seeNumberOfElements(role('link').all(), 3)
 	await I.seeItem('Wireless Headphones')
 	await I.seeItem('Mechanical Keyboard')
 	await I.dontSeeItem('Standing Desk')
 	await I.dontSeeItem('Merino Wool Sweater')
 })
 
-Default.test('filters by stock: In Stock', async () => {
+FilteredByCategory.test('shows only food items', async () => {
+	await I.selectCategory('Food')
+	await I.seeNumberOfElements(role('link').all(), 3)
+	await I.seeItem('Organic Coffee Beans')
+	await I.dontSeeItem('Wireless Headphones')
+})
+
+FilteredByCategory.test('item availability changes with category filter', async () => {
+	expect(await I.tryTo(() => I.seeItem('Wireless Headphones'))).toBe(true)
+	expect(await I.tryTo(() => I.seeItem('Non-existent Product'))).toBe(false)
+
+	await I.selectCategory('Food')
+	expect(await I.tryTo(() => I.seeItem('Wireless Headphones'))).toBe(false)
+	expect(await I.tryTo(() => I.seeItem('Organic Coffee Beans'))).toBe(true)
+})
+
+export const FilteredByStock = meta.story({ name: 'Filtered by Stock' })
+
+FilteredByStock.test('shows only in-stock items', async () => {
 	await I.selectStock('In Stock')
 	await I.seeItem('Wireless Headphones')
 	await I.seeItem('Standing Desk')
-	await I.dontSeeItem('Merino Wool Sweater') // Sweater is Out of Stock
+	await I.dontSeeItem('Merino Wool Sweater')
 })
 
-Default.test('filters by stock: Out of Stock', async () => {
+FilteredByStock.test('shows only out-of-stock items', async () => {
 	await I.selectStock('Out of Stock')
 	await I.seeItem('Merino Wool Sweater')
 	await I.seeItem('Ergonomic Chair')
-	await I.dontSeeItem('Wireless Headphones') // Headphones are In Stock
+	await I.dontSeeItem('Wireless Headphones')
 })
 
-Default.test('sorts by price: Ascending', async () => {
+export const FilteredToEmpty = meta.story({ name: 'No Matching Items' })
+
+FilteredToEmpty.test('shows empty state message', async () => {
+	await I.selectCategory('Electronics')
+	await I.selectStock('Out of Stock')
+	await I.see(text('No items match the current filters.'))
+})
+
+FilteredToEmpty.test('verifies multiple items across filter states', async () => {
+	expect(await I.hopeThat(() => I.seeItem('Wireless Headphones'))).toBe(true)
+	expect(await I.hopeThat(() => I.seeItem('Standing Desk'))).toBe(true)
+	I.hopeThat.noErrors()
+
+	await I.selectCategory('Electronics')
+	await I.selectStock('Out of Stock')
+	expect(await I.hopeThat(() => I.seeItem('Wireless Headphones'))).toBe(false)
+	expect(() => I.hopeThat.noErrors()).toThrow(/soft assertion/)
+})
+
+export const SortedByPrice = meta.story({ name: 'Sorted by Price' })
+
+SortedByPrice.test('sorts ascending by default', async () => {
 	await I.selectSort('Price')
-	// Default is Ascending
 	const prices = await I.checkPrices()
 	const sortedPrices = [...prices].sort((a, b) => a - b)
 	expect(prices).toEqual(sortedPrices)
 })
 
-Default.test('sorts by price: Descending', async () => {
+SortedByPrice.test('sorts descending after toggle', async () => {
 	await I.selectSort('Price')
 	await I.toggleSortDirection()
 	const prices = await I.checkPrices()
 	const sortedPrices = [...prices].sort((a, b) => b - a)
 	expect(prices).toEqual(sortedPrices)
-})
-
-Default.test('shows no items message when filters match nothing', async () => {
-	// Electronics + Out of Stock = 0 results in mock data
-	await I.selectCategory('Electronics')
-	await I.selectStock('Out of Stock')
-	await I.see(text('No items match the current filters.'))
 })

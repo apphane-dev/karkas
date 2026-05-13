@@ -95,9 +95,7 @@ export interface FluentLocator<T extends QueryType = QueryType> extends BaseFlue
 }
 
 const mergedOptions = <T extends QueryType>(config: LocatorConfig<T>): OptsMap[T] | undefined =>
-	config.options
-		? ({ ...config.initialOptions, ...config.options } as OptsMap[T])
-		: config.initialOptions
+	config.options ? { ...config.initialOptions, ...config.options } : config.initialOptions
 
 function invokeRoleSingle(canvas: Canvas, config: LocatorConfig<'role'>, mode: 'get'): HTMLElement
 function invokeRoleSingle(
@@ -183,13 +181,13 @@ function createBaseMethods<T extends QueryType, Self>(
 	rebuild: (nextConfig: LocatorConfig<T>) => Self,
 ) {
 	return {
-		__within: config.scope as WithinScope | undefined,
-		within: (scope: WithinScope): Self => rebuild({ ...config, scope } as LocatorConfig<T>),
+		__within: config.scope,
+		within: (scope: WithinScope): Self => rebuild({ ...config, scope }),
 		options: (opts: OptsMap[T]): Self =>
 			rebuild({
 				...config,
-				options: config.options ? ({ ...config.options, ...opts } as OptsMap[T]) : opts,
-			} as LocatorConfig<T>),
+				options: config.options ? { ...config.options, ...opts } : opts,
+			}),
 	}
 }
 

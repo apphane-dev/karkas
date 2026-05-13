@@ -69,6 +69,38 @@ Prefer assertions that are:
 
 Avoid tests that only assert a generic element exists when a specific expectation is available. For example, prefer `link(/Storage/).options({ current: 'page' })` over a bare `link().options({ current: 'page' })`.
 
+Test names should describe what the user sees or experiences, not which assertion method is used. A good name reads like a product requirement: `'shows only electronics items after filtering'`. If the name mentions a helper or DOM concept, rephrase it from the user's perspective.
+
+### One story per interaction context
+
+Each story export represents a distinct user-visible state or interaction context. Tests on that story assert behavior meaningful **for that state**.
+
+**Do**: split a monolithic `Default` story when tests exercise different interaction states.
+
+```tsx
+// Each story = a distinct interaction context
+export const Default = meta.story({ name: 'Default' })
+Default.test('renders page heading and sample items', ...)
+
+export const FilteredByCategory = meta.story({ name: 'Filtered by Category' })
+FilteredByCategory.test('shows only electronics items', ...)
+
+export const SortedByPrice = meta.story({ name: 'Sorted by Price' })
+SortedByPrice.test('sorts ascending by default', ...)
+```
+
+**Don't**: pile every test onto `Default` when they test different interaction states.
+
+```tsx
+// Bad — filtering, sorting, and empty state all on one story
+export const Default = meta.story({ name: 'Default' })
+Default.test('filters by category', ...)
+Default.test('sorts by price', ...)
+Default.test('shows empty state', ...)
+```
+
+`Default` should only contain tests for the component mounted with no interaction. The exception is integration stories where `play` handles stabilization and subsequent tests click through to different detail states — those are part of the same user flow.
+
 ### Naming
 
 | Variant                | Name pattern                               |
@@ -108,24 +140,31 @@ The actor is codecept-style and should stay declarative. Extend per-page actors 
 
 Key base methods:
 
-- `I.see(locator)`
-- `I.dontSee(locator)`
-- `I.waitExit(locator)`
-- `I.seeInField(locator, value)` / `I.dontSeeInField(locator, value)`
-- `I.seeNumberOfElements(locator, count)`
-- `I.grabTextFrom(locator)` / `I.grabTextFromAll(locator)` / `I.grabValueFrom(locator)`
-- `I.click(locator)`
-- `I.fill(locator, value)`
-- `I.selectOption(locator, value)`
-- `I.scope(locator, callback)` / `I.within(locator, callback)`
-- `I.tryTo(callback)` / `I.retryTo(callback, maxTries, pollInterval)` / `I.hopeThat(callback)`
-- `I.resolveLocator(locator)`
+- `I.see(locator)` / `I.dontSee(locator)` — assert element presence or absence
+- `I.waitExit(locator)` — wait for an element to disappear (stabilization)
+- `I.click(locator)` / `I.fill(locator, value)` / `I.selectOption(locator, value)` / `I.clear(locator)` / `I.press(key)` — interactions
+- `I.scope(locator, callback)` / `I.within(locator, callback)` — scoped queries (aliases, both restore scope on exit)
+- `I.seeInField(locator, value)` / `I.dontSeeInField(locator, value)` — assert input/select value
+- `I.seeNumberOfElements(locator, count)` — assert element count (use `.all()` locators)
+- `I.grabTextFrom(locator)` / `I.grabTextFromAll(locator)` — extract text content for `expect()` assertions
+- `I.tryTo(callback)` — run an assertion and return `true`/`false` instead of throwing
+- `I.retryTo(callback, maxTries, pollInterval)` — retry a callback up to `maxTries` times
+- `I.hopeThat(callback)` — soft assertion: collects failures without throwing; call `I.hopeThat.noErrors()` at the end to fail the test with all collected errors
+- `I.resolveLocator(locator)` — escape hatch for direct DOM access
 
-`I.within(...)` is a Codecept-style alias for `I.scope(...)`; both restore the previous scope in `finally` and return the callback value.
+When to use grab vs see:
 
-`I.tryTo(...)`, `I.retryTo(...)`, and `I.hopeThat(...)` mirror CodeceptJS effects for optional flows, localized retries, and soft assertions. If any `hopeThat` call returns `false`, finish the test with `I.hopeThat.noErrors()` to fail once with all collected soft-assertion messages.
+- Use `I.see(...)` / `I.dontSee(...)` when you only need to assert presence.
+- Use `I.grabTextFrom(...)` / `I.grabTextFromAll(...)` when you need the actual text for further `expect()` comparisons (sorting, length, partial matches, computed checks).
+- Use `I.seeNumberOfElements(...)` when you need to assert an exact count (e.g., after filtering).
+- Use `I.grabValueFrom(...)` when you need the current `.value` of a form element for an `expect()` check. For most form assertions, `I.seeInField(...)` / `I.dontSeeInField(...)` are sufficient.
 
-Prefer grab helpers over raw `I.resolveLocator(...)` when extracting text or values. Keep `resolveLocator` as an escape hatch for uncommon DOM-level assertions.
+When to use tryTo vs hopeThat:
+
+- `I.tryTo(...)` for a single conditional check that should not fail the test (e.g., "does this item exist?").
+- `I.hopeThat(...)` when you want to collect multiple soft failures and report them all at once. Always pair with `I.hopeThat.noErrors()` at the end of the test.
+
+Prefer grab helpers over raw `I.resolveLocator(...)` when extracting text or values.
 
 ### Page actor guidance
 
@@ -198,6 +237,21 @@ Excluded from coverage:
 - `src/shared/styled-system/`
 - `src/shared/components/ui/`
 - `src/main.tsx`
+
+### Known uncovered branches
+
+Some branches are intentionally left uncovered because they cannot be exercised through the UI or the test infrastructure.
+
+**Defensive code unreachable from the UI:**
+
+- `src/pages/timer/model/model.ts` lines 45–46: the `remaining() <= 0` guard in the running change hook. The UI disables the Start button when the timer reaches zero, so `running.setTrue()` is never called with zero remaining. This is a defensive check against programmatic misuse.
+- `src/pages/calculator/ui/CalculatorPage.tsx` line 43: the `default` case in `calculate()`. The function is only called when a prior operator exists (`prev !== null && op`), so the argument is always one of `+`, `-`, `*`, `/`. The default exists for TypeScript exhaustiveness.
+
+**Topbar conditional renders (localStorage + responsive visibility):**
+
+- `src/widgets/app-shell/ui/AppShell.tsx` lines 226, 243, 255–256: the LanguageSwitcher `onValueChange`, ThemeSwitcher click handler, and ThemeIcon render branches. These components use `withLocalStorage` atoms (`showLanguageSwitcherInTopBarAtom`, `showThemeSwitcherInTopBarAtom`) and are hidden on mobile viewports via `display: { base: 'none', md: 'inline-flex' }`. In headless browser tests, localStorage state can leak between stories (e.g. the Settings `ToggleSwitches` test unchecks these atoms), and responsive CSS visibility makes the elements absent from the accessibility tree. The settings toggles that control their visibility are already tested.
+- `src/widgets/app-shell/ui/sidebar.tsx` line 17: the `SidebarToggleButton` click handler. This mobile-only button uses the same responsive CSS pattern and is not found in the accessibility tree at the `sm` viewport in headless tests.
+- `src/pages/settings/ui/SettingsPage.tsx` lines 130, 252: the notifications form dirty save button and the language select `onValueChange`. The save button shares text with the profile form's save button, making it ambiguous to target. The language select callback (`localeAtom.set`) is a one-line delegation already exercised by the settings Theme/Density select tests which use the same `CollectionSelect` + `onValueChange` pattern.
 
 ## Adding a New Page Test
 

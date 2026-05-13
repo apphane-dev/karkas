@@ -73,9 +73,17 @@ PresetChangesDuration.test('clicking a preset changes the displayed duration', a
 
 export const CustomDurationInput = meta.story({ name: 'Custom Duration Input' })
 
-CustomDurationInput.test('entering MM:SS and pressing Enter sets duration', async () => {
+CustomDurationInput.test('entering MM:SS commits via blur', async () => {
 	await I.fill(role('textbox'), '00:15')
 	await I.see(text('00:15'))
+})
+
+CustomDurationInput.test('entering MM:SS commits via Enter key', async () => {
+	const input = role('textbox')
+	await I.click(input)
+	await I.press('00:20')
+	await I.press('[Enter]')
+	await I.see(text('00:20'))
 })
 
 CustomDurationInput.test('entering invalid input does not change duration', async () => {
@@ -96,6 +104,28 @@ PresetsDisabledWhileRunning.test('preset buttons are disabled while timer is run
 	expect(preset).toBeDisabled()
 })
 
+export const TimerReachesZero = meta.story({ name: 'Timer Reaches Zero' })
+
+TimerReachesZero.test('start button is disabled after timer reaches zero', async () => {
+	await I.fill(role('textbox'), '00:01')
+	await I.see(text('00:01'))
+
+	await I.click(loc.startButton)
+	await I.see(loc.pauseButton)
+
+	await I.retryTo(
+		async () => {
+			const found = await I.tryTo(() => I.see(text('00:00')))
+			if (!found) throw new Error('waiting for zero')
+		},
+		5,
+		500,
+	)
+
+	const startBtn = await I.see(loc.startButton)
+	expect(startBtn).toBeDisabled()
+})
+
 export const TimerTicksInSidebarOnOtherRoute = meta.story({
 	name: 'Timer Ticks In Sidebar On Other Route',
 })
@@ -111,7 +141,7 @@ TimerTicksInSidebarOnOtherRoute.test(
 		await I.click(link('Dashboard'))
 		await I.waitExit(role('status'))
 
-		await I.see(text(/00:0[0-9]/).wait())
+		await I.see(text(/00:0\d/).wait())
 	},
 )
 

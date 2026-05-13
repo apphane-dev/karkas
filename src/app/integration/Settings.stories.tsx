@@ -137,6 +137,16 @@ ChangeNotificationPreference.test('can change desktop notification to disabled',
 	await I.selectOption(role('combobox', 'Desktop notifications'), 'Disabled')
 })
 
+ChangeNotificationPreference.test(
+	'save button appears after changing notification preference',
+	async () => {
+		await I.dontSee(button('Save changes'))
+
+		await I.selectOption(role('combobox', 'Email notifications'), 'Important only')
+		await I.see(button('Save changes'))
+	},
+)
+
 export const DefaultMobile = meta.story({
 	name: 'Default (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },

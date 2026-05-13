@@ -30,11 +30,11 @@ description = "Check dead code, duplication, and complexity with Fallow"
 run = [{ tasks = ["lint:fallow:dead-code", "lint:fallow:dupes", "lint:fallow:health"] }]
 
 [tasks."lint:fallow:dead-code"]
-description = "Check for new dead-code findings against the Fallow baseline"
+description = "Check for dead-code findings against the Fallow baseline"
 run = "fallow dead-code --config .config/fallow.toml --fail-on-issues"
 
 [tasks."lint:fallow:dupes"]
-description = "Check for new duplicate-code findings against the Fallow baseline"
+description = "Check for duplicate-code findings against the Fallow baseline"
 run = "fallow dupes --config .config/fallow.toml --fail-on-issues"
 
 [tasks."lint:fallow:health"]
@@ -61,7 +61,8 @@ run = [ #
 	{ task = "prepare" },
 	{ task = "format" },
 	{ task = "lint:fix" },
-	{ tasks = ["typecheck", "test:run", "lint:steiger", "lint:fallow"] },
+	{ task = "test:coverage" },
+	{ tasks = ["typecheck", "lint:steiger", "lint:fallow"] },
 	{ task = "lint:paraglide-tree-shaking" },
 ]
 
@@ -75,12 +76,12 @@ run = [
 	] },
 	{ task = "format:check" },
 	{ task = "lint" },
+	{ task = "test:coverage" },
 	{ tasks = [
 		"typecheck",
 		"lint:steiger",
 		"lint:fallow",
 	] },
-	{ task = "test:coverage" },
 	{ task = "build" },
 	{ task = "lint:paraglide-tree-shaking" },
 ]

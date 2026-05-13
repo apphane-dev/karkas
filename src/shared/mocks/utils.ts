@@ -1,16 +1,6 @@
 import { assert, assign, noop } from '@reatom/core'
 import { HttpResponse, type HttpResponseResolver } from 'msw'
 
-export function getParam(param: string | readonly string[] | undefined) {
-	if (typeof param === 'string') {
-		return param
-	}
-	if (Array.isArray(param)) {
-		return param[0]
-	}
-	return undefined
-}
-
 function createHttpErrorClass(status: number, name: string) {
 	return class extends Error {
 		declare stack: string

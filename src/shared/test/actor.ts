@@ -249,6 +249,9 @@ function createBase(ctx: () => StoryContext): BaseActor {
 				await userEvent.clear(el)
 			})
 		},
+		press: async (key: string): Promise<void> => {
+			await ctx().userEvent.keyboard(key)
+		},
 		scope,
 		within: scope,
 		say: async (message: string): Promise<void> => {
@@ -282,6 +285,7 @@ export interface BaseActor {
 	fill(locator: DefiniteLocator, value: string): Promise<void>
 	selectOption(locator: DefiniteLocator, value: string | RegExp): Promise<void>
 	clear(locator: DefiniteLocator): Promise<void>
+	press(key: string): Promise<void>
 	scope<T>(locator: DefiniteLocator, callback: () => MaybePromise<T>): Promise<T>
 	within<T>(locator: DefiniteLocator, callback: () => MaybePromise<T>): Promise<T>
 	say(message: string): Promise<void>
@@ -312,7 +316,7 @@ function makeActor<M extends {}>(
 		// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 		extend<U extends {}>(ext: (current: BaseActor & M) => U): Actor<M & U> {
 			const extra = ext(methods)
-			return makeActor<M & U>({ ...methods, ...extra } as BaseActor & M & U, initFn)
+			return makeActor<M & U>({ ...methods, ...extra }, initFn)
 		},
 	}) as Actor<M>
 }

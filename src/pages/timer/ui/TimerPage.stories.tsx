@@ -1,5 +1,7 @@
+import { expect } from 'storybook/test'
+
 import preview from '#.storybook/preview'
-import { button, createActor, heading, text } from '#shared/test'
+import { button, createActor, heading, role, text } from '#shared/test'
 
 import { TimerPage } from './TimerPage'
 
@@ -22,15 +24,16 @@ export default meta
 
 export const Default = meta.story({ name: 'Default' })
 
-Default.test('renders timer and starts/pauses/resets', async () => {
+Default.test('renders timer heading and initial duration', async () => {
 	await I.see(timerHeading)
 	await I.see(text('05:00'))
+})
 
+export const TimerControls = meta.story({ name: 'Timer Controls' })
+
+TimerControls.test('starts, pauses, and resets', async () => {
 	await I.click(startBtn)
 	await I.see(pauseBtn)
-
-	// We can't easily wait for a tick in storybook-test without mocked timers
-	// but we can verify the button toggles.
 
 	await I.click(pauseBtn)
 	await I.see(startBtn)
@@ -39,7 +42,9 @@ Default.test('renders timer and starts/pauses/resets', async () => {
 	await I.see(text('05:00'))
 })
 
-Default.test('changes duration', async () => {
+export const DurationPresets = meta.story({ name: 'Duration Presets' })
+
+DurationPresets.test('changes duration via preset buttons', async () => {
 	await I.click(durationBtn('1m'))
 	await I.see(text('01:00'))
 
@@ -48,4 +53,13 @@ Default.test('changes duration', async () => {
 
 	await I.click(durationBtn('5m'))
 	await I.see(text('05:00'))
+})
+
+export const CustomDuration = meta.story({ name: 'Custom Duration' })
+
+CustomDuration.test('custom time input starts empty', async () => {
+	const customInput = role('textbox')
+
+	expect(await I.grabValueFrom(customInput)).toBe('')
+	await I.dontSeeInField(customInput, '05:00')
 })
