@@ -21,13 +21,13 @@ const getUnreadFromConversation = (conversation: unknown) => {
 	return typeof conversation['unread'] === 'number' ? conversation['unread'] : 0
 }
 
-const getUnreadFromObject = (response: Record<string, unknown>): number | undefined => {
+const getUnreadFromObject = (response: Record<string, unknown>) => {
 	const fields = ['unreadCount', 'count', 'total']
 	const found = fields.find((field) => typeof response[field] === 'number')
 	return found ? (response[found] as number) : undefined
 }
 
-const normalizeUnreadCountResponse = (response: unknown): number | undefined => {
+const normalizeUnreadCountResponse = (response: unknown) => {
 	if (typeof response === 'number') return response
 	if (Array.isArray(response)) {
 		return response.reduce<number>((total, item) => total + getUnreadFromConversation(item), 0)

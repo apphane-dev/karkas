@@ -50,7 +50,7 @@ function withMatchLifecycle(onMatch: () => () => void): Ext<MatchAtom> {
 	}
 }
 
-function setHeaderTrail(level: number, descriptor: HeaderTrailDescriptor): () => void {
+function setHeaderTrail(level: number, descriptor: HeaderTrailDescriptor) {
 	headerTrailAtom.set((prev) => {
 		const next = new Map(prev)
 		next.set(level, descriptor)
@@ -80,7 +80,7 @@ export function withMatchHeaderTrail(
 	return withMatchLifecycle(() => setHeaderTrail(level, descriptor))
 }
 
-function setOverride(target: OverrideAtom, Component: ComponentType): () => void {
+function setOverride(target: OverrideAtom, Component: ComponentType) {
 	const override = () => createElement(Component)
 	target.set(() => override)
 	return () => {

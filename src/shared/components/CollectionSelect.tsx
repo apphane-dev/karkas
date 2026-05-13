@@ -10,7 +10,7 @@ type CollectionSelectProps<T extends SelectOption> = Omit<Select.RootProps<T>, '
 
 function getCollectionItems<T extends SelectOption>(
 	collection: CollectionSelectProps<T>['collection'],
-): T[] {
+) {
 	return Array.isArray(collection?.items) ? collection.items : []
 }
 

@@ -9,7 +9,7 @@ import {
 	wrap,
 } from '@reatom/core'
 
-function parseCustomDuration(input: string): number | null {
+function parseCustomDuration(input: string) {
 	const [rawMinutes = '0', rawSeconds = '0'] = input.split(':')
 	const minutes = Number.parseInt(rawMinutes, 10)
 	const seconds = Number.parseInt(rawSeconds, 10)

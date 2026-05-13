@@ -32,7 +32,7 @@ export const withCoerce =
 		const isVariant = (value: string | undefined): value is T =>
 			Boolean(value && value in target.enum)
 
-		const coerce = (value: string | undefined): T =>
+		const coerce = (value: string | undefined) =>
 			isVariant(value) ? value : (fallback as unknown as T)
 
 		return target.extend(withParams(coerce), () => ({ coerce }))

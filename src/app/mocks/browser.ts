@@ -1,4 +1,4 @@
-export async function startBrowserMocking(): Promise<void> {
+export async function startBrowserMocking() {
 	const enableMswEnvironmentValue = import.meta.env['VITE_ENABLE_MSW']
 	const shouldEnableMocking =
 		enableMswEnvironmentValue === undefined || enableMswEnvironmentValue === 'true'

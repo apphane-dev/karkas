@@ -94,7 +94,7 @@ export interface FluentLocator<T extends QueryType = QueryType> extends BaseFlue
 	all(): FluentAllLocator<T>
 }
 
-const mergedOptions = <T extends QueryType>(config: LocatorConfig<T>): OptsMap[T] | undefined =>
+const mergedOptions = <T extends QueryType>(config: LocatorConfig<T>) =>
 	config.options ? { ...config.initialOptions, ...config.options } : config.initialOptions
 
 function invokeRoleSingle(canvas: Canvas, config: LocatorConfig<'role'>, mode: 'get'): HTMLElement
@@ -171,7 +171,7 @@ function invokeAll(canvas: Canvas, config: LocatorConfig, mode: 'get' | 'find') 
 	return canvas.findAllByText(config.arg, opts)
 }
 
-function invalidMaybeTransition(action: string): never {
+function invalidMaybeTransition(action: string) {
 	throw new Error(`Cannot call .${action}() after .maybe()`)
 }
 
@@ -240,10 +240,7 @@ function createLocator<T extends QueryType>(config: LocatorConfig<T>): FluentLoc
 	) as FluentLocator<T>
 }
 
-export const role = (
-	roleName: AriaRole | (string & {}),
-	name?: NameOption,
-): FluentLocator<'role'> =>
+export const role = (roleName: AriaRole | (string & {}), name?: NameOption) =>
 	createLocator({
 		type: 'role',
 		arg: roleName,
@@ -252,7 +249,7 @@ export const role = (
 		scope: undefined,
 	})
 
-export const text = (value: NameOption): FluentLocator<'text'> =>
+export const text = (value: NameOption) =>
 	createLocator({
 		type: 'text',
 		arg: value,

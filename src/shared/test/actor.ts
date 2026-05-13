@@ -11,18 +11,16 @@ export interface HopeThat {
 	noErrors(): void
 }
 
-const toError = (error: unknown): Error =>
-	error instanceof Error ? error : new Error(String(error))
+const toError = (error: unknown) => (error instanceof Error ? error : new Error(String(error)))
 
-const sleep = (ms: number): Promise<void> =>
-	new Promise((resolve) => globalThis.setTimeout(resolve, ms))
+const sleep = (ms: number) => new Promise((resolve) => globalThis.setTimeout(resolve, ms))
 
-const isMissingElementError = (error: unknown): boolean =>
+const isMissingElementError = (error: unknown) =>
 	error instanceof Error &&
 	error.name === 'TestingLibraryElementError' &&
 	error.message.startsWith('Unable to find')
 
-const assertValidMaxTries = (maxTries: number): void => {
+const assertValidMaxTries = (maxTries: number) => {
 	assert(Number.isInteger(maxTries) && maxTries > 0, 'retryTo maxTries must be a positive integer')
 }
 
@@ -56,11 +54,11 @@ function createBase(ctx: () => StoryContext): BaseActor {
 	const scopeStack: HTMLElement[] = []
 	const softErrors: Error[] = []
 
-	function rootCanvas(): Canvas {
+	function rootCanvas() {
 		return withinElement(ctx().canvasElement.ownerDocument.body)
 	}
 
-	function activeCanvas(): Canvas {
+	function activeCanvas() {
 		if (scopeStack.length > 0) {
 			return withinElement(scopeStack.at(-1)!)
 		}
@@ -109,7 +107,7 @@ function createBase(ctx: () => StoryContext): BaseActor {
 	const elementFrom = async (
 		locator: DefiniteLocator,
 		message = 'Expected locator to resolve to an HTMLElement',
-	): Promise<HTMLElement> => {
+	) => {
 		const el = await resolveLocator(locator)
 		assert(el instanceof HTMLElement, message)
 		return el
@@ -126,7 +124,7 @@ function createBase(ctx: () => StoryContext): BaseActor {
 		}
 	}
 
-	const click = async (locator: DefiniteLocator): Promise<void> => {
+	const click = async (locator: DefiniteLocator) => {
 		await ctx().userEvent.click(await elementFrom(locator))
 	}
 
@@ -134,7 +132,7 @@ function createBase(ctx: () => StoryContext): BaseActor {
 		locator: DefiniteLocator,
 		expectedValue: string,
 		action: (el: HTMLInputElement, userEvent: StoryContext['userEvent']) => Promise<void>,
-	): Promise<StoryContext['userEvent']> => {
+	) => {
 		const { userEvent } = ctx()
 		const el = await elementFrom(locator, 'Expected locator to resolve to an HTMLInputElement')
 		assert(el instanceof HTMLInputElement, 'Expected locator to resolve to an HTMLInputElement')
@@ -144,10 +142,7 @@ function createBase(ctx: () => StoryContext): BaseActor {
 		return userEvent
 	}
 
-	const scope = async <T>(
-		locator: DefiniteLocator,
-		callback: () => MaybePromise<T>,
-	): Promise<T> => {
+	const scope = async <T>(locator: DefiniteLocator, callback: () => MaybePromise<T>) => {
 		const element = await elementFrom(
 			locator,
 			'Expected scope locator to resolve to an HTMLElement',
@@ -164,13 +159,13 @@ function createBase(ctx: () => StoryContext): BaseActor {
 		callback: (tryNumber: number) => MaybePromise<T>,
 		maxTries: number,
 		pollInterval = 200,
-	): Promise<T> => {
+	) => {
 		assertValidMaxTries(maxTries)
 		return attemptRetry(callback, maxTries, pollInterval, 1)
 	}
 
 	const hopeThat = Object.assign(
-		async (callback: () => MaybePromise<unknown>): Promise<boolean> => {
+		async (callback: () => MaybePromise<unknown>) => {
 			try {
 				await callback()
 				return true
@@ -180,7 +175,7 @@ function createBase(ctx: () => StoryContext): BaseActor {
 			}
 		},
 		{
-			noErrors: (): void => {
+			noErrors: () => {
 				if (softErrors.length === 0) return
 				const errors = softErrors.splice(0)
 				throw new AggregateError(
@@ -195,38 +190,38 @@ function createBase(ctx: () => StoryContext): BaseActor {
 
 	return {
 		resolveLocator,
-		see: async (locator: AnyLocator): Promise<HTMLElement> => {
+		see: async (locator: AnyLocator) => {
 			const [el] = await elementsFrom(locator)
 			expect(el).toBeInTheDocument()
 			assert(el instanceof HTMLElement, 'Expected locator to resolve to an HTMLElement')
 			return el
 		},
-		dontSee: async (locator: FluentLocator): Promise<void> => {
+		dontSee: async (locator: FluentLocator) => {
 			expect(await resolveLocator(locator.maybe())).toBeNull()
 		},
-		waitExit: async (locator: FluentLocator): Promise<void> => {
+		waitExit: async (locator: FluentLocator) => {
 			await waitFor(async () => void expect(await resolveLocator(locator.maybe())).toBeNull())
 		},
-		seeInField: async (locator: DefiniteLocator, value: string | number): Promise<void> => {
+		seeInField: async (locator: DefiniteLocator, value: string | number) => {
 			expect(await elementFrom(locator)).toHaveValue(value)
 		},
-		dontSeeInField: async (locator: DefiniteLocator, value: string | number): Promise<void> => {
+		dontSeeInField: async (locator: DefiniteLocator, value: string | number) => {
 			expect(await elementFrom(locator)).not.toHaveValue(value)
 		},
-		seeNumberOfElements: async (locator: AnyLocator, count: number): Promise<void> => {
+		seeNumberOfElements: async (locator: AnyLocator, count: number) => {
 			expect(await elementsFrom(locator, { missingAsEmpty: count === 0 })).toHaveLength(count)
 		},
-		grabTextFrom: async (locator: DefiniteLocator): Promise<string> =>
+		grabTextFrom: async (locator: DefiniteLocator) =>
 			(await elementFrom(locator)).textContent ?? '',
-		grabTextFromAll: async (locator: ArrayLocator): Promise<string[]> =>
+		grabTextFromAll: async (locator: ArrayLocator) =>
 			(await elementsFrom(locator)).map((el) => el.textContent ?? ''),
-		grabValueFrom: async (locator: DefiniteLocator): Promise<string> => {
+		grabValueFrom: async (locator: DefiniteLocator) => {
 			const el = await elementFrom(locator)
 			assert('value' in el, 'Expected locator to resolve to a value-bearing element')
 			return String(el.value)
 		},
 		click,
-		fill: async (locator: DefiniteLocator, value: string): Promise<void> => {
+		fill: async (locator: DefiniteLocator, value: string) => {
 			// oxlint-disable-next-line no-shadow
 			const userEvent = await editInput(locator, value, async (el, userEvent) => {
 				await userEvent.type(el, value, {
@@ -236,25 +231,25 @@ function createBase(ctx: () => StoryContext): BaseActor {
 			})
 			await userEvent.tab()
 		},
-		selectOption: async (locator: DefiniteLocator, value: string | RegExp): Promise<void> => {
+		selectOption: async (locator: DefiniteLocator, value: string | RegExp) => {
 			const global = withinElement(ctx().canvasElement.ownerDocument.body)
 			await click(locator)
 			await click(() => global.getByRole('option', { name: value }))
 		},
-		clear: async (locator: DefiniteLocator): Promise<void> => {
+		clear: async (locator: DefiniteLocator) => {
 			await editInput(locator, '', async (el, userEvent) => {
 				await userEvent.clear(el)
 			})
 		},
-		press: async (key: string): Promise<void> => {
+		press: async (key: string) => {
 			await ctx().userEvent.keyboard(key)
 		},
 		scope,
 		within: scope,
-		say: async (message: string): Promise<void> => {
+		say: async (message: string) => {
 			console.info(message)
 		},
-		tryTo: async (callback: () => MaybePromise<unknown>): Promise<boolean> => {
+		tryTo: async (callback: () => MaybePromise<unknown>) => {
 			try {
 				await callback()
 				return true
@@ -304,24 +299,21 @@ type Actor<T extends {} = {}> = BaseActor &
 	}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-function makeActor<M extends {}>(
-	methods: BaseActor & M,
-	initFn: (context: StoryContext) => void,
-): Actor<M> {
+function makeActor<M extends {}>(methods: BaseActor & M, initFn: (context: StoryContext) => void) {
 	return Object.assign({}, methods, {
 		init: initFn,
 		// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-		extend<U extends {}>(ext: (current: BaseActor & M) => U): Actor<M & U> {
+		extend<U extends {}>(ext: (current: BaseActor & M) => U) {
 			const extra = ext(methods)
 			return makeActor<M & U>({ ...methods, ...extra }, initFn)
 		},
 	}) as Actor<M>
 }
 
-export const createActor = (): Actor => {
+export const createActor = () => {
 	let _ctx: StoryContext | null = null
 
-	function ctx(): StoryContext {
+	function ctx() {
 		assert(_ctx !== null, 'I.init(ctx) must be called before using I methods')
 		return _ctx
 	}

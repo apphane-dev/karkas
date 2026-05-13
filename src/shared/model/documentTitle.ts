@@ -5,7 +5,7 @@ import { m } from '#paraglide/messages.js'
 import { headerTrailAtom } from './headerTrail'
 import { localeAtom } from './locale'
 
-function formatDocumentTitle(pageLabel: string | undefined, appName: string): string {
+function formatDocumentTitle(pageLabel: string | undefined, appName: string) {
 	if (!pageLabel || pageLabel === appName) return appName
 	return `${pageLabel} | ${appName}`
 }

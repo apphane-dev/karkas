@@ -15,7 +15,7 @@ const pandaBreakpointWidths = {
 } satisfies Record<PandaBreakpoint, number>
 
 /** Returns `{ width, height }` for a Panda breakpoint name, or `null` if unknown. */
-export function getViewportSize(name: string): { width: number; height: number } | null {
+export function getViewportSize(name: string) {
 	const width = pandaBreakpointWidths[name as PandaBreakpoint]
 	if (width === undefined) return null
 	return { width, height: FALLBACK_VIEWPORT.height }
