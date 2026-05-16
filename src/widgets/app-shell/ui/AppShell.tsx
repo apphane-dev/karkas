@@ -255,7 +255,7 @@ const ThemeSwitcher = reatomComponent(() => {
 				const next = { system: 'light', light: 'dark', dark: 'system' } as const
 				themePreferenceAtom.set(next[themePreferenceAtom()])
 			})}
-			aria-label={m.topbar_toggle_theme_label()}
+			aria-label={`${m.topbar_toggle_theme_label()}: ${themePreferenceAtom()}`}
 		>
 			<ThemeIcon preference={themePreferenceAtom()} />
 		</IconButton>

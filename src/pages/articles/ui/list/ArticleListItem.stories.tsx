@@ -35,7 +35,7 @@ const meta = preview.meta({
 	title: 'Pages/Articles/ArticleListItem',
 	component: ArticleListItem,
 	parameters: { layout: 'padded' },
-	loaders: [(ctx) => void I.init(ctx)],
+	loaders: [(ctx) => I.init(ctx)],
 })
 
 export default meta

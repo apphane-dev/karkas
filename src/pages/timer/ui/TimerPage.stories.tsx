@@ -17,7 +17,7 @@ const meta = preview.meta({
 	title: 'Pages/Timer',
 	component: TimerPage,
 	parameters: { layout: 'centered' },
-	loaders: [(ctx) => void I.init(ctx)],
+	loaders: [(ctx) => I.init(ctx)],
 })
 
 export default meta

@@ -19,7 +19,7 @@ const meta = preview.meta({
 	title: 'Pages/Calculator',
 	component: CalculatorPage,
 	parameters: { layout: 'centered' },
-	loaders: [(ctx) => void I.init(ctx)],
+	loaders: [(ctx) => I.init(ctx)],
 })
 
 export default meta

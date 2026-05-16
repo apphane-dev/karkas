@@ -38,7 +38,7 @@ const meta = preview.meta({
 		items: itemsMockData.map((item) => ({ item, href: `/items/${item.id}` })),
 	},
 	parameters: { layout: 'fullscreen' },
-	loaders: [(ctx) => void I.init(ctx)],
+	loaders: [(ctx) => I.init(ctx)],
 })
 
 export default meta

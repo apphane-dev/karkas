@@ -11,7 +11,7 @@ const meta = preview.meta({
 	title: 'Integration/Sidebar Footer',
 	component: App,
 	parameters: { layout: 'fullscreen', initialPath: 'dashboard' },
-	loaders: [(ctx) => void I.init(ctx)],
+	loaders: [(ctx) => I.init(ctx)],
 })
 
 export default meta

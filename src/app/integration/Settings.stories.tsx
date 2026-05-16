@@ -1,5 +1,3 @@
-import { expect } from 'storybook/test'
-
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
 import { settingsActor as I, settingsLoc as loc } from '#pages/settings/testing'
@@ -9,7 +7,7 @@ const meta = preview.meta({
 	title: 'Integration/Settings',
 	component: App,
 	parameters: { layout: 'fullscreen', initialPath: 'settings' },
-	loaders: [(ctx) => void I.init(ctx)],
+	loaders: [(ctx) => I.init(ctx)],
 })
 
 export default meta
@@ -81,24 +79,23 @@ EditProfileShowsSave.test('save button disappears after saving', async () => {
 export const ToggleSwitches = meta.story({ name: 'Toggle Switches' })
 
 ToggleSwitches.test('can toggle language switcher', async () => {
-	const sw = await I.see(role('checkbox', 'Language switcher in top bar'))
-	expect(sw).toBeChecked()
+	const toggle = role('checkbox', 'Language switcher in top bar')
+	await I.seeChecked(toggle)
 
-	await I.click(role('checkbox', 'Language switcher in top bar'))
-	const updated = await I.see(role('checkbox', 'Language switcher in top bar'))
-	expect(updated).not.toBeChecked()
+	await I.click(toggle)
+	await I.dontSeeChecked(toggle)
 })
 
 ToggleSwitches.test('can toggle GitHub link', async () => {
-	await I.click(role('checkbox', 'Show GitHub Link'))
-	const sw = await I.see(role('checkbox', 'Show GitHub Link'))
-	expect(sw).not.toBeChecked()
+	const toggle = role('checkbox', 'Show GitHub Link')
+	await I.click(toggle)
+	await I.dontSeeChecked(toggle)
 })
 
 ToggleSwitches.test('can toggle theme switcher', async () => {
-	await I.click(role('checkbox', 'Show Theme Switcher'))
-	const sw = await I.see(role('checkbox', 'Show Theme Switcher'))
-	expect(sw).not.toBeChecked()
+	const toggle = role('checkbox', 'Show Theme Switcher')
+	await I.click(toggle)
+	await I.dontSeeChecked(toggle)
 })
 
 export const ChangeTheme = meta.story({ name: 'Change Theme' })

@@ -6,7 +6,7 @@ const meta = preview.meta({
 	title: 'Integration/Pricing',
 	component: App,
 	parameters: { layout: 'fullscreen', initialPath: 'pricing' },
-	loaders: [(ctx) => void I.init(ctx)],
+	loaders: [(ctx) => I.init(ctx)],
 })
 
 export default meta

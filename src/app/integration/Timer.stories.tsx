@@ -1,5 +1,3 @@
-import { expect } from 'storybook/test'
-
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
 import { timerActor as I, timerLoc as loc } from '#pages/timer/testing'
@@ -9,7 +7,7 @@ const meta = preview.meta({
 	title: 'Integration/Timer',
 	component: App,
 	parameters: { layout: 'fullscreen', initialPath: 'timer' },
-	loaders: [(ctx) => void I.init(ctx)],
+	loaders: [(ctx) => I.init(ctx)],
 })
 
 export default meta
@@ -100,8 +98,7 @@ export const PresetsDisabledWhileRunning = meta.story({ name: 'Presets Disabled 
 PresetsDisabledWhileRunning.test('preset buttons are disabled while timer is running', async () => {
 	await I.click(loc.startButton)
 
-	const preset = await I.see(loc.preset10s)
-	expect(preset).toBeDisabled()
+	await I.seeDisabled(loc.preset10s)
 })
 
 export const TimerReachesZero = meta.story({ name: 'Timer Reaches Zero' })
@@ -122,8 +119,7 @@ TimerReachesZero.test('start button is disabled after timer reaches zero', async
 		500,
 	)
 
-	const startBtn = await I.see(loc.startButton)
-	expect(startBtn).toBeDisabled()
+	await I.seeDisabled(loc.startButton)
 })
 
 export const TimerTicksInSidebarOnOtherRoute = meta.story({

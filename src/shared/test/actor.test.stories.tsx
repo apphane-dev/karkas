@@ -31,7 +31,7 @@ const I = createActor()
 const meta = preview.meta({
 	title: 'Testing/Actor',
 	component: TestComponent,
-	loaders: [(ctx) => void I.init(ctx)],
+	loaders: [(ctx) => I.init(ctx)],
 })
 
 export default meta

@@ -208,6 +208,29 @@ function createBase(ctx: () => StoryContext): BaseActor {
 		dontSeeInField: async (locator: DefiniteLocator, value: string | number) => {
 			expect(await elementFrom(locator)).not.toHaveValue(value)
 		},
+		seeChecked: async (locator: DefiniteLocator) => {
+			expect(await elementFrom(locator)).toBeChecked()
+		},
+		dontSeeChecked: async (locator: DefiniteLocator) => {
+			expect(await elementFrom(locator)).not.toBeChecked()
+		},
+		seeDisabled: async (locator: DefiniteLocator) => {
+			expect(await elementFrom(locator)).toBeDisabled()
+		},
+		dontSeeDisabled: async (locator: DefiniteLocator) => {
+			expect(await elementFrom(locator)).not.toBeDisabled()
+		},
+		seeAttribute: async (locator: DefiniteLocator, name: string, value?: string | RegExp) => {
+			const el = await elementFrom(locator)
+			if (value === undefined) {
+				expect(el).toHaveAttribute(name)
+			} else {
+				expect(el).toHaveAttribute(name, value)
+			}
+		},
+		dontSeeAttribute: async (locator: DefiniteLocator, name: string) => {
+			expect(await elementFrom(locator)).not.toHaveAttribute(name)
+		},
 		seeNumberOfElements: async (locator: AnyLocator, count: number) => {
 			expect(await elementsFrom(locator, { missingAsEmpty: count === 0 })).toHaveLength(count)
 		},
@@ -269,6 +292,12 @@ export interface BaseActor {
 	waitExit(locator: FluentLocator): Promise<void>
 	seeInField(locator: DefiniteLocator, value: string | number): Promise<void>
 	dontSeeInField(locator: DefiniteLocator, value: string | number): Promise<void>
+	seeChecked(locator: DefiniteLocator): Promise<void>
+	dontSeeChecked(locator: DefiniteLocator): Promise<void>
+	seeDisabled(locator: DefiniteLocator): Promise<void>
+	dontSeeDisabled(locator: DefiniteLocator): Promise<void>
+	seeAttribute(locator: DefiniteLocator, name: string, value?: string | RegExp): Promise<void>
+	dontSeeAttribute(locator: DefiniteLocator, name: string): Promise<void>
 	seeNumberOfElements(locator: AnyLocator, count: number): Promise<void>
 	grabTextFrom(locator: DefiniteLocator): Promise<string>
 	grabTextFromAll(locator: ArrayLocator): Promise<string[]>

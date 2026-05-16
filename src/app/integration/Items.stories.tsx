@@ -8,7 +8,7 @@ const meta = preview.meta({
 	title: 'Integration/Items',
 	component: App,
 	parameters: { layout: 'fullscreen', initialPath: 'items' },
-	loaders: [(ctx) => void I.init(ctx)],
+	loaders: [(ctx) => I.init(ctx)],
 })
 
 export default meta

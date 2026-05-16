@@ -9,7 +9,7 @@ const meta = preview.meta({
 	title: 'Pages/Articles/ArticleStatusBadge',
 	component: ArticleStatusBadge,
 	parameters: { layout: 'centered' },
-	loaders: [(ctx) => void I.init(ctx)],
+	loaders: [(ctx) => I.init(ctx)],
 })
 
 export default meta

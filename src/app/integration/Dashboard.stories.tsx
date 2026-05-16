@@ -2,13 +2,13 @@ import preview from '#.storybook/preview'
 import { App } from '#app/App'
 import { dashboardStats } from '#entities/dashboard/mocks/handlers'
 import { dashboardActor as I, dashboardLoc as loc } from '#pages/dashboard/testing'
-import { role, text } from '#shared/test'
+import { button, role, text } from '#shared/test'
 
 const meta = preview.meta({
 	title: 'Integration/Dashboard',
 	component: App,
 	parameters: { layout: 'fullscreen', initialPath: 'dashboard' },
-	loaders: [(ctx) => void I.init(ctx)],
+	loaders: [(ctx) => I.init(ctx)],
 })
 
 export default meta
@@ -26,6 +26,35 @@ Default.test('renders stat cards', async () => {
 	await I.seeDashboardContent()
 	await I.see(text('Bounce Rate'))
 	await I.see(text('Avg. Session'))
+})
+
+Default.test('toggles desktop sidebar collapsed state', async () => {
+	const sidebar = role('complementary')
+	const toggle = button('Toggle sidebar')
+
+	await I.dontSeeAttribute(sidebar, 'data-sidebar-collapsed')
+
+	await I.click(toggle)
+	await I.seeAttribute(sidebar, 'data-sidebar-collapsed', '')
+
+	await I.click(toggle)
+	await I.dontSeeAttribute(sidebar, 'data-sidebar-collapsed')
+})
+
+Default.test('cycles theme preference from the top bar', async () => {
+	let toggle = button('Toggle theme: system')
+	await I.see(toggle)
+
+	await I.click(toggle)
+	toggle = button('Toggle theme: light')
+	await I.see(toggle)
+
+	await I.click(toggle)
+	toggle = button('Toggle theme: dark')
+	await I.see(toggle)
+
+	await I.click(toggle)
+	await I.see(button('Toggle theme: system'))
 })
 
 export const DefaultMobile = meta.story({

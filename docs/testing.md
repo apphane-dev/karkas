@@ -145,6 +145,9 @@ Key base methods:
 - `I.click(locator)` / `I.fill(locator, value)` / `I.selectOption(locator, value)` / `I.clear(locator)` / `I.press(key)` — interactions
 - `I.scope(locator, callback)` / `I.within(locator, callback)` — scoped queries (aliases, both restore scope on exit)
 - `I.seeInField(locator, value)` / `I.dontSeeInField(locator, value)` — assert input/select value
+- `I.seeChecked(locator)` / `I.dontSeeChecked(locator)` — assert checked state for checkboxes/radios/switches
+- `I.seeDisabled(locator)` / `I.dontSeeDisabled(locator)` — assert disabled state
+- `I.seeAttribute(locator, name, value?)` / `I.dontSeeAttribute(locator, name)` — assert attributes when no user-facing locator/state exists
 - `I.seeNumberOfElements(locator, count)` — assert element count (use `.all()` locators)
 - `I.grabTextFrom(locator)` / `I.grabTextFromAll(locator)` — extract text content for `expect()` assertions
 - `I.tryTo(callback)` — run an assertion and return `true`/`false` instead of throwing
@@ -155,6 +158,9 @@ Key base methods:
 When to use grab vs see:
 
 - Use `I.see(...)` / `I.dontSee(...)` when you only need to assert presence.
+- Use state-specific actor assertions when possible: `I.seeChecked(...)`, `I.dontSeeChecked(...)`, `I.seeDisabled(...)`, `I.dontSeeDisabled(...)`, `I.seeInField(...)`, and `I.dontSeeInField(...)`.
+- Use `I.seeAttribute(...)` / `I.dontSeeAttribute(...)` only when the state is meaningful but not exposed through a better accessible query or actor helper.
+- Prefer improving accessibility over attribute assertions. If a state can be expressed in the accessible name, role, description, or visible text, expose it there and assert it with `I.see(...)` instead.
 - Use `I.grabTextFrom(...)` / `I.grabTextFromAll(...)` when you need the actual text for further `expect()` comparisons (sorting, length, partial matches, computed checks).
 - Use `I.seeNumberOfElements(...)` when you need to assert an exact count (e.g., after filtering).
 - Use `I.grabValueFrom(...)` when you need the current `.value` of a form element for an `expect()` check. For most form assertions, `I.seeInField(...)` / `I.dontSeeInField(...)` are sufficient.
@@ -249,7 +255,7 @@ Some branches are intentionally left uncovered because they cannot be exercised 
 
 **Topbar conditional renders (localStorage + responsive visibility):**
 
-- `src/widgets/app-shell/ui/AppShell.tsx` lines 226, 243, 255–256: the LanguageSwitcher `onValueChange`, ThemeSwitcher click handler, and ThemeIcon render branches. These components use `withLocalStorage` atoms (`showLanguageSwitcherInTopBarAtom`, `showThemeSwitcherInTopBarAtom`) and are hidden on mobile viewports via `display: { base: 'none', md: 'inline-flex' }`. In headless browser tests, localStorage state can leak between stories (e.g. the Settings `ToggleSwitches` test unchecks these atoms), and responsive CSS visibility makes the elements absent from the accessibility tree. The settings toggles that control their visibility are already tested.
+- `src/widgets/app-shell/ui/AppShell.tsx` line 226: the LanguageSwitcher `onValueChange`. The language button is present on desktop, but the current UI does not expose the selected locale as a stable user-facing state in the top bar. Prefer adding accessible state before covering this path.
 - `src/widgets/app-shell/ui/sidebar.tsx` line 17: the `SidebarToggleButton` click handler. This mobile-only button uses the same responsive CSS pattern and is not found in the accessibility tree at the `sm` viewport in headless tests.
 - `src/pages/settings/ui/SettingsPage.tsx` lines 130, 252: the notifications form dirty save button and the language select `onValueChange`. The save button shares text with the profile form's save button, making it ambiguous to target. The language select callback (`localeAtom.set`) is a one-line delegation already exercised by the settings Theme/Density select tests which use the same `CollectionSelect` + `onValueChange` pattern.
 
