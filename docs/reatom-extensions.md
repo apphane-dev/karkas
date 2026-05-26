@@ -80,7 +80,7 @@ Use extensions to add behavior at the atom/action boundary: validation, persiste
 1. Verify extension order effects (especially parse/persist/side-effect).
 2. Verify rapid state transitions and cleanup ordering.
 3. Verify behavior under multiple contexts if your project uses `clearStack`/custom contexts.
-4. Run `bun run typecheck` and `bun run lint`.
+4. Run `hk check` for validation, or `hk fix` first if formatting/lint fixes are expected.
 
 ## Edge Cases
 

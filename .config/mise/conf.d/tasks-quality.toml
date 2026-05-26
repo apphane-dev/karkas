@@ -1,3 +1,16 @@
+# Source of truth:
+# - mise owns named project maintenance workflows and low-level tool commands.
+# - hk owns file-scoped quality orchestration for git hooks and fast local check/fix.
+# - Prefer `hk check` / `hk fix` for ordinary format+lint+typecheck validation.
+
+[tasks.check]
+description = "Run hk quality checks (format, lint, typecheck)"
+run = "hk check"
+
+[tasks.fix]
+description = "Run hk auto-fixes, then validation (format, lint, typecheck)"
+run = "hk fix"
+
 [tasks.format]
 description = "Format code with oxfmt"
 alias = "fmt"

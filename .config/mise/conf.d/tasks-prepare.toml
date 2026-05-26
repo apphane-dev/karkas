@@ -23,9 +23,9 @@ sources = [
 outputs = ["public/mockServiceWorker.js"]
 
 [tasks."prepare:git-hooks"]
-description = "Install Git hooks"
-run = "lefthook install"
-sources = ["lefthook.yml"]
+description = "Install hk Git hooks"
+run = "hk install --mise"
+sources = [".config/hk.pkl"]
 
 [tasks."prepare:paraglide"]
 description = "Compile ParaglideJS message catalogs"
@@ -49,5 +49,4 @@ run = [
 	{ task = "prepare:msw" },
 	{ task = "prepare:git-hooks" },
 	{ task = "prepare:local-overrides" },
-	{ task = "format" },
 ]

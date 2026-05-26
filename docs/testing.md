@@ -30,6 +30,8 @@ mise run test:run src/app/integration/Connections.stories.tsx
 Project-wide commands:
 
 ```bash
+hk check               # default project quality gate
+hk fix                 # apply auto-fixable formatting/linting, then validate
 bun run test           # watch mode
 bun run test:run       # single run (CI)
 bun run test:coverage  # single run + coverage report
@@ -225,7 +227,9 @@ To reuse desktop configuration in mobile variants, pass `parameters: DesktopStor
 
 ## Coverage
 
-Coverage uses `@vitest/coverage-v8`.
+Coverage uses `@vitest/coverage-v8` through `vp test run --coverage`.
+
+Vite+ currently aliases `vitest` to `@voidzero-dev/vite-plus-test`. Because that package reports its Vite+ package version while bundling upstream Vitest internally, coverage can warn about mixed `vitest@0.1.x` and `@vitest/coverage-v8@4.1.x` versions. Keep `@vitest/coverage-v8` pinned to the bundled upstream Vitest version and treat the warning as a Vite+ alpha aliasing false-positive. See `docs/tooling.md`.
 
 Thresholds:
 

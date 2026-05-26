@@ -5,6 +5,7 @@ bun = "1.3.14"
 node = "lts"
 jq = "latest"
 vp = "latest"
+hk = "latest"
 
 [task_config]
 dir = "{{ config_root }}"
@@ -12,6 +13,8 @@ dir = "{{ config_root }}"
 [env]
 '_'.path = { path = "./node_modules/.bin" }
 STORYBOOK_ENABLE_CRASH_REPORTS = 1
+HK_PKL_BACKEND = "pklr"
+HK_MISE = 1
 
 [deps.bun]
 auto = true
