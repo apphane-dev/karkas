@@ -53,7 +53,7 @@ const preview = definePreview({
 	// fallow-ignore-next-line complexity
 	beforeEach: async ({ globals }) => {
 		if (!import.meta.env['VITEST']) return
-		const { page } = await import('vitest/browser')
+		const { page } = await import('vite-plus/test/browser')
 		const viewportGlobal = globals['viewport'] as { value?: string } | string | undefined
 		const viewportName = typeof viewportGlobal === 'string' ? viewportGlobal : viewportGlobal?.value
 		const viewport = (viewportName ? getViewportSize(viewportName) : null) ?? FALLBACK_VIEWPORT

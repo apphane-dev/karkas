@@ -21,7 +21,7 @@ usage = '''
 arg "<dir>" env="WEBAPP_OUT_DIR" default="{{ vars.webapp_out_dir }}" help="Output directory for the webapp build"
 arg "<base>" env="WEBAPP_BASE_URL" default="/" help="Base URL for the webapp"
 '''
-run = "WEBAPP_OUT_DIR=${usage_dir?} WEBAPP_BASE_URL=${usage_base?} vite build"
+run = "WEBAPP_OUT_DIR=${usage_dir?} WEBAPP_BASE_URL=${usage_base?} vp build"
 
 [tasks."build:webapp"]
 description = "Build Application"

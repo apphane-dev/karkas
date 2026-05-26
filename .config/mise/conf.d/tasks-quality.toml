@@ -1,20 +1,20 @@
 [tasks.format]
 description = "Format code with oxfmt"
 alias = "fmt"
-run = "oxfmt --write ."
+run = "vp fmt"
 
 [tasks."format:check"]
 description = "Check code formatting"
 alias = "fmt:check"
-run = "oxfmt --check ."
+run = "vp fmt --check"
 
 [tasks.lint]
 description = "Lint code with oxlint"
-run = "oxlint ."
+run = "vp lint"
 
 [tasks."lint:fix"]
 description = "Lint code and apply fixes with oxlint"
-run = "oxlint --fix ."
+run = "vp lint --fix"
 
 [tasks.typecheck]
 description = "Type check with TypeScript 7 native preview"

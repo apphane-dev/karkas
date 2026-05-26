@@ -8,7 +8,7 @@ usage = '''
 flag "-p --port <port>" env="VITE_PORT" default="{{ vars.vite_port }}" help="Port for the Vite dev server"
 arg "[rest]" help="Additional arguments to pass to Vite"
 '''
-run = "vite --port ${usage_port?} ${usage_rest}"
+run = "vp dev --port ${usage_port?} ${usage_rest}"
 
 [tasks.storybook]
 description = "Start Storybook dev server"
@@ -21,7 +21,7 @@ run = "storybook dev -p ${usage_port?}"
 [tasks.preview]
 description = "Preview production build"
 depends = ["build:webapp"]
-run = "vite preview"
+run = "vp preview"
 
 [tasks.clean]
 description = "Clean build artifacts and caches"

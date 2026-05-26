@@ -1,14 +1,99 @@
 import { paraglideVitePlugin } from '@inlang/paraglide-js'
 import react from '@vitejs/plugin-react'
 import assert from 'node:assert'
-import { defineConfig } from 'vite'
+import { defineConfig, type PluginOption } from 'vite-plus'
 
 const outDir = process.env['WEBAPP_OUT_DIR']
 const base = process.env['WEBAPP_BASE_URL']
 assert(outDir, 'WEBAPP_OUT_DIR env var is not set')
 assert(base, 'WEBAPP_BASE_URL env var is not set')
 
-export default defineConfig(() => ({
+export default defineConfig({
+	fmt: {
+		useTabs: true,
+		tabWidth: 2,
+		semi: false,
+		singleQuote: true,
+		trailingComma: 'all',
+		sortImports: {
+			internalPattern: ['#'],
+			partitionByComment: true,
+			groups: [
+				'side_effect',
+				'side_effect_style',
+				'type',
+				['builtin', 'external'],
+				['internal', 'subpath'],
+				['parent', 'sibling', 'index'],
+				'style',
+				'unknown',
+			],
+		},
+		sortPackageJson: { sortScripts: true },
+		ignorePatterns: [],
+	},
+	lint: {
+		plugins: ['import', 'react'],
+		categories: {
+			correctness: 'error',
+			suspicious: 'warn',
+			pedantic: 'off',
+			perf: 'warn',
+			style: 'off',
+			restriction: 'off',
+			nursery: 'off',
+		},
+		rules: {
+			'import/no-cycle': 'error',
+			'eslint/no-restricted-imports': [
+				'error',
+				{
+					paths: [
+						{
+							name: 'react',
+							importNames: [
+								'useEffect',
+								'useLayoutEffect',
+								'useMemo',
+								'useCallback',
+								'useState',
+								'useRef',
+								'useContext',
+								'useReducer',
+								'useImperativeHandle',
+								'useDebugValue',
+								'memo',
+							],
+							message: 'Find appropriate solution with reatom or ask user for guidance.',
+						},
+					],
+				},
+			],
+			'react/react-in-jsx-scope': 'off',
+			'import/no-unassigned-import': 'off',
+			'eslint/no-await-in-loop': 'off',
+			'eslint/no-underscore-dangle': 'off',
+			'vite-plus/prefer-vite-plus-imports': 'error',
+		},
+		overrides: [
+			{
+				files: ['**/shared/components/ui/**'],
+				rules: {
+					'eslint/no-shadow': 'off',
+				},
+			},
+		],
+		options: {
+			typeAware: true,
+			typeCheck: true,
+		},
+		jsPlugins: [
+			{
+				name: 'vite-plus',
+				specifier: 'vite-plus/oxlint-plugin',
+			},
+		],
+	},
 	build: {
 		outDir,
 		rolldownOptions: {
@@ -47,8 +132,8 @@ export default defineConfig(() => ({
 		},
 	},
 	plugins: [
-		react(),
-		paraglideVitePlugin({ project: './project.inlang', outdir: './src/paraglide' }),
-	].filter(Boolean),
+		react() as PluginOption,
+		paraglideVitePlugin({ project: './project.inlang', outdir: './src/paraglide' }) as PluginOption,
+	],
 	base,
-}))
+})

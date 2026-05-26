@@ -15,14 +15,14 @@ COVERAGE_THRESHOLD_STATEMENTS = "{{ vars.coverage_threshold_statements }}"
 [tasks.test]
 description = "Run tests in watch mode"
 alias = "t"
-run = "vitest"
+run = "vp test"
 
 [tasks."test:run"]
 description = "Run tests once"
 alias = "tr"
-run = "vitest run"
+run = "vp test run"
 
 [tasks."test:coverage"]
 description = "Run tests with coverage"
 alias = "tcov"
-run = "vitest run --coverage"
+run = "vp test run --coverage"
