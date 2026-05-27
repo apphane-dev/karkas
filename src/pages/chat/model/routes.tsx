@@ -17,12 +17,15 @@ import { MessageThreadNotFound } from '../ui/thread/MessageThreadNotFound'
 export const chatRoute = rootRoute.reatomRoute(
 	{
 		path: 'chat',
+		layout: true,
 		loader: fetchConversations,
 		render: (self) => {
+			const detail = self.outlet().at(0)
 			const selectedConversationId = chatConversationRoute()?.conversationId
+			const isDetailVisible = selectedConversationId !== undefined || detail !== undefined
 			const { isFirstPending, isPending, data: conversations } = self.loader.status()
 			if (isFirstPending || (isPending && !conversations)) {
-				return <ChatPageLoading showDetail={selectedConversationId !== undefined} />
+				return <ChatPageLoading showDetail={isDetailVisible} />
 			}
 			if (!conversations) {
 				return (
@@ -36,7 +39,7 @@ export const chatRoute = rootRoute.reatomRoute(
 
 			return (
 				<MasterDetails
-					isDetailVisible={selectedConversationId !== undefined}
+					isDetailVisible={isDetailVisible}
 					masterWidth="320px"
 					masterLabel={m.nav_chat()}
 					detailLabel={m.chat_conversation_detail()}
@@ -49,7 +52,7 @@ export const chatRoute = rootRoute.reatomRoute(
 							selectedId={selectedConversationId}
 						/>
 					}
-					detail={self.outlet().at(0) ?? <MessageThreadNoSelection />}
+					detail={detail ?? <MessageThreadNoSelection />}
 				/>
 			)
 		},

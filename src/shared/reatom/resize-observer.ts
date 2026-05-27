@@ -1,4 +1,4 @@
-import { computed, memo, reatomObservable, type Atom } from '@reatom/core'
+import { computed, memo, reatomObservable, wrap, type Atom } from '@reatom/core'
 
 export const withResizeObserver = () => {
 	return (target: Atom<HTMLElement | null>) => {
@@ -7,12 +7,15 @@ export const withResizeObserver = () => {
 				const node = target()
 				if (!node) return null
 
-				return reatomObservable<ResizeObserverEntry | undefined>((set) => {
-					const observer = new ResizeObserver((entries) =>
-						set(entries.find((entry) => entry.target === node)),
-					)
-					observer.observe(node)
-					return () => observer.disconnect()
+				return reatomObservable<ResizeObserverEntry | undefined>({
+					initState: undefined,
+					subscribe: (set) => {
+						const observer = new ResizeObserver(
+							wrap((entries) => set(entries.find((entry) => entry.target === node))),
+						)
+						observer.observe(node)
+						return () => observer.disconnect()
+					},
 				})
 			})
 

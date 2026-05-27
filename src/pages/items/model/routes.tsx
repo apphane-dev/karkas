@@ -18,6 +18,7 @@ const isItemsLoading = (isFirstPending: boolean, isPending: boolean, items: unkn
 export const itemsRoute = rootRoute.reatomRoute(
 	{
 		path: 'items',
+		layout: true,
 		loader: fetchItems,
 		render: (self) => {
 			const { isFirstPending, isPending, data: items } = self.loader.status()

@@ -5,6 +5,6 @@ assert(import.meta.env['BASE_URL'], 'BASE_URL must be set in the environment var
 const base = import.meta.env['BASE_URL'].replace(/^\//, '')
 
 export const rootRoute = reatomRoute(
-	{ path: base, render: (self) => self.outlet().at(0) ?? createElement(Fragment) },
+	{ path: base, layout: true, render: (self) => self.outlet().at(0) ?? createElement(Fragment) },
 	'rootRoute',
 )

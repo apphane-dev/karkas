@@ -1,7 +1,7 @@
 import type { AtomLike, Ext } from '@reatom/core'
 import type { ComponentType } from 'react'
 
-import { addChangeHook, atom, withConnectHook } from '@reatom/core'
+import { computed } from '@reatom/core'
 import { createElement } from 'react'
 
 export type HeaderTrailDescriptor = {
@@ -11,89 +11,85 @@ export type HeaderTrailDescriptor = {
 	backLabel?: () => string
 }
 
-export const headerTrailAtom = atom<ReadonlyMap<number, HeaderTrailDescriptor>>(
-	new Map<number, HeaderTrailDescriptor>(),
-	'headerTrailAtom',
-)
-
-export const breadcrumbsOverrideAtom = atom<ComponentType | null>(null, 'breadcrumbsOverrideAtom')
-export const mobileHeaderOverrideAtom = atom<ComponentType | null>(null, 'mobileHeaderOverrideAtom')
-
 type MatchAtom = AtomLike<boolean, [], boolean>
-type OverrideAtom = typeof breadcrumbsOverrideAtom | typeof mobileHeaderOverrideAtom
 
-function withMatchLifecycle(onMatch: () => () => void): Ext<MatchAtom> {
-	return (target) => {
-		target.extend(
-			withConnectHook(() => {
-				let dispose: (() => void) | undefined
-				const sync = (isMatch: boolean) => {
-					dispose?.()
-					dispose = undefined
-					if (isMatch) {
-						dispose = onMatch()
-					}
-				}
-
-				sync(target())
-				const unhook = addChangeHook(target, sync)
-
-				return () => {
-					unhook()
-					dispose?.()
-					dispose = undefined
-				}
-			}),
-		)
-
-		return target
-	}
+type HeaderTrailRegistration = {
+	target: MatchAtom
+	level: number
+	descriptor: HeaderTrailDescriptor
 }
 
-function setHeaderTrail(level: number, descriptor: HeaderTrailDescriptor) {
-	headerTrailAtom.set((prev) => {
-		const next = new Map(prev)
+type OverrideRegistration = {
+	target: MatchAtom
+	Component: ComponentType
+}
+
+const headerTrailRegistrations: HeaderTrailRegistration[] = []
+const breadcrumbsOverrideRegistrations: OverrideRegistration[] = []
+const mobileHeaderOverrideRegistrations: OverrideRegistration[] = []
+
+export const headerTrailAtom = computed<ReadonlyMap<number, HeaderTrailDescriptor>>(() => {
+	const next = new Map<number, HeaderTrailDescriptor>()
+
+	for (const { target, level, descriptor } of headerTrailRegistrations) {
+		if (!target()) continue
+
 		next.set(level, descriptor)
 		for (const key of next.keys()) {
 			if (key > level) next.delete(key)
 		}
-		return next
-	})
-	return () => {
-		headerTrailAtom.set((prev) => {
-			if (prev.get(level) !== descriptor) return prev
-			const next = new Map(prev)
-			next.delete(level)
-			for (const key of next.keys()) {
-				if (key > level) next.delete(key)
-			}
-			return next
-		})
 	}
-}
+
+	return next
+}, 'headerTrailAtom')
+
+const createOverrideAtom = (registrations: OverrideRegistration[], name: string) =>
+	computed<ComponentType | null>(() => {
+		let Component: ComponentType | null = null
+
+		for (const registration of registrations) {
+			if (registration.target()) Component = registration.Component
+		}
+
+		return Component ? () => createElement(Component) : null
+	}, name)
+
+export const breadcrumbsOverrideAtom = createOverrideAtom(
+	breadcrumbsOverrideRegistrations,
+	'breadcrumbsOverrideAtom',
+)
+export const mobileHeaderOverrideAtom = createOverrideAtom(
+	mobileHeaderOverrideRegistrations,
+	'mobileHeaderOverrideAtom',
+)
 
 /** @public */
 export function withMatchHeaderTrail(
 	level: number,
 	descriptor: HeaderTrailDescriptor,
 ): Ext<MatchAtom> {
-	return withMatchLifecycle(() => setHeaderTrail(level, descriptor))
+	return (target) => {
+		headerTrailRegistrations.push({ target, level, descriptor })
+		return target
+	}
 }
 
-function setOverride(target: OverrideAtom, Component: ComponentType) {
-	const override = () => createElement(Component)
-	target.set(() => override)
-	return () => {
-		target.set((current) => (current === override ? null : current))
+const withMatchOverride = (
+	registrations: OverrideRegistration[],
+	Component: ComponentType,
+): Ext<MatchAtom> => {
+	return (target) => {
+		registrations.push({ target, Component })
+		return target
 	}
 }
 
 /** @public */
 export function withMatchHeaderBreadcrumbsOverride(Component: ComponentType): Ext<MatchAtom> {
-	return withMatchLifecycle(() => setOverride(breadcrumbsOverrideAtom, Component))
+	return withMatchOverride(breadcrumbsOverrideRegistrations, Component)
 }
 
 /** @public */
 export function withMatchMobileHeaderOverride(Component: ComponentType): Ext<MatchAtom> {
-	return withMatchLifecycle(() => setOverride(mobileHeaderOverrideAtom, Component))
+	return withMatchOverride(mobileHeaderOverrideRegistrations, Component)
 }

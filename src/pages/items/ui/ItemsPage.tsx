@@ -94,7 +94,9 @@ export const ItemsPage = reatomComponent(({ items }: Props) => {
 						collection={sortFieldCollection()}
 						size="sm"
 						value={[sortField]}
-						onValueChange={wrap(({ value }) => sortFieldAtom.set(value[0]))}
+						onValueChange={wrap(({ value }) =>
+							sortFieldAtom.set(value[0] === 'price' ? 'price' : 'name'),
+						)}
 						positioning={{ sameWidth: true }}
 					/>
 				</styled.label>
@@ -113,7 +115,16 @@ export const ItemsPage = reatomComponent(({ items }: Props) => {
 						collection={categoryCollection()}
 						size="sm"
 						value={[categoryFilter]}
-						onValueChange={wrap(({ value }) => categoryFilterAtom.set(value[0]))}
+						onValueChange={wrap(({ value }) =>
+							categoryFilterAtom.set(
+								value[0] === 'electronics' ||
+									value[0] === 'furniture' ||
+									value[0] === 'clothing' ||
+									value[0] === 'food'
+									? value[0]
+									: 'all',
+							),
+						)}
 						positioning={{ sameWidth: true }}
 					/>
 				</styled.label>
@@ -124,7 +135,11 @@ export const ItemsPage = reatomComponent(({ items }: Props) => {
 						collection={stockCollection()}
 						size="sm"
 						value={[stockFilter]}
-						onValueChange={wrap(({ value }) => stockFilterAtom.set(value[0]))}
+						onValueChange={wrap(({ value }) =>
+							stockFilterAtom.set(
+								value[0] === 'in-stock' || value[0] === 'out-of-stock' ? value[0] : 'all',
+							),
+						)}
 						positioning={{ sameWidth: true }}
 					/>
 				</styled.label>

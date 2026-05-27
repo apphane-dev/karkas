@@ -36,7 +36,7 @@ Use extensions to add behavior at the atom/action boundary: validation, persiste
 
 | Need                                        | Primary extension(s)                    | Example                                                                             |
 | ------------------------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------- |
-| Normalize input before write                | `withParams`, custom coercion           | `src/shared/model/locale.ts`, `src/shared/reatom/withCoerce.ts`                     |
+| Normalize input before write                | `withParams`, custom coercion           | `src/shared/model/locale.ts`                     |
 | Persist state                               | `withLocalStorage`/`withSessionStorage` | `src/shared/model/topBar.ts`, `src/shared/model/theme.ts`                           |
 | React to value changes                      | `withChangeHook`                        | `src/shared/model/locale.ts`, `src/pages/timer/model/atoms.ts`                      |
 | React to action calls                       | `withCallHook`                          | Use when behavior depends on action invocations, not atom value                     |

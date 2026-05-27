@@ -225,7 +225,12 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 						size="sm"
 						w="100%"
 						value={[themePreferenceAtom()]}
-						onValueChange={wrap(({ value }) => void themePreferenceAtom.set(value[0]))}
+						onValueChange={wrap(
+							({ value }) =>
+								void themePreferenceAtom.set(
+									value[0] === 'light' || value[0] === 'dark' ? value[0] : 'system',
+								),
+						)}
 						positioning={{ sameWidth: true }}
 					/>
 				</FieldRow>

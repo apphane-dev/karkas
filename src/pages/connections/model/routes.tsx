@@ -18,12 +18,15 @@ import { reatomConnectionDetailModel } from './connectionDetailModel'
 export const connectionsRoute = rootRoute.reatomRoute(
 	{
 		path: 'connections',
+		layout: true,
 		loader: fetchConnections,
 		render: (self) => {
+			const detail = self.outlet().at(0)
 			const selectedConnectionId = connectionDetailRoute()?.connectionId
+			const isDetailVisible = selectedConnectionId !== undefined || detail !== undefined
 			const { isFirstPending, isPending, data: connections } = self.loader.status()
 			if (isFirstPending || (isPending && !connections)) {
-				return <ConnectionsPageLoading showDetail={selectedConnectionId !== undefined} />
+				return <ConnectionsPageLoading showDetail={isDetailVisible} />
 			}
 
 			if (!connections) {
@@ -38,7 +41,7 @@ export const connectionsRoute = rootRoute.reatomRoute(
 
 			return (
 				<MasterDetails
-					isDetailVisible={selectedConnectionId !== undefined}
+					isDetailVisible={isDetailVisible}
 					masterLabel={m.nav_connections()}
 					detailLabel={m.connection_detail()}
 					master={
@@ -50,7 +53,7 @@ export const connectionsRoute = rootRoute.reatomRoute(
 							selectedId={selectedConnectionId}
 						/>
 					}
-					detail={self.outlet().at(0) ?? <ConnectionNoSelection />}
+					detail={detail ?? <ConnectionNoSelection />}
 				/>
 			)
 		},

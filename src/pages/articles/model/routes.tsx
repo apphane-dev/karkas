@@ -20,12 +20,15 @@ const isArticlesLoading = (isFirstPending: boolean, isPending: boolean, articles
 export const articlesRoute = rootRoute.reatomRoute(
 	{
 		path: 'articles',
+		layout: true,
 		loader: fetchArticles,
 		render: (self) => {
+			const detail = self.outlet().at(0)
 			const selectedArticleId = articleDetailRoute()?.articleId
+			const isDetailVisible = selectedArticleId !== undefined || detail !== undefined
 			const { isFirstPending, isPending, data: articles } = self.loader.status()
 			if (isArticlesLoading(isFirstPending, isPending, articles)) {
-				return <ArticlesPageLoading showDetail={selectedArticleId !== undefined} />
+				return <ArticlesPageLoading showDetail={isDetailVisible} />
 			}
 
 			if (!articles) {
@@ -40,7 +43,7 @@ export const articlesRoute = rootRoute.reatomRoute(
 
 			return (
 				<MasterDetails
-					isDetailVisible={selectedArticleId !== undefined}
+					isDetailVisible={isDetailVisible}
 					masterLabel={m.nav_articles()}
 					detailLabel={m.article_detail()}
 					master={
@@ -52,7 +55,7 @@ export const articlesRoute = rootRoute.reatomRoute(
 							selectedId={selectedArticleId}
 						/>
 					}
-					detail={self.outlet().at(0) ?? <ArticleNoSelection />}
+					detail={detail ?? <ArticleNoSelection />}
 				/>
 			)
 		},
