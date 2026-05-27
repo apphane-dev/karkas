@@ -1,7 +1,7 @@
 {
-	"connection_testing": "Testing connection…",
+	"connection_testing": "Testing connection...",
 	"connection_successful": "Connection successful",
-	"connection_reconnecting": "Reconnecting…",
+	"connection_reconnecting": "Reconnecting...",
 	"connection_reconnected_successfully": "Reconnected successfully",
 	"connection_reconnect": "Reconnect",
 	"connection_test": "Test connection",

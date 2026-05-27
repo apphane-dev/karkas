@@ -43,7 +43,7 @@ The app uses ParaglideJS with Reatom-driven locale state. Locale switches are re
 
 1. Add locale code in `project.inlang/settings.json` (`locales` array).
 2. Add `messages/<locale>/*.json` matching the existing feature files.
-3. Add `language_<locale>` keys to all message files.
+3. Add `language_<locale>` keys to `messages/<locale>/core.json` (locale labels are centralized there).
 4. Register locale label mapping in `src/shared/model/locale.ts` (`localeLabels`).
 
 ### Build locale-aware select collections

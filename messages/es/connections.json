@@ -1,7 +1,7 @@
 {
-	"connection_testing": "Probando conexión…",
+	"connection_testing": "Probando conexión...",
 	"connection_successful": "Conexión exitosa",
-	"connection_reconnecting": "Reconectando…",
+	"connection_reconnecting": "Reconectando...",
 	"connection_reconnected_successfully": "Reconectado exitosamente",
 	"connection_reconnect": "Reconectar",
 	"connection_test": "Probar conexión",
