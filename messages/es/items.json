@@ -1,0 +1,40 @@
+{
+	"items_sort_name": "Nombre",
+	"items_sort_price": "Precio",
+	"items_filter_all": "Todos",
+	"items_category_electronics": "Electrónica",
+	"items_category_furniture": "Muebles",
+	"items_category_clothing": "Ropa",
+	"items_category_food": "Alimentación",
+	"items_stock_in_stock": "En stock",
+	"items_stock_out_of_stock": "Sin stock",
+	"items_title": "Elementos",
+	"items_sort_by": "Ordenar por",
+	"items_sort_asc": "Asc",
+	"items_sort_desc": "Desc",
+	"items_label_category": "Categoría",
+	"items_label_stock": "Stock",
+	"items_label_price": "Precio",
+	"items_label_id": "ID",
+	"items_no_results": "Ningún elemento coincide con los filtros actuales.",
+	"item_no_selection": "Ningún elemento seleccionado",
+	"item_no_selection_desc": "Elige un elemento de la lista para ver sus detalles.",
+	"item_not_found": "Elemento no encontrado",
+	"item_not_found_description": "El elemento \"{itemId}\" no fue encontrado.",
+	"item_loading_detail": "Cargando detalle del elemento",
+	"item_detail_error_title": "No se pudo cargar el elemento",
+	"item_detail_error_description": "No pudimos cargar este elemento. Intenta de nuevo en un momento.",
+	"items_error_title": "No se pudieron cargar los elementos",
+	"items_error_description": "No pudimos cargar los elementos. Intenta de nuevo en un momento.",
+	"items_loading_page": "Cargando página de elementos",
+	"items_found": [
+		{
+			"declarations": ["input count", "local n = count: plural"],
+			"selectors": ["n"],
+			"match": {
+				"n=one": "{count} elemento",
+				"n=other": "{count} elementos"
+			}
+		}
+	]
+}

@@ -1,0 +1,12 @@
+{
+	"usage_title": "Usage",
+	"usage_storage": "Storage",
+	"usage_storage_desc": "{usedGB} GB of {totalGB} GB used",
+	"usage_manage_plan": "Manage plan",
+	"usage_percentage_used": "{percentage}% used",
+	"usage_breakdown": "Breakdown",
+	"usage_documents": "Documents",
+	"usage_media": "Media",
+	"usage_other": "Other",
+	"usage_reset_info": "Storage usage resets on the 1st of each month."
+}

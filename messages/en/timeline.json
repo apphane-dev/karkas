@@ -1,0 +1,6 @@
+{
+	"timeline_title": "Timeline",
+	"timeline_error_title": "Could not load timeline",
+	"timeline_error_description": "We couldn't load the timeline data. Try again in a moment.",
+	"timeline_loading_page": "Loading timeline page"
+}

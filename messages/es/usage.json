@@ -1,0 +1,12 @@
+{
+	"usage_title": "Uso",
+	"usage_storage": "Almacenamiento",
+	"usage_storage_desc": "{usedGB} GB de {totalGB} GB usados",
+	"usage_manage_plan": "Administrar plan",
+	"usage_percentage_used": "{percentage}% utilizado",
+	"usage_breakdown": "Desglose",
+	"usage_documents": "Documentos",
+	"usage_media": "Multimedia",
+	"usage_other": "Otro",
+	"usage_reset_info": "El uso de almacenamiento se reinicia el 1 de cada mes."
+}

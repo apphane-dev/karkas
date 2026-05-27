@@ -1,0 +1,22 @@
+{
+	"connection_testing": "Probando conexión…",
+	"connection_successful": "Conexión exitosa",
+	"connection_reconnecting": "Reconectando…",
+	"connection_reconnected_successfully": "Reconectado exitosamente",
+	"connection_reconnect": "Reconectar",
+	"connection_test": "Probar conexión",
+	"connection_detail": "Detalle de la conexión",
+	"connection_no_selection": "No se seleccionó ninguna conexión",
+	"connection_no_selection_desc": "Elige una conexión de la lista para ver sus detalles.",
+	"connection_loading_detail": "Cargando detalle de la conexión",
+	"connections_error_title": "No se pudieron cargar las conexiones",
+	"connections_error_description": "No pudimos cargar la lista de conexiones. Intenta de nuevo en un momento.",
+	"connection_detail_error_title": "No se pudo cargar la conexión",
+	"connection_detail_error_description": "No pudimos cargar esta conexión. Intenta de nuevo en un momento.",
+	"connections_loading_page": "Cargando página de conexiones",
+	"connection_back_to_connections": "Volver a conexiones",
+	"connection_not_found": "Conexión no encontrada",
+	"connection_not_found_description": "No existe ninguna conexión para el id \"{connectionId}\".",
+	"connection_new": "Nueva conexión",
+	"connection_search_placeholder": "Buscar conexiones..."
+}

@@ -1,0 +1,17 @@
+{
+	"chat_no_selection": "No conversation selected",
+	"chat_conversation_detail": "Conversation detail",
+	"chat_no_selection_desc": "Choose a conversation from the list to start reading.",
+	"chat_not_found": "Conversation not found",
+	"chat_not_found_description": "No conversation exists for id \"{conversationId}\".",
+	"chat_error_title": "Could not load conversations",
+	"chat_error_description": "We couldn't load the conversations. Try again in a moment.",
+	"chat_detail_error_title": "Could not load conversation",
+	"chat_detail_error_description": "We couldn't load this conversation. Try again in a moment.",
+	"chat_loading_page": "Loading conversations page",
+	"chat_loading_message_thread": "Loading message thread",
+	"chat_search_placeholder": "Search conversations...",
+	"chat_new_conversation": "New conversation",
+	"chat_message_placeholder": "Type a message...",
+	"chat_back_to_conversations": "Back to conversations"
+}

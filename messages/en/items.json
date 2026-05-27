@@ -1,0 +1,40 @@
+{
+	"items_sort_name": "Name",
+	"items_sort_price": "Price",
+	"items_filter_all": "All",
+	"items_category_electronics": "Electronics",
+	"items_category_furniture": "Furniture",
+	"items_category_clothing": "Clothing",
+	"items_category_food": "Food",
+	"items_stock_in_stock": "In Stock",
+	"items_stock_out_of_stock": "Out of Stock",
+	"items_title": "Items",
+	"items_sort_by": "Sort by",
+	"items_sort_asc": "Asc",
+	"items_sort_desc": "Desc",
+	"items_label_category": "Category",
+	"items_label_stock": "Stock",
+	"items_label_price": "Price",
+	"items_label_id": "ID",
+	"items_no_results": "No items match the current filters.",
+	"item_no_selection": "No item selected",
+	"item_no_selection_desc": "Choose an item from the list to view its details.",
+	"item_not_found": "Item not found",
+	"item_not_found_description": "Item \"{itemId}\" was not found.",
+	"item_loading_detail": "Loading item detail",
+	"item_detail_error_title": "Could not load item",
+	"item_detail_error_description": "We couldn't load this item. Try again in a moment.",
+	"items_error_title": "Could not load items",
+	"items_error_description": "We couldn't load the items. Try again in a moment.",
+	"items_loading_page": "Loading items page",
+	"items_found": [
+		{
+			"declarations": ["input count", "local n = count: plural"],
+			"selectors": ["n"],
+			"match": {
+				"n=one": "{count} item",
+				"n=other": "{count} items"
+			}
+		}
+	]
+}

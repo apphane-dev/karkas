@@ -1,0 +1,17 @@
+{
+	"articles_error_title": "No se pudieron cargar los artículos",
+	"articles_error_description": "No pudimos cargar la lista de artículos. Intenta de nuevo en un momento.",
+	"article_detail_error_title": "No se pudo cargar el artículo",
+	"article_detail_error_description": "No pudimos cargar este artículo. Intenta de nuevo en un momento.",
+	"articles_loading_page": "Cargando página de artículos",
+	"article_back_to_articles": "Volver a artículos",
+	"article_not_found": "Artículo no encontrado",
+	"article_not_found_description": "No existe ningún artículo para el id \"{articleId}\".",
+	"article_no_selection": "Artículo no seleccionado",
+	"article_no_selection_desc": "Elige un artículo de la lista para ver su contenido.",
+	"article_edit": "Editar",
+	"article_detail": "Detalle del artículo",
+	"article_new": "Nuevo artículo",
+	"article_search_placeholder": "Buscar artículos...",
+	"article_loading_detail": "Cargando detalle del artículo"
+}

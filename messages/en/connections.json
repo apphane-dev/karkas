@@ -1,0 +1,22 @@
+{
+	"connection_testing": "Testing connection…",
+	"connection_successful": "Connection successful",
+	"connection_reconnecting": "Reconnecting…",
+	"connection_reconnected_successfully": "Reconnected successfully",
+	"connection_reconnect": "Reconnect",
+	"connection_test": "Test connection",
+	"connection_detail": "Connection detail",
+	"connection_no_selection": "No connection selected",
+	"connection_no_selection_desc": "Choose a connection from the list to view its details.",
+	"connection_loading_detail": "Loading connection detail",
+	"connections_error_title": "Could not load connections",
+	"connections_error_description": "We couldn't load the connection list. Try again in a moment.",
+	"connection_detail_error_title": "Could not load connection",
+	"connection_detail_error_description": "We couldn't load this connection. Try again in a moment.",
+	"connections_loading_page": "Loading connections page",
+	"connection_back_to_connections": "Back to connections",
+	"connection_not_found": "Connection not found",
+	"connection_not_found_description": "No connection exists for id \"{connectionId}\".",
+	"connection_new": "New connection",
+	"connection_search_placeholder": "Search connections..."
+}

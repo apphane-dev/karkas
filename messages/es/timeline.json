@@ -1,0 +1,6 @@
+{
+	"timeline_title": "Cronología",
+	"timeline_error_title": "No se pudo cargar la cronología",
+	"timeline_error_description": "No pudimos cargar los datos de la cronología. Intenta de nuevo en un momento.",
+	"timeline_loading_page": "Cargando página de cronología"
+}

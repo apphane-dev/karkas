@@ -1,0 +1,17 @@
+{
+	"articles_error_title": "Could not load articles",
+	"articles_error_description": "We couldn't load the article list. Try again in a moment.",
+	"article_detail_error_title": "Could not load article",
+	"article_detail_error_description": "We couldn't load this article. Try again in a moment.",
+	"articles_loading_page": "Loading articles page",
+	"article_back_to_articles": "Back to articles",
+	"article_not_found": "Article not found",
+	"article_not_found_description": "No article exists for id \"{articleId}\".",
+	"article_no_selection": "No article selected",
+	"article_no_selection_desc": "Choose an article from the list to view its content.",
+	"article_edit": "Edit",
+	"article_detail": "Article detail",
+	"article_new": "New article",
+	"article_search_placeholder": "Search articles...",
+	"article_loading_detail": "Loading article detail"
+}
