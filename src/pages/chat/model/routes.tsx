@@ -1,9 +1,9 @@
 import { retryComputed, wrap } from '@reatom/core'
 
+import { protectedRoute } from '#entities/auth'
 import { fetchConversationById, fetchConversations } from '#entities/conversation'
 import { m } from '#paraglide/messages.js'
 import { isApiError } from '#shared/api'
-import { rootRoute } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 import { MasterDetails } from '#widgets/master-details'
 
@@ -14,7 +14,7 @@ import { MessageThreadLoadingState } from '../ui/thread/MessageThreadLoadingStat
 import { MessageThreadNoSelection } from '../ui/thread/MessageThreadNoSelection'
 import { MessageThreadNotFound } from '../ui/thread/MessageThreadNotFound'
 
-export const chatRoute = rootRoute.reatomRoute(
+export const chatRoute = protectedRoute.reatomRoute(
 	{
 		path: 'chat',
 		layout: true,

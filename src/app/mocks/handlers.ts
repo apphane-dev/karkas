@@ -1,6 +1,7 @@
 import type { RequestHandler } from 'msw'
 
 import { articleDetail, articleList } from '#entities/article/mocks/handlers'
+import { authHandlers } from '#entities/auth/mocks/handlers'
 import { connectionDetail, connectionList } from '#entities/connection/mocks/handlers'
 import {
 	conversationDetail,
@@ -15,6 +16,9 @@ import { timelineEventDetail, timelineEventList } from '#entities/timeline-event
 export const handlers = {
 	articleList: articleList.default,
 	articleDetail: articleDetail.default,
+	authLogin: authHandlers.login,
+	authLogout: authHandlers.logout,
+	authMe: authHandlers.me,
 	connectionList: connectionList.default,
 	connectionDetail: connectionDetail.default,
 	conversationList: conversationList.default,

@@ -1,8 +1,8 @@
-import { rootRoute } from '#shared/router'
+import { protectedRoute } from '#entities/auth'
 
 import { TimerPage } from '../ui/TimerPage'
 
-export const timerRoute = rootRoute.reatomRoute(
+export const timerRoute = protectedRoute.reatomRoute(
 	{
 		path: 'timer',
 		render: () => <TimerPage />,

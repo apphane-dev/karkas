@@ -1,7 +1,9 @@
 import { urlAtom, withChangeHook } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
 
+import { isAuthenticatedAtom } from '#entities/auth'
 import { dashboardRoute } from '#pages/dashboard'
+import { loginRoute } from '#pages/login'
 import { m } from '#paraglide/messages.js'
 import { Toaster } from '#shared/components'
 import { documentTitleAtom, localeAtom } from '#shared/model'
@@ -9,6 +11,7 @@ import { rootRoute } from '#shared/router'
 import { styled } from '#styled-system/jsx'
 import { AppShell } from '#widgets/app-shell'
 
+import { AuthControls } from './AuthControls'
 import { HeaderBreadcrumbs } from './HeaderBreadcrumbs'
 import { MobileHeader } from './MobileHeader'
 import { OrgSwitcher } from './OrgSwitcher'
@@ -18,7 +21,11 @@ import { SidebarNavigation } from './SidebarNavigation'
 urlAtom.extend(
 	withChangeHook(() => {
 		if (rootRoute.exact()) {
-			dashboardRoute.go(undefined, true)
+			if (isAuthenticatedAtom()) {
+				dashboardRoute.go(undefined, true)
+			} else {
+				loginRoute.go(undefined, true)
+			}
 		}
 	}),
 )
@@ -26,6 +33,15 @@ urlAtom.extend(
 export const App = reatomComponent(() => {
 	localeAtom()
 	documentTitleAtom()
+	if (loginRoute.match()) {
+		return (
+			<>
+				{rootRoute.render()}
+				<Toaster />
+			</>
+		)
+	}
+
 	return (
 		<>
 			<AppShell
@@ -35,6 +51,7 @@ export const App = reatomComponent(() => {
 					<styled.div display="flex" flexDirection="column" gap="3">
 						<SidebarFooterNavigation />
 						<OrgSwitcher />
+						<AuthControls />
 					</styled.div>
 				}
 				mobileHeader={<MobileHeader />}

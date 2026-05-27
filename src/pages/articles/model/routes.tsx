@@ -1,9 +1,9 @@
 import { retryComputed, wrap } from '@reatom/core'
 
 import { fetchArticles, fetchArticleById } from '#entities/article'
+import { protectedRoute } from '#entities/auth'
 import { m } from '#paraglide/messages.js'
 import { isApiError } from '#shared/api'
-import { rootRoute } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 import { MasterDetails } from '#widgets/master-details'
 
@@ -17,7 +17,7 @@ import { ArticleList } from '../ui/list/ArticleList'
 const isArticlesLoading = (isFirstPending: boolean, isPending: boolean, articles: unknown) =>
 	isFirstPending || (isPending && !articles)
 
-export const articlesRoute = rootRoute.reatomRoute(
+export const articlesRoute = protectedRoute.reatomRoute(
 	{
 		path: 'articles',
 		layout: true,

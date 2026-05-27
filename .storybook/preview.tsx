@@ -10,6 +10,8 @@ import { initialize, mswLoader } from 'msw-storybook-addon'
 import { useMemo, type PropsWithChildren } from 'react'
 
 import { handlers } from '#app/mocks/handlers'
+import { setAuthenticatedForTest } from '#entities/auth'
+import { authMockSession } from '#entities/auth/mocks/data'
 import { css } from '#styled-system/css'
 
 import { setupStorybookUrl } from './setupStorybookUrl'
@@ -26,8 +28,13 @@ initialize({
 function ReatomDecorator({
 	children,
 	initialPath = '',
-}: PropsWithChildren<{ initialPath?: string }>) {
-	const frame = useMemo(() => setupStorybookUrl(initialPath), [initialPath])
+	authenticated = true,
+}: PropsWithChildren<{ authenticated?: boolean; initialPath?: string }>) {
+	const frame = useMemo(() => {
+		const nextFrame = setupStorybookUrl(initialPath)
+		nextFrame.run(() => setAuthenticatedForTest(authenticated ? authMockSession : null))
+		return nextFrame
+	}, [authenticated, initialPath])
 	return <reatomContext.Provider value={frame}>{children}</reatomContext.Provider>
 }
 
@@ -36,7 +43,10 @@ const preview = definePreview({
 	loaders: [mswLoader],
 	decorators: [
 		(Story, { parameters }) => (
-			<ReatomDecorator initialPath={parameters['initialPath']}>
+			<ReatomDecorator
+				authenticated={parameters['authenticated']}
+				initialPath={parameters['initialPath']}
+			>
 				<Story />
 			</ReatomDecorator>
 		),

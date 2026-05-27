@@ -1,9 +1,9 @@
 import { retryComputed, wrap } from '@reatom/core'
 
+import { protectedRoute } from '#entities/auth'
 import { fetchConnectionById, fetchConnections } from '#entities/connection'
 import { m } from '#paraglide/messages.js'
 import { isApiError } from '#shared/api'
-import { rootRoute } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 import { MasterDetails } from '#widgets/master-details'
 
@@ -15,7 +15,7 @@ import { ConnectionNotFound } from '../ui/detail/ConnectionNotFound'
 import { ConnectionList } from '../ui/list/ConnectionList'
 import { reatomConnectionDetailModel } from './connectionDetailModel'
 
-export const connectionsRoute = rootRoute.reatomRoute(
+export const connectionsRoute = protectedRoute.reatomRoute(
 	{
 		path: 'connections',
 		layout: true,

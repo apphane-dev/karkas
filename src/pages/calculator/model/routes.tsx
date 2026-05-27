@@ -1,8 +1,8 @@
-import { rootRoute } from '#shared/router'
+import { protectedRoute } from '#entities/auth'
 
 import { CalculatorPage } from '../ui/CalculatorPage'
 
-export const calculatorRoute = rootRoute.reatomRoute(
+export const calculatorRoute = protectedRoute.reatomRoute(
 	{
 		path: 'calculator',
 		render: () => <CalculatorPage />,
