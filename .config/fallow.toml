@@ -3,6 +3,7 @@ entry = ["scripts/**/*.ts"]
 # Park UI and generated assets are committed vendor/generated code; keep them out of findings.
 ignorePatterns = [
 	"public/mockServiceWorker.js",
+	"scripts/steiger/**",
 	"src/paraglide/**",
 	"src/shared/components/ui/**",
 	"src/shared/styled-system/**",

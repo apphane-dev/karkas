@@ -86,6 +86,7 @@ run = [
 	{ tasks = [
 		"prepare:panda",
 		"prepare:paraglide",
+		"prepare:msw",
 	] },
 	{ task = "format:check" },
 	{ task = "lint" },

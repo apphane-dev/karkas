@@ -30,9 +30,10 @@ export default defineConfig({
 			],
 		},
 		sortPackageJson: { sortScripts: true },
-		ignorePatterns: [],
+		ignorePatterns: ['public/mockServiceWorker.js'],
 	},
 	lint: {
+		ignorePatterns: ['scripts/steiger/**'],
 		plugins: ['import', 'react'],
 		categories: {
 			correctness: 'error',
