@@ -43,25 +43,16 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Run Fallow audit
-        uses: fallow-rs/fallow@c9d5682ac1beb16d4952fe098a60c6322e588d5f # v2.82.0
+        uses: fallow-rs/fallow@8c5618273a1c514abede395ba9cc1de37a158425 # v2.83.0
         with:
-          version: 2.82.0
+          version: 2.83.0
           command: audit
           config: .config/fallow.toml
           format: json
           fail-on-issues: true
           comment: true
           annotations: true
-
-      - name: Move Fallow artifacts
-        if: always()
-        run: |
-          mkdir -p .var/fallow
-          for file in fallow-results.json fallow-results.sarif fallow-stderr.log fallow-analysis-args.sh; do
-            if [ -e "$file" ]; then
-              mv "$file" ".var/fallow/$file"
-            fi
-          done
+          artifacts-dir: .var/fallow
 
       - name: Install Playwright browsers
         run: bunx playwright install --with-deps chromium
