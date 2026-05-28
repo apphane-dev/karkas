@@ -223,14 +223,14 @@ export const FilteredByCategory = meta.story({
 
 FilteredByCategory.test('shows only electronics items', async () => {
 	await I.applyCategoryFilter('Electronics')
-	await I.seeOnlyItems('Wireless Headphones', 'Mechanical Keyboard')
+	await I.seeItems('Wireless Headphones', 'Mechanical Keyboard')
 	await I.dontSeeItem('Standing Desk')
 	await I.dontSeeItem('Merino Wool Sweater')
 })
 
 FilteredByCategory.test('shows only food items', async () => {
 	await I.applyCategoryFilter('Food')
-	await I.seeOnlyItems('Organic Coffee Beans')
+	await I.seeItems('Organic Coffee Beans')
 	await I.dontSeeItem('Wireless Headphones')
 })
 
@@ -250,13 +250,13 @@ export const FilteredByStock = meta.story({
 
 FilteredByStock.test('shows only in-stock items', async () => {
 	await I.applyStockFilter('In Stock')
-	await I.seeOnlyItems('Wireless Headphones', 'Standing Desk')
+	await I.seeItems('Wireless Headphones', 'Standing Desk')
 	await I.dontSeeItem('Merino Wool Sweater')
 })
 
 FilteredByStock.test('shows only out-of-stock items', async () => {
 	await I.applyStockFilter('Out of Stock')
-	await I.seeOnlyItems('Merino Wool Sweater', 'Ergonomic Chair')
+	await I.seeItems('Merino Wool Sweater', 'Ergonomic Chair')
 	await I.dontSeeItem('Wireless Headphones')
 })
 

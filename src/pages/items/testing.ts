@@ -51,7 +51,7 @@ export const itemsActor = createActor()
 		dontSeeItem: async (name: string) => {
 			await I.dontSee(text(name))
 		},
-		seeOnlyItems: async (...names: string[]) => {
+		seeItems: async (...names: string[]) => {
 			for (const name of names) {
 				await I.see(text(name))
 			}
