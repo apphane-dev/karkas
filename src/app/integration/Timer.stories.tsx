@@ -19,7 +19,7 @@ Default.test('renders timer heading', async () => {
 })
 
 Default.test('renders default timer display', async () => {
-	await I.see(text('05:00'))
+	await I.seeDuration('05:00')
 })
 
 Default.test('renders start and reset buttons', async () => {
@@ -32,20 +32,20 @@ Default.test('renders preset buttons', async () => {
 })
 
 Default.test('renders custom duration input', async () => {
-	await I.see(role('textbox'))
+	await I.see(loc.customInput)
 })
 
 export const StartPauseReset = meta.story({ name: 'Start Pause Reset' })
 
 StartPauseReset.test('starts, pauses, and resets the timer', async () => {
-	await I.see(text('05:00'))
+	await I.seeDuration('05:00')
 
-	await I.click(loc.startButton)
+	await I.start()
 	await I.see(loc.pauseButton)
 	await I.dontSee(button('Start'))
 
-	await I.click(loc.resetButton)
-	await I.see(text('05:00'))
+	await I.reset()
+	await I.seeDuration('05:00')
 	await I.see(loc.startButton)
 	await I.dontSee(button('Pause'))
 })
@@ -53,50 +53,47 @@ StartPauseReset.test('starts, pauses, and resets the timer', async () => {
 export const PresetChangesDuration = meta.story({ name: 'Preset Changes Duration' })
 
 PresetChangesDuration.test('clicking a preset changes the displayed duration', async () => {
-	await I.click(loc.preset10s)
-	await I.see(text('00:10'))
+	await I.choosePreset('10s')
+	await I.seeDuration('00:10')
 
-	await I.click(loc.preset1m)
-	await I.see(text('01:00'))
+	await I.choosePreset('1m')
+	await I.seeDuration('01:00')
 
-	await I.click(loc.preset5m)
-	await I.see(text('05:00'))
+	await I.choosePreset('5m')
+	await I.seeDuration('05:00')
 
-	await I.click(loc.preset10m)
-	await I.see(text('10:00'))
+	await I.choosePreset('10m')
+	await I.seeDuration('10:00')
 
-	await I.click(loc.preset25m)
-	await I.see(text('25:00'))
+	await I.choosePreset('25m')
+	await I.seeDuration('25:00')
 })
 
 export const CustomDurationInput = meta.story({ name: 'Custom Duration Input' })
 
 CustomDurationInput.test('entering MM:SS commits via blur', async () => {
-	await I.fill(role('textbox'), '00:15')
-	await I.see(text('00:15'))
+	await I.enterCustomDurationByBlur('00:15')
+	await I.seeDuration('00:15')
 })
 
 CustomDurationInput.test('entering MM:SS commits via Enter key', async () => {
-	const input = role('textbox')
-	await I.click(input)
-	await I.press('00:20')
-	await I.press('[Enter]')
-	await I.see(text('00:20'))
+	await I.enterCustomDurationByEnter('00:20')
+	await I.seeDuration('00:20')
 })
 
 CustomDurationInput.test('entering invalid input does not change duration', async () => {
-	await I.click(loc.preset10s)
-	await I.see(text('00:10'))
-	await I.clear(role('textbox'))
-	await I.fill(role('textbox'), '00:00')
+	await I.choosePreset('10s')
+	await I.seeDuration('00:10')
+	await I.clearCustomDuration()
+	await I.enterCustomDurationByBlur('00:00')
 	// Duration should not change — still 00:10 from the preset
-	await I.see(text('00:10'))
+	await I.seeDuration('00:10')
 })
 
 export const PresetsDisabledWhileRunning = meta.story({ name: 'Presets Disabled While Running' })
 
 PresetsDisabledWhileRunning.test('preset buttons are disabled while timer is running', async () => {
-	await I.click(loc.startButton)
+	await I.start()
 
 	await I.seeDisabled(loc.preset10s)
 })
@@ -104,21 +101,12 @@ PresetsDisabledWhileRunning.test('preset buttons are disabled while timer is run
 export const TimerReachesZero = meta.story({ name: 'Timer Reaches Zero' })
 
 TimerReachesZero.test('start button is disabled after timer reaches zero', async () => {
-	await I.fill(role('textbox'), '00:01')
-	await I.see(text('00:01'))
+	await I.enterCustomDurationByBlur('00:01')
+	await I.seeDuration('00:01')
 
-	await I.click(loc.startButton)
+	await I.start()
 	await I.see(loc.pauseButton)
-
-	await I.retryTo(
-		async () => {
-			const found = await I.tryTo(() => I.see(text('00:00')))
-			if (!found) throw new Error('waiting for zero')
-		},
-		5,
-		500,
-	)
-
+	await I.waitForDuration('00:00')
 	await I.seeDisabled(loc.startButton)
 })
 
@@ -129,9 +117,9 @@ export const TimerTicksInSidebarOnOtherRoute = meta.story({
 TimerTicksInSidebarOnOtherRoute.test(
 	'timer counts down in sidebar after navigating away',
 	async () => {
-		await I.click(loc.preset10s)
-		await I.see(text('00:10'))
-		await I.click(loc.startButton)
+		await I.choosePreset('10s')
+		await I.seeDuration('00:10')
+		await I.start()
 		await I.see(loc.pauseButton)
 
 		await I.click(link('Dashboard'))
@@ -164,12 +152,12 @@ export const StartPauseResetMobile = meta.story({
 })
 
 StartPauseResetMobile.test('[mobile] starts, pauses, and resets the timer', async () => {
-	await I.see(text('05:00'))
+	await I.seeDuration('05:00')
 
-	await I.click(loc.startButton)
+	await I.start()
 	await I.see(loc.pauseButton)
 
-	await I.click(loc.resetButton)
-	await I.see(text('05:00'))
+	await I.reset()
+	await I.seeDuration('05:00')
 	await I.see(loc.startButton)
 })

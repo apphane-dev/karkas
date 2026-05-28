@@ -37,6 +37,13 @@ export const articlesActor = createActor()
 		goBack: async () => {
 			await I.click((canvas) => canvas.findByLabelText('Back to articles'))
 		},
+		openArticle: async (name: string | RegExp) => {
+			await I.click(link(name))
+			await I.waitExit(role('status'))
+		},
+		seeNoSelection: async () => {
+			await I.see(text('No article selected').within(role('main')))
+		},
 		seeArticleList: async () => {
 			await I.scope(role('list', 'Articles'), async () => {
 				await Promise.all(ARTICLE_LINKS.map((name) => I.see(link(name))))
@@ -58,11 +65,35 @@ export const articlesActor = createActor()
 			await I.see(heading(title))
 			await I.see(button('Edit'))
 		},
+		seeArticleDetailContent: async () => {
+			await I.scope(role('main'), async () => {
+				await I.see(text(/Regional performance remained strongest/))
+				await I.see(text(/EMEA showed stable retention/))
+				await I.see(text(/APAC growth accelerated/))
+				await I.see(text(/Gross margin improved/))
+				await I.see(text(/next planning cycle should prioritize/))
+			})
+		},
+		seeArticleDetailDescription: async (value: string | RegExp) => {
+			await I.scope(role('main'), async () => {
+				await I.see(text(value))
+			})
+		},
+		seeArticleDetailStatus: async (status: string) => {
+			await I.scope(role('main'), async () => {
+				await I.see(text(status))
+			})
+		},
 		seeArticleNotFound: async (articleId: string) => {
 			await I.see(heading('Article not found'))
 			await I.see(text(`No article exists for id "${articleId}".`))
 		},
 		seeArticleDescription: async (pattern: RegExp) => {
 			await I.see(text(pattern))
+		},
+		seeDetailLoading: async (detail: HTMLElement) => {
+			await I.see(role('status', 'Loading article detail').within(detail))
+			await I.dontSee(heading('Quarterly report').within(detail))
+			await I.dontSee(text('Article not found').within(detail))
 		},
 	}))

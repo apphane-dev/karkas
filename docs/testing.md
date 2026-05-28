@@ -21,10 +21,10 @@ Grepping `test|spec|vitest` inside an entity directory will not find its tests â
 | What you are looking for       | Where to look                                            |
 | ------------------------------ | -------------------------------------------------------- |
 | Integration (end-to-end) tests | `src/app/integration/*.stories.tsx`                      |
-| Page-level component tests     | `src/pages/<page>/ui/*.stories.tsx`                      |
-| Entity model coverage          | Integration stories above, or add a new story            |
-| Mock handlers and fixture data | `src/entities/<entity>/mocks/handlers.ts`, `.../data.ts` |
+| Current product test coverage  | Integration stories above                                |
 | Reusable page actor helpers    | `src/pages/<page>/testing.ts`                            |
+| Mock handlers and fixture data | `src/entities/<entity>/mocks/handlers.ts`, `.../data.ts` |
+| Actor/helper self-tests        | `src/shared/test/actor.test.stories.tsx`                 |
 
 To find tests for an entity, search for `.test(` in `src/app/integration/` or look for the entity name in story file names.
 
@@ -184,9 +184,27 @@ Common valid cases:
 
 - Asserting loading UI appears: `await I.see(role('status', 'Loading ...').wait())`
 - Local async transitions without a stable status-exit contract
-- Targeted component stories that intentionally wait for post-interaction async recalculation (for example, price list extraction in `src/pages/items/ui/ItemsPage.stories.tsx`)
+- Targeted interaction assertions where no stable status-exit contract exists yet (for example, short timer/sidebar countdown checks or other local async UI transitions)
 
 If a loaded-state integration story can be stabilized with `play: () => I.waitExit(role('status'))`, prefer that over locator `.wait()` calls.
+
+### Refactoring opportunity: `src/shared/test/loc.ts`
+
+`src/shared/test/loc.ts` is a useful testing DSL, but it currently carries more factory and dispatch complexity than today's integration stories seem to need.
+
+Current audit notes:
+
+- `.within()`, `.all()`, and targeted `.wait()` usage are actively used by integration stories and should remain first-class.
+- `.options()` is valid but lightly used, mostly for accessibility-state assertions such as `current: 'page'` and a few selector escape hatches.
+- `.maybe()` appears to be mostly an actor-internal capability used to implement `I.dontSee(...)` and `I.waitExit(...)`, rather than a commonly needed story author API.
+
+Future cleanup should review whether:
+
+- `.maybe()` can become an internal helper instead of a public fluent transition,
+- role/text dispatch and option merging can be unified to reduce duplicated branches,
+- the public locator API can stay small and biased toward integration-style assertions.
+
+Do not change this API casually: it is shared test infrastructure. Prefer source-backed simplification driven by actual story usage rather than purely aesthetic refactors.
 
 ## MSW Structure
 

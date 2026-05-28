@@ -2,7 +2,7 @@ import preview from '#.storybook/preview'
 import { App } from '#app/App'
 import { articleDetail, articleList } from '#entities/article/mocks/handlers'
 import { articlesActor as I } from '#pages/articles/testing'
-import { button, heading, link, role, text } from '#shared/test'
+import { heading, link, role, text } from '#shared/test'
 
 const meta = preview.meta({
 	title: 'Integration/Articles',
@@ -19,7 +19,7 @@ export const Default = meta.story({
 })
 
 Default.test('renders article list with no selection message', async () => {
-	await I.see(text('No article selected').within(role('main')))
+	await I.seeNoSelection()
 	await I.seeArticleList()
 	await I.seeStatusBadges()
 })
@@ -34,52 +34,35 @@ Default.test('shows article descriptions in list items', async () => {
 })
 
 Default.test('shows article detail when article is clicked', async () => {
-	await I.click(link(/Quarterly report/i))
-	await I.waitExit(role('status'))
+	await I.openArticle(/Quarterly report/i)
 	await I.seeArticleDetail('Quarterly report')
 })
 
 Default.test('shows all content paragraphs in article detail', async () => {
-	await I.click(link(/Quarterly report/i))
-	await I.waitExit(role('status'))
-
-	await I.scope(role('main'), async () => {
-		await I.see(heading('Quarterly report'))
-		await I.see(text(/Regional performance remained strongest/))
-		await I.see(text(/EMEA showed stable retention/))
-		await I.see(text(/APAC growth accelerated/))
-		await I.see(text(/Gross margin improved/))
-		await I.see(text(/next planning cycle should prioritize/))
-	})
+	await I.openArticle(/Quarterly report/i)
+	await I.seeArticleDetail('Quarterly report')
+	await I.seeArticleDetailContent()
 })
 
 Default.test('shows edit button and status badge in article detail', async () => {
-	await I.click(link(/Quarterly report/i))
-	await I.waitExit(role('status'))
-
-	await I.scope(role('main'), async () => {
-		await I.see(button('Edit'))
-		await I.see(text('Done'))
-	})
+	await I.openArticle(/Quarterly report/i)
+	await I.seeArticleDetail('Quarterly report')
+	await I.seeArticleDetailStatus('Done')
 })
 
 Default.test('shows article description in detail view', async () => {
-	await I.click(link(/Quarterly report/i))
-	await I.waitExit(role('status'))
-
-	await I.scope(role('main'), async () => {
-		await I.see(text('Revenue overview and growth metrics for Q3 across all regions.'))
-	})
+	await I.openArticle(/Quarterly report/i)
+	await I.seeArticleDetailDescription(
+		'Revenue overview and growth metrics for Q3 across all regions.',
+	)
 })
 
 Default.test('can select different articles', async () => {
-	await I.click(link(/Quarterly report/i))
-	await I.waitExit(role('status'))
-	await I.see(heading('Quarterly report'))
+	await I.openArticle(/Quarterly report/i)
+	await I.seeArticleDetail('Quarterly report')
 
-	await I.click(link(/Hiring plan/i))
-	await I.waitExit(role('status'))
-	await I.see(heading('Hiring plan'))
+	await I.openArticle(/Hiring plan/i)
+	await I.seeArticleDetail('Hiring plan')
 })
 
 export const DirectUrlNavigation = meta.story({
@@ -90,10 +73,7 @@ export const DirectUrlNavigation = meta.story({
 
 DirectUrlNavigation.test('loads article detail directly from URL', async () => {
 	await I.seeArticleDetail('Quarterly report')
-
-	await I.scope(role('main'), async () => {
-		await I.see(text(/Regional performance remained strongest/))
-	})
+	await I.seeArticleDetailContent()
 })
 
 export const DirectUrlNotFound = meta.story({
@@ -134,23 +114,14 @@ DefaultMobile.test('[mobile] shows search toolbar with new article button', asyn
 })
 
 DefaultMobile.test('[mobile] shows article detail when article is clicked', async () => {
-	await I.click(link(/Quarterly report/i))
-	await I.waitExit(role('status'))
-	await I.see(heading('Quarterly report'))
+	await I.openArticle(/Quarterly report/i)
+	await I.seeArticleDetail('Quarterly report')
 })
 
 DefaultMobile.test('[mobile] shows all content paragraphs in article detail', async () => {
-	await I.click(link(/Quarterly report/i))
-	await I.waitExit(role('status'))
-
-	await I.scope(role('main'), async () => {
-		await I.see(heading('Quarterly report'))
-		await I.see(text(/Regional performance remained strongest/))
-		await I.see(text(/EMEA showed stable retention/))
-		await I.see(text(/APAC growth accelerated/))
-		await I.see(text(/Gross margin improved/))
-		await I.see(text(/next planning cycle should prioritize/))
-	})
+	await I.openArticle(/Quarterly report/i)
+	await I.seeArticleDetail('Quarterly report')
+	await I.seeArticleDetailContent()
 })
 
 DefaultMobile.test('[mobile] displays correct status badges for different statuses', async () => {
@@ -158,15 +129,13 @@ DefaultMobile.test('[mobile] displays correct status badges for different status
 })
 
 DefaultMobile.test('[mobile] can select different articles', async () => {
-	await I.click(link(/Quarterly report/i))
-	await I.waitExit(role('status'))
-	await I.see(heading('Quarterly report'))
+	await I.openArticle(/Quarterly report/i)
+	await I.seeArticleDetail('Quarterly report')
 
 	await I.goBack()
 
-	await I.click(link(/Hiring plan/i))
-	await I.waitExit(role('status'))
-	await I.see(heading('Hiring plan'))
+	await I.openArticle(/Hiring plan/i)
+	await I.seeArticleDetail('Hiring plan')
 })
 
 export const HandlesArticlesLoadServerError = meta.story({
@@ -266,8 +235,7 @@ export const HandlesArticleDetailServerError = meta.story({
 HandlesArticleDetailServerError.test(
 	'shows error state when article detail request fails',
 	async () => {
-		await I.click(link(/Quarterly report/i))
-		await I.waitExit(role('status'))
+		await I.openArticle(/Quarterly report/i)
 
 		await I.scope(role('main'), async () => {
 			await I.seeDetailError()
@@ -276,8 +244,7 @@ HandlesArticleDetailServerError.test(
 )
 
 HandlesArticleDetailServerError.test('keeps detail error state when retry also fails', async () => {
-	await I.click(link(/Quarterly report/i))
-	await I.waitExit(role('status'))
+	await I.openArticle(/Quarterly report/i)
 
 	await I.scope(role('main'), async () => {
 		await I.seeDetailError()
@@ -298,8 +265,7 @@ export const RecoversAfterArticleDetailRetry = meta.story({
 })
 
 RecoversAfterArticleDetailRetry.test('loads article detail after retry succeeds', async () => {
-	await I.click(link(/Quarterly report/i))
-	await I.waitExit(role('status'))
+	await I.openArticle(/Quarterly report/i)
 
 	await I.scope(role('main'), async () => {
 		await I.seeDetailError()
@@ -320,8 +286,7 @@ export const HandlesArticleDetailServerErrorMobile = meta.story({
 HandlesArticleDetailServerErrorMobile.test(
 	'[mobile] shows error state when article detail request fails',
 	async () => {
-		await I.click(link(/Quarterly report/i))
-		await I.waitExit(role('status'))
+		await I.openArticle(/Quarterly report/i)
 
 		await I.scope(role('main'), async () => {
 			await I.seeDetailError()
@@ -345,9 +310,7 @@ KeepsLoadingWhenArticleDetailNeverResolves.test(
 		await I.click(link(/Quarterly report/i))
 
 		const detail = await I.see(role('main'))
-		await I.see(role('status', 'Loading article detail').within(detail))
-		await I.dontSee(heading('Quarterly report').within(detail))
-		await I.dontSee(text('Article not found').within(detail))
+		await I.seeDetailLoading(detail)
 	},
 )
 
@@ -364,8 +327,6 @@ KeepsLoadingWhenArticleDetailNeverResolvesMobile.test(
 		await I.click(link(/Quarterly report/i))
 
 		const detail = await I.see(role('main'))
-		await I.see(role('status', 'Loading article detail').within(detail))
-		await I.dontSee(heading('Quarterly report').within(detail))
-		await I.dontSee(text('Article not found').within(detail))
+		await I.seeDetailLoading(detail)
 	},
 )

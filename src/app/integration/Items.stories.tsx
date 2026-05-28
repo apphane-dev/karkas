@@ -1,3 +1,5 @@
+import { expect } from 'storybook/test'
+
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
 import { itemDetail, itemList } from '#entities/item/mocks/handlers'
@@ -213,3 +215,89 @@ KeepsLoadingWhenItemsRequestNeverResolvesMobile.test(
 		await I.seeLoading()
 	},
 )
+
+export const FilteredByCategory = meta.story({
+	name: 'Filtered by Category',
+	play: () => I.waitExit(role('status')),
+})
+
+FilteredByCategory.test('shows only electronics items', async () => {
+	await I.applyCategoryFilter('Electronics')
+	await I.seeOnlyItems('Wireless Headphones', 'Mechanical Keyboard')
+	await I.dontSeeItem('Standing Desk')
+	await I.dontSeeItem('Merino Wool Sweater')
+})
+
+FilteredByCategory.test('shows only food items', async () => {
+	await I.applyCategoryFilter('Food')
+	await I.seeOnlyItems('Organic Coffee Beans')
+	await I.dontSeeItem('Wireless Headphones')
+})
+
+FilteredByCategory.test('item availability changes with category filter', async () => {
+	expect(await I.tryTo(() => I.seeItem('Wireless Headphones'))).toBe(true)
+	expect(await I.tryTo(() => I.seeItem('Non-existent Product'))).toBe(false)
+
+	await I.applyCategoryFilter('Food')
+	expect(await I.tryTo(() => I.seeItem('Wireless Headphones'))).toBe(false)
+	expect(await I.tryTo(() => I.seeItem('Organic Coffee Beans'))).toBe(true)
+})
+
+export const FilteredByStock = meta.story({
+	name: 'Filtered by Stock',
+	play: () => I.waitExit(role('status')),
+})
+
+FilteredByStock.test('shows only in-stock items', async () => {
+	await I.applyStockFilter('In Stock')
+	await I.seeOnlyItems('Wireless Headphones', 'Standing Desk')
+	await I.dontSeeItem('Merino Wool Sweater')
+})
+
+FilteredByStock.test('shows only out-of-stock items', async () => {
+	await I.applyStockFilter('Out of Stock')
+	await I.seeOnlyItems('Merino Wool Sweater', 'Ergonomic Chair')
+	await I.dontSeeItem('Wireless Headphones')
+})
+
+export const FilteredToEmpty = meta.story({
+	name: 'No Matching Items',
+	play: () => I.waitExit(role('status')),
+})
+
+FilteredToEmpty.test('shows empty state message', async () => {
+	await I.applyCategoryFilter('Electronics')
+	await I.applyStockFilter('Out of Stock')
+	await I.see(text('No items match the current filters.'))
+})
+
+FilteredToEmpty.test('verifies multiple items across filter states', async () => {
+	expect(await I.hopeThat(() => I.seeItem('Wireless Headphones'))).toBe(true)
+	expect(await I.hopeThat(() => I.seeItem('Standing Desk'))).toBe(true)
+	I.hopeThat.noErrors()
+
+	await I.applyCategoryFilter('Electronics')
+	await I.applyStockFilter('Out of Stock')
+	expect(await I.hopeThat(() => I.seeItem('Wireless Headphones'))).toBe(false)
+	expect(() => I.hopeThat.noErrors()).toThrow(/soft assertion/)
+})
+
+export const SortedByPrice = meta.story({
+	name: 'Sorted by Price',
+	play: () => I.waitExit(role('status')),
+})
+
+SortedByPrice.test('sorts ascending by default', async () => {
+	await I.applyPriceSort()
+	const prices = await I.grabVisiblePrices()
+	const sortedPrices = [...prices].sort((a, b) => a - b)
+	expect(prices).toEqual(sortedPrices)
+})
+
+SortedByPrice.test('sorts descending after toggle', async () => {
+	await I.applyPriceSort()
+	await I.toggleSortDirection()
+	const prices = await I.grabVisiblePrices()
+	const sortedPrices = [...prices].sort((a, b) => b - a)
+	expect(prices).toEqual(sortedPrices)
+})

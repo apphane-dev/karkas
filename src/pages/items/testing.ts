@@ -1,6 +1,7 @@
 import {
 	createActor,
 	heading,
+	role,
 	text,
 	withDetailError,
 	withPageError,
@@ -43,5 +44,32 @@ export const itemsActor = createActor()
 		},
 		seeOutOfStockBadge: async () => {
 			await I.see(text('Out of Stock').all())
+		},
+		seeItem: async (name: string) => {
+			await I.see(text(name))
+		},
+		dontSeeItem: async (name: string) => {
+			await I.dontSee(text(name))
+		},
+		seeOnlyItems: async (...names: string[]) => {
+			for (const name of names) {
+				await I.see(text(name))
+			}
+		},
+		applyCategoryFilter: async (option: string) => {
+			await I.selectOption(role('combobox', /Category/i), option)
+		},
+		applyStockFilter: async (option: string) => {
+			await I.selectOption(role('combobox', /Stock/i), option)
+		},
+		applyPriceSort: async () => {
+			await I.selectOption(role('combobox', /Sort by/i), 'Price')
+		},
+		toggleSortDirection: async () => {
+			await I.click(role('button', /Asc|Desc/))
+		},
+		grabVisiblePrices: async () => {
+			const prices = await I.grabTextFromAll(text(/^\$/).all())
+			return prices.map((price) => Number(price.replace('$', '')))
 		},
 	}))

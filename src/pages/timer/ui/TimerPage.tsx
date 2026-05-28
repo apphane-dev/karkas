@@ -17,11 +17,16 @@ const PRESETS = [
 
 export const TimerPage = reatomComponent(() => {
 	const [customInput, setCustomInput] = useAtom('')
+	const isRunning = timer.running()
+	const isStartDisabled = timer.remaining() <= 0
 
 	const handleCustomTimeCommit = wrap(() => {
 		timer.commitCustomDuration(customInput)
 		setCustomInput('')
 	})
+	const handleStart = wrap(() => timer.running.setTrue())
+	const handlePause = wrap(() => timer.running.setFalse())
+	const handleReset = wrap(() => timer.reset())
 
 	return (
 		<styled.div
@@ -49,7 +54,7 @@ export const TimerPage = reatomComponent(() => {
 							key={label}
 							variant="outline"
 							size="sm"
-							disabled={timer.running()}
+							disabled={isRunning}
 							onClick={wrap(() => timer.setDuration(seconds))}
 						>
 							{label}
@@ -62,7 +67,7 @@ export const TimerPage = reatomComponent(() => {
 					size="sm"
 					w="20"
 					value={customInput}
-					disabled={timer.running()}
+					disabled={isRunning}
 					onChange={(e) => setCustomInput(e.target.value)}
 					onKeyDown={(e) => {
 						if (e.key === 'Enter') handleCustomTimeCommit()
@@ -71,16 +76,16 @@ export const TimerPage = reatomComponent(() => {
 				/>
 
 				<styled.div display="flex" gap="2">
-					{timer.running() ? (
-						<Button variant="outline" onClick={wrap(() => timer.running.setFalse())}>
+					{isRunning ? (
+						<Button variant="outline" onClick={handlePause}>
 							{m.timer_pause()}
 						</Button>
 					) : (
-						<Button onClick={wrap(() => timer.running.setTrue())} disabled={timer.remaining() <= 0}>
+						<Button onClick={handleStart} disabled={isStartDisabled}>
 							{m.timer_start()}
 						</Button>
 					)}
-					<Button variant="outline" onClick={wrap(() => timer.reset())}>
+					<Button variant="outline" onClick={handleReset}>
 						{m.timer_reset()}
 					</Button>
 				</styled.div>
