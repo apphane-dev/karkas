@@ -11,7 +11,6 @@ export type { HeaderTrailDescriptor } from './headerTrail'
 export { documentTitleAtom } from './documentTitle'
 export { localeAtom, reatomLoc } from './locale'
 export { themePreferenceAtom } from './theme'
-export { isDesktopAtom } from './viewport'
 export {
 	showGithubLinkInTopBarAtom,
 	showLanguageSwitcherInTopBarAtom,

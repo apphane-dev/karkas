@@ -1,5 +1,5 @@
 import { SiGithub } from '@icons-pack/react-simple-icons'
-import { atom, computed, memo, reatomBoolean, wrap } from '@reatom/core'
+import { atom, computed, memo, reatomBoolean, reatomMediaQuery, wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
 import { Languages, Monitor, Moon, PanelLeft, Search, Sun } from 'lucide-react'
 import { type CSSProperties, type ReactNode } from 'react'
@@ -7,7 +7,6 @@ import { type CSSProperties, type ReactNode } from 'react'
 import { m } from '#paraglide/messages.js'
 import { Heading, IconButton, Input, Kbd, Menu } from '#shared/components'
 import {
-	isDesktopAtom,
 	localeAtom,
 	showGithubLinkInTopBarAtom,
 	showLanguageSwitcherInTopBarAtom,
@@ -17,6 +16,7 @@ import {
 import { withResizeObserver } from '#shared/reatom'
 import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
+import { token } from '#styled-system/tokens'
 
 import { GlobalLoader } from './GlobalLoader'
 import { SidebarDrawer } from './sidebar'
@@ -284,6 +284,8 @@ const TopBar = ({ mobileHeader, breadcrumbs }: Pick<Props, 'mobileHeader' | 'bre
 		<ThemeSwitcher />
 	</styled.header>
 )
+
+const isDesktopAtom = reatomMediaQuery(`(min-width: ${token('breakpoints.md')})`)
 
 export const AppShell = reatomComponent(
 	({ appName, sidebarContent, sidebarFooter, mobileHeader, breadcrumbs, children }: Props) => {
