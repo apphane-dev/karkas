@@ -4,7 +4,7 @@ This doc follows the source-first approach in `docs/README.md`.
 
 ## Overview
 
-All tests are Storybook integration stories with inline `.test()` assertions. There are no standalone `*.test.ts` files.
+All tests are Storybook integration stories with inline `.test()` assertions. There are no standalone `*.test.ts` or `*.spec.ts` files — the only `.test.` file is `src/shared/test/actor.test-stories.tsx`, which tests the actor helpers themselves.
 
 The default stabilization strategy is:
 
@@ -12,34 +12,23 @@ The default stabilization strategy is:
 - Loading-state stories: do not wait for exit; assert loading UI directly
 - `.wait()` exists and is still supported, but should be rare and used for edge cases
 
-## Running tests
-
-Preferred command for a specific file:
-
-```bash
-mise run test:run <file>
-```
-
-Examples:
-
-```bash
-mise run test:run src/app/integration/Articles.stories.tsx
-mise run test:run src/app/integration/Connections.stories.tsx
-```
-
-Project-wide commands:
-
-```bash
-hk check               # default project quality gate
-hk fix                 # apply auto-fixable formatting/linting, then validate
-bun run test           # watch mode
-bun run test:run       # single run (CI)
-bun run test:coverage  # single run + coverage report
-```
-
 ## Read The Source First
 
-Use these files as the primary documentation.
+### Where to find tests
+
+Grepping `test|spec|vitest` inside an entity directory will not find its tests — they live elsewhere.
+
+| What you are looking for       | Where to look                                            |
+| ------------------------------ | -------------------------------------------------------- |
+| Integration (end-to-end) tests | `src/app/integration/*.stories.tsx`                      |
+| Page-level component tests     | `src/pages/<page>/ui/*.stories.tsx`                      |
+| Entity model coverage          | Integration stories above, or add a new story            |
+| Mock handlers and fixture data | `src/entities/<entity>/mocks/handlers.ts`, `.../data.ts` |
+| Reusable page actor helpers    | `src/pages/<page>/testing.ts`                            |
+
+To find tests for an entity, search for `.test(` in `src/app/integration/` or look for the entity name in story file names.
+
+### Key files
 
 | File                                          | Why read it                                                                           |
 | --------------------------------------------- | ------------------------------------------------------------------------------------- |
@@ -225,6 +214,17 @@ Mobile stories use Storybook viewport globals:
 
 To reuse desktop configuration in mobile variants, pass `parameters: DesktopStory.input.parameters`.
 
+## Running tests
+
+```bash
+hk check                        # default project quality gate
+hk fix                          # apply auto-fixes, then validate
+mise run test:run <file>        # single story file
+mise run test:run               # single run (CI)
+mise run test:coverage          # single run + coverage report
+mise run test                   # watch mode
+```
+
 ## Coverage
 
 Coverage uses `@vitest/coverage-v8` through `vp test run --coverage`.
@@ -272,3 +272,10 @@ Some branches are intentionally left uncovered because they cannot be exercised 
 5. Add `src/app/integration/<Page>.stories.tsx` with `Default`, `Default (Mobile)`, error, and loading variants.
 6. Add `play: () => I.waitExit(role('status'))` to loaded-state and async error variants, but not to persistent-loading stories.
 7. Review the tests against the quality bar above: assertions should be specific, accessible, scoped, and backed by the intended UX/mocks.
+
+## Adding Coverage for an Entity Model Branch
+
+1. Find or create an error-variant MSW handler in `src/entities/<entity>/mocks/handlers.ts` that triggers the branch (e.g. `logoutError` returning HTTP 500).
+2. Add a story to the existing integration file (`src/app/integration/<Entity>.stories.tsx`) with `msw.handlers` overriding the relevant endpoint.
+3. Assert the user-visible outcome (e.g. redirect to login despite API failure).
+4. If the branch cannot be reached from the UI, document it under "Known uncovered branches" in the Coverage section above.

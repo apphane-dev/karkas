@@ -89,3 +89,25 @@ SignOut.test('signs out and returns to login', async () => {
 	await I.click(role('menuitem', /Sign out/).wait())
 	await I.see(heading('Sign in').wait())
 })
+
+export const SignOutWhenApiFails = meta.story({
+	name: 'Sign Out When API Fails',
+	parameters: {
+		authenticated: true,
+		initialPath: 'dashboard',
+		msw: {
+			handlers: { authLogout: authHandlers.logoutError },
+		},
+	},
+	play: () => I.waitExit(role('status')),
+})
+
+SignOutWhenApiFails.test(
+	'clears session and returns to login even when logout API fails',
+	async () => {
+		await I.see(heading('Dashboard'))
+		await I.click(button(/Acme Inc/))
+		await I.click(role('menuitem', /Sign out/).wait())
+		await I.see(heading('Sign in').wait())
+	},
+)

@@ -23,4 +23,5 @@ export const authHandlers = {
 		await delay()
 		return new HttpResponse(null, { status: 204 })
 	}),
+	logoutError: http.post(logoutUrl, () => to500()),
 }
