@@ -1,7 +1,7 @@
 import { paraglideVitePlugin } from '@inlang/paraglide-js'
 import react from '@vitejs/plugin-react'
 import assert from 'node:assert'
-import { defineConfig, type PluginOption } from 'vite-plus'
+import { defineConfig } from 'vite-plus'
 
 const outDir = process.env['WEBAPP_OUT_DIR']
 const base = process.env['WEBAPP_BASE_URL']
@@ -133,8 +133,8 @@ export default defineConfig({
 		},
 	},
 	plugins: [
-		react() as PluginOption,
-		paraglideVitePlugin({ project: './project.inlang', outdir: './src/paraglide' }) as PluginOption,
+		react(),
+		paraglideVitePlugin({ project: './project.inlang', outdir: './src/paraglide' }),
 	],
 	base,
 })

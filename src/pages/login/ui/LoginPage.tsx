@@ -1,17 +1,16 @@
-import { wrap } from '@reatom/core'
-import { reatomComponent } from '@reatom/react'
+import type { LoginForm } from '#pages/login/model/routes'
 
-import { authErrorAtom, authPendingAtom, loginAction } from '#entities/auth'
+import { wrap } from '@reatom/core'
+import { bindField, reatomComponent } from '@reatom/react'
+
 import { m } from '#paraglide/messages.js'
 import { Alert, Button, Field, Heading, Input, Text } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
-const emailFieldId = 'login-email'
-const passwordFieldId = 'login-password'
-
-export const LoginPage = reatomComponent(({ onSuccess }: { onSuccess: () => void }) => {
-	const error = authErrorAtom()
-	const pending = authPendingAtom()
+export const LoginPage = reatomComponent(({ form }: { form: LoginForm }) => {
+	const { fields, submit } = form
+	const error = submit.error()
+	const pending = !submit.ready()
 
 	return (
 		<styled.main minH="100dvh" display="grid" placeItems="center" bg="gray.2" px="4" py="8">
@@ -26,17 +25,9 @@ export const LoginPage = reatomComponent(({ onSuccess }: { onSuccess: () => void
 				display="flex"
 				flexDirection="column"
 				gap="5"
-				onSubmit={wrap(async (event) => {
+				onSubmit={wrap((event) => {
 					event.preventDefault()
-					const form = new FormData(event.currentTarget)
-					const didLogin = await wrap(
-						loginAction({
-							email: String(form.get('email') ?? ''),
-							password: String(form.get('password') ?? ''),
-						}),
-					)
-					if (!didLogin) return
-					wrap(onSuccess)()
+					submit()
 				})}
 			>
 				<styled.div display="flex" flexDirection="column" gap="1">
@@ -55,25 +46,13 @@ export const LoginPage = reatomComponent(({ onSuccess }: { onSuccess: () => void
 				)}
 
 				<Field.Root required>
-					<Field.Label htmlFor={emailFieldId}>{m.login_email()}</Field.Label>
-					<Input
-						id={emailFieldId}
-						name="email"
-						type="email"
-						autoComplete="email"
-						defaultValue="alex@example.com"
-					/>
+					<Field.Label>{m.login_email()}</Field.Label>
+					<Input type="email" autoComplete="email" {...bindField(fields.email)} />
 				</Field.Root>
 
 				<Field.Root required>
-					<Field.Label htmlFor={passwordFieldId}>{m.login_password()}</Field.Label>
-					<Input
-						id={passwordFieldId}
-						name="password"
-						type="password"
-						autoComplete="current-password"
-						defaultValue="password"
-					/>
+					<Field.Label>{m.login_password()}</Field.Label>
+					<Input type="password" autoComplete="current-password" {...bindField(fields.password)} />
 				</Field.Root>
 
 				<Button type="submit" loading={pending} loadingText={m.login_signing_in()}>

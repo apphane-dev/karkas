@@ -18,7 +18,6 @@ export const handlers = {
 	articleDetail: articleDetail.default,
 	authLogin: authHandlers.login,
 	authLogout: authHandlers.logout,
-	authMe: authHandlers.me,
 	connectionList: connectionList.default,
 	connectionDetail: connectionDetail.default,
 	conversationList: conversationList.default,

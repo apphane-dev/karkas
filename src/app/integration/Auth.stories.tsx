@@ -57,7 +57,20 @@ export const HandlesLoginError = meta.story({
 	},
 })
 
-HandlesLoginError.test('shows an error when login fails', async () => {
+HandlesLoginError.test('shows an error when server fails', async () => {
+	await I.click(button('Sign in'))
+	await I.waitExit(button('Signing in'))
+	await I.see(role('alert'))
+	await I.see(text('Check your email and password, then try again.'))
+})
+
+export const HandlesInvalidCredentials = meta.story({
+	name: 'Invalid Credentials',
+})
+
+HandlesInvalidCredentials.test('shows an error with wrong credentials', async () => {
+	await I.clear(field('Email'))
+	await I.fill(field('Email'), 'wrong@example.com')
 	await I.click(button('Sign in'))
 	await I.waitExit(button('Signing in'))
 	await I.see(role('alert'))
@@ -72,6 +85,29 @@ export const SignOut = meta.story({
 
 SignOut.test('signs out and returns to login', async () => {
 	await I.see(heading('Dashboard'))
-	await I.click(button('Sign out'))
+	await I.click(button(/Acme Inc/))
+	await I.click(role('menuitem', /Sign out/).wait())
 	await I.see(heading('Sign in').wait())
 })
+
+export const SignOutWhenApiFails = meta.story({
+	name: 'Sign Out When API Fails',
+	parameters: {
+		authenticated: true,
+		initialPath: 'dashboard',
+		msw: {
+			handlers: { authLogout: authHandlers.logoutError },
+		},
+	},
+	play: () => I.waitExit(role('status')),
+})
+
+SignOutWhenApiFails.test(
+	'clears session and returns to login even when logout API fails',
+	async () => {
+		await I.see(heading('Dashboard'))
+		await I.click(button(/Acme Inc/))
+		await I.click(role('menuitem', /Sign out/).wait())
+		await I.see(heading('Sign in').wait())
+	},
+)

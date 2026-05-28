@@ -11,7 +11,6 @@ import { rootRoute } from '#shared/router'
 import { styled } from '#styled-system/jsx'
 import { AppShell } from '#widgets/app-shell'
 
-import { AuthControls } from './AuthControls'
 import { HeaderBreadcrumbs } from './HeaderBreadcrumbs'
 import { MobileHeader } from './MobileHeader'
 import { OrgSwitcher } from './OrgSwitcher'
@@ -51,7 +50,6 @@ export const App = reatomComponent(() => {
 					<styled.div display="flex" flexDirection="column" gap="3">
 						<SidebarFooterNavigation />
 						<OrgSwitcher />
-						<AuthControls />
 					</styled.div>
 				}
 				mobileHeader={<MobileHeader />}

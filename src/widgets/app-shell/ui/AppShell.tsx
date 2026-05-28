@@ -7,6 +7,7 @@ import { type CSSProperties, type ReactNode } from 'react'
 import { m } from '#paraglide/messages.js'
 import { Heading, IconButton, Input, Kbd, Menu } from '#shared/components'
 import {
+	isDesktopAtom,
 	localeAtom,
 	showGithubLinkInTopBarAtom,
 	showLanguageSwitcherInTopBarAtom,
@@ -286,6 +287,7 @@ const TopBar = ({ mobileHeader, breadcrumbs }: Pick<Props, 'mobileHeader' | 'bre
 
 export const AppShell = reatomComponent(
 	({ appName, sidebarContent, sidebarFooter, mobileHeader, breadcrumbs, children }: Props) => {
+		const isDesktop = isDesktopAtom()
 		const isCollapsed = desktopSidebarCollapsedAtom()
 		const sidebarInner = (
 			<SidebarInner appName={appName} content={sidebarContent} footer={sidebarFooter} />
@@ -293,8 +295,8 @@ export const AppShell = reatomComponent(
 
 		return (
 			<styled.div display="flex" minH="100dvh" position="relative">
-				<SidebarDrawer>{sidebarInner}</SidebarDrawer>
-				<DesktopSidebar isCollapsed={isCollapsed}>{sidebarInner}</DesktopSidebar>
+				<SidebarDrawer>{!isDesktop && sidebarInner}</SidebarDrawer>
+				<DesktopSidebar isCollapsed={isCollapsed}>{isDesktop && sidebarInner}</DesktopSidebar>
 				<styled.div
 					display="flex"
 					flex="1"
