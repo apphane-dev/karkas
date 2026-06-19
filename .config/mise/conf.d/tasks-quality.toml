@@ -30,9 +30,9 @@ description = "Lint code and apply fixes with oxlint"
 run = "vp lint --fix"
 
 [tasks.typecheck]
-description = "Type check with TypeScript 7 native preview"
+description = "Type check with TypeScript 7 RC"
 alias = "tc"
-run = "tsgo -b"
+run = "tsc -b"
 
 [tasks."lint:steiger"]
 description = "Check FSD architecture with steiger"
