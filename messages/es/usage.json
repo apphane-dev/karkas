@@ -8,5 +8,8 @@
 	"usage_documents": "Documentos",
 	"usage_media": "Multimedia",
 	"usage_other": "Otro",
-	"usage_reset_info": "El uso de almacenamiento se reinicia el 1 de cada mes."
+	"usage_reset_info": "El uso de almacenamiento se reinicia el 1 de cada mes.",
+	"usage_loading_page": "Cargando página de uso",
+	"usage_error_title": "No se pudo cargar el uso",
+	"usage_error_description": "No pudimos cargar los datos de uso. Inténtalo de nuevo en un momento."
 }

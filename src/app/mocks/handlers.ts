@@ -12,6 +12,7 @@ import { dashboardStats } from '#entities/dashboard/mocks/handlers'
 import { itemDetail, itemList } from '#entities/item/mocks/handlers'
 import { settingHandlers } from '#entities/setting/mocks/handlers'
 import { timelineEventDetail, timelineEventList } from '#entities/timeline-event/mocks/handlers'
+import { usageStats } from '#entities/usage/mocks/handlers'
 
 export const handlers = {
 	articleList: articleList.default,
@@ -27,6 +28,7 @@ export const handlers = {
 	itemList: itemList.default,
 	itemDetail: itemDetail.default,
 	settings: settingHandlers,
+	usageStats: usageStats.default,
 	timelineEventList: timelineEventList.default,
 	timelineEventDetail: timelineEventDetail.default,
 } satisfies Record<string, RequestHandler | RequestHandler[]>

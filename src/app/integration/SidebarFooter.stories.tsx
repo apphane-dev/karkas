@@ -2,7 +2,7 @@ import preview from '#.storybook/preview'
 import { App } from '#app/App'
 import { createActor, heading, role, text, link } from '#shared/test'
 
-const storageProgressNote = text(/GB \/ \d+ GB/)
+const storageProgressNote = text(/GB \/ \d+ GB/).wait()
 const upgradeToProBanner = text('Unlimited storage & more')
 
 const I = createActor()

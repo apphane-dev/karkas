@@ -1,6 +1,8 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
+import { usageStats } from '#entities/usage/mocks/handlers'
 import { usageActor as I, usageLoc as loc } from '#pages/usage/testing'
+import { role, text } from '#shared/test'
 
 const meta = preview.meta({
 	title: 'Integration/Usage',
@@ -14,7 +16,10 @@ const meta = preview.meta({
 
 export default meta
 
-export const Default = meta.story({ name: 'Default' })
+export const Default = meta.story({
+	name: 'Default',
+	play: () => I.waitExit(role('status')),
+})
 
 Default.test('renders usage heading', async () => {
 	await I.see(loc.heading)
@@ -34,6 +39,7 @@ Default.test('renders breakdown section', async () => {
 export const DefaultMobile = meta.story({
 	name: 'Default (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
+	play: () => I.waitExit(role('status')),
 })
 
 DefaultMobile.test('[mobile] renders usage heading', async () => {
@@ -43,3 +49,59 @@ DefaultMobile.test('[mobile] renders usage heading', async () => {
 DefaultMobile.test('[mobile] renders usage content', async () => {
 	await I.seeUsageContent()
 })
+
+export const HandlesUsageLoadServerError = meta.story({
+	name: 'Usage Load Server Error',
+	play: () => I.waitExit(role('status')),
+	parameters: {
+		msw: {
+			handlers: { usageStats: usageStats.error },
+		},
+	},
+})
+
+HandlesUsageLoadServerError.test('shows error state when usage request fails', async () => {
+	await I.seeError()
+	await I.see(text("We couldn't load the usage data. Try again in a moment."))
+})
+
+HandlesUsageLoadServerError.test('keeps error state when retry also fails', async () => {
+	await I.seeError()
+	await I.retry()
+	await I.waitExit(role('status'))
+	await I.seeError()
+})
+
+export const RecoversAfterUsageLoadRetry = meta.story({
+	name: 'Usage Load Retry Success',
+	play: () => I.waitExit(role('status')),
+	parameters: {
+		msw: {
+			handlers: { usageStats: usageStats.retrySucceeds() },
+		},
+	},
+})
+
+RecoversAfterUsageLoadRetry.test('loads usage data after retry succeeds', async () => {
+	await I.seeError()
+	await I.retry()
+	await I.waitExit(role('status'))
+	await I.see(loc.heading.wait())
+	await I.seeUsageContent()
+})
+
+export const KeepsLoadingWhenUsageRequestNeverResolves = meta.story({
+	name: 'Usage Request Loading State',
+	parameters: {
+		msw: {
+			handlers: { usageStats: usageStats.loading },
+		},
+	},
+})
+
+KeepsLoadingWhenUsageRequestNeverResolves.test(
+	'keeps loading state for pending usage request',
+	async () => {
+		await I.seeLoading()
+	},
+)

@@ -1,8 +1,8 @@
+import type { UsageData } from '#entities/usage'
+
 import { m } from '#paraglide/messages.js'
 import { Button, Heading, Text, VisuallyHidden } from '#shared/components'
 import { styled } from '#styled-system/jsx'
-
-import { breakdown, percentage, totalGB, usedGB } from '../model/data'
 
 function BreakdownRow({ label, gb, total }: { label: string; gb: number; total: number }) {
 	const pct = Math.round((gb / total) * 100)
@@ -21,7 +21,9 @@ function BreakdownRow({ label, gb, total }: { label: string; gb: number; total: 
 	)
 }
 
-export function UsagePage() {
+export function UsagePage({ data }: { data: UsageData }) {
+	const { usedGB, totalGB, breakdown } = data
+	const percentage = Math.round((usedGB / totalGB) * 100)
 	return (
 		<styled.div p="8" maxW="600px">
 			<VisuallyHidden as="h1">{m.usage_title()}</VisuallyHidden>

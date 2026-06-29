@@ -8,5 +8,8 @@
 	"usage_documents": "Documents",
 	"usage_media": "Media",
 	"usage_other": "Other",
-	"usage_reset_info": "Storage usage resets on the 1st of each month."
+	"usage_reset_info": "Storage usage resets on the 1st of each month.",
+	"usage_loading_page": "Loading usage page",
+	"usage_error_title": "Could not load usage",
+	"usage_error_description": "We couldn't load the usage data. Try again in a moment."
 }
