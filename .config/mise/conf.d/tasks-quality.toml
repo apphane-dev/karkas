@@ -39,7 +39,7 @@ description = "Check FSD architecture with steiger"
 run = "bun scripts/steiger.ts"
 
 [tasks."lint:fallow"]
-description = "Check dead code, duplication, and complexity with Fallow"
+description = "Check dead code, duplication, and coverage-aware complexity with Fallow"
 run = [{ tasks = ["lint:fallow:dead-code", "lint:fallow:dupes", "lint:fallow:health"] }]
 
 [tasks."lint:fallow:dead-code"]
@@ -51,7 +51,7 @@ description = "Check for duplicate-code findings against the Fallow baseline"
 run = "fallow dupes --config .config/fallow.toml --fail-on-issues"
 
 [tasks."lint:fallow:health"]
-description = "Check for new complexity findings against the Fallow baseline"
+description = "Check coverage-aware complexity/CRAP findings with Fallow"
 depends = ["test:coverage"]
 run = "fallow health --config .config/fallow.toml --complexity --coverage .var/coverage --fail-on-issues"
 

@@ -79,6 +79,8 @@ Fallow is wired into `hk check` because it is fast enough for this project. It i
 
 The hk Fallow step runs one combined quiet command instead of `mise run lint:fallow`, which runs three separate Fallow commands. This keeps hook output concise and avoids repeating the same workspace-discovery diagnostics three times. Use `mise run lint:fallow` when you want the more verbose per-analysis output.
 
+For complexity/CRAP checks, use `mise run lint:fallow:health` or the full `mise run validate` pipeline. That task first runs coverage and then passes `--coverage .var/coverage` to `fallow health`. Do not interpret raw `fallow health --complexity` output as the project health signal: without coverage, CRAP assumes 0% coverage and can report misleading findings for functions that are already exercised by Storybook tests.
+
 Fallow may emit workspace discovery diagnostics for `tsconfig.json` references such as `tsconfig.app.json` and `tsconfig.node.json`. Those files exist and TypeScript builds correctly. The diagnostic comes from Fallow interpreting TypeScript project-reference paths as workspace directories. Treat it as harmless unless Fallow starts failing.
 
 ## Dependency Maintenance
