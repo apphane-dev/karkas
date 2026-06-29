@@ -1,4 +1,4 @@
-import { action, atom, wrap } from '@reatom/core'
+import { wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
 
 import { m } from '#paraglide/messages.js'
@@ -6,94 +6,46 @@ import { Button, VisuallyHidden } from '#shared/components'
 import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
 
-const displayAtom = atom('0', 'calculator.display')
-const prevValueAtom = atom<number | null>(null, 'calculator.prevValue')
-const operatorAtom = atom<string | null>(null, 'calculator.operator')
-const resetNextAtom = atom(false, 'calculator.resetNext')
+import {
+	displayAtom,
+	handleClear,
+	handleEquals,
+	handleOperator,
+	handlePercent,
+	handleToggleSign,
+	inputDigit,
+	inputDot,
+	type CalculatorOperator,
+} from '../model/model'
 
-const inputDigit = action((digit: string) => {
-	if (resetNextAtom()) {
-		displayAtom.set(digit)
-		resetNextAtom.set(false)
-	} else {
-		displayAtom.set(displayAtom() === '0' ? digit : displayAtom() + digit)
-	}
-}, 'calculator.inputDigit')
+type CalculatorButton =
+	| { kind: 'function'; label: string; action: 'clear' | 'toggleSign' | 'percent' }
+	| { kind: 'operator'; label: string; operator: CalculatorOperator }
+	| { kind: 'digit'; label: string; digit: string; gridColumn?: string }
+	| { kind: 'digit'; label: string; action: 'dot' }
+	| { kind: 'operator'; label: string; action: 'equals' }
 
-const inputDot = action(() => {
-	if (resetNextAtom()) {
-		displayAtom.set('0.')
-		resetNextAtom.set(false)
-	} else if (!displayAtom().includes('.')) {
-		displayAtom.set(displayAtom() + '.')
-	}
-}, 'calculator.inputDot')
-
-function calculate(left: number, op: string, right: number) {
-	switch (op) {
-		case '+':
-			return left + right
-		case '-':
-			return left - right
-		case '*':
-			return left * right
-		case '/':
-			return right !== 0 ? left / right : null
-		default:
-			return right
-	}
-}
-
-const handleOperator = action((nextOp: string) => {
-	const current = parseFloat(displayAtom())
-	const prev = prevValueAtom()
-	const op = operatorAtom()
-
-	if (prev !== null && op) {
-		const result = calculate(prev, op, current)
-		if (result === null) {
-			displayAtom.set('Error')
-			prevValueAtom.set(null)
-			operatorAtom.set(null)
-			resetNextAtom.set(true)
-			return
-		}
-		displayAtom.set(String(result))
-		prevValueAtom.set(result)
-	} else {
-		prevValueAtom.set(current)
-	}
-
-	operatorAtom.set(nextOp)
-	resetNextAtom.set(true)
-}, 'calculator.handleOperator')
-
-const handleEquals = action(() => {
-	const prev = prevValueAtom()
-	const op = operatorAtom()
-	if (prev !== null && op) {
-		const result = calculate(prev, op, parseFloat(displayAtom()))
-		displayAtom.set(result === null ? 'Error' : String(result))
-		prevValueAtom.set(null)
-		operatorAtom.set(null)
-		resetNextAtom.set(true)
-	}
-}, 'calculator.handleEquals')
-
-const handleClear = action(() => {
-	displayAtom.set('0')
-	prevValueAtom.set(null)
-	operatorAtom.set(null)
-	resetNextAtom.set(false)
-}, 'calculator.handleClear')
-
-const handlePercent = action(() => {
-	displayAtom.set(String(parseFloat(displayAtom()) / 100))
-}, 'calculator.handlePercent')
-
-const handleToggleSign = action(() => {
-	displayAtom.set(String(-parseFloat(displayAtom())))
-}, 'calculator.handleToggleSign')
+const BUTTONS = [
+	{ label: 'AC', kind: 'function', action: 'clear' },
+	{ label: '+/−', kind: 'function', action: 'toggleSign' },
+	{ label: '%', kind: 'function', action: 'percent' },
+	{ label: '÷', kind: 'operator', operator: '/' },
+	{ label: '7', kind: 'digit', digit: '7' },
+	{ label: '8', kind: 'digit', digit: '8' },
+	{ label: '9', kind: 'digit', digit: '9' },
+	{ label: '×', kind: 'operator', operator: '*' },
+	{ label: '4', kind: 'digit', digit: '4' },
+	{ label: '5', kind: 'digit', digit: '5' },
+	{ label: '6', kind: 'digit', digit: '6' },
+	{ label: '−', kind: 'operator', operator: '-' },
+	{ label: '1', kind: 'digit', digit: '1' },
+	{ label: '2', kind: 'digit', digit: '2' },
+	{ label: '3', kind: 'digit', digit: '3' },
+	{ label: '+', kind: 'operator', operator: '+' },
+	{ label: '0', kind: 'digit', digit: '0', gridColumn: 'span 2' },
+	{ label: '.', kind: 'digit', action: 'dot' },
+	{ label: '=', kind: 'operator', action: 'equals' },
+] as const satisfies ReadonlyArray<CalculatorButton>
 
 const buttonStyle = css({
 	h: '14',
@@ -105,26 +57,44 @@ const buttonStyle = css({
 	transition: 'background 0.1s',
 })
 
-const digitStyle = css({
-	bg: 'gray.3',
-	color: 'gray.12',
-	_hover: { bg: 'gray.4' },
-	_active: { bg: 'gray.5' },
-})
+const buttonVariantClass = {
+	digit: css({
+		bg: 'gray.3',
+		color: 'gray.12',
+		_hover: { bg: 'gray.4' },
+		_active: { bg: 'gray.5' },
+	}),
+	operator: css({
+		bg: 'colorPalette.9',
+		color: 'white',
+		_hover: { bg: 'colorPalette.10' },
+		_active: { bg: 'colorPalette.11' },
+	}),
+	function: css({
+		bg: 'gray.5',
+		color: 'gray.12',
+		_hover: { bg: 'gray.6' },
+		_active: { bg: 'gray.7' },
+	}),
+} satisfies Record<CalculatorButton['kind'], string>
 
-const operatorStyle = css({
-	bg: 'colorPalette.9',
-	color: 'white',
-	_hover: { bg: 'colorPalette.10' },
-	_active: { bg: 'colorPalette.11' },
-})
+const pressButton = (button: CalculatorButton) => {
+	if ('digit' in button) return inputDigit(button.digit)
+	if ('operator' in button) return handleOperator(button.operator)
 
-const functionStyle = css({
-	bg: 'gray.5',
-	color: 'gray.12',
-	_hover: { bg: 'gray.6' },
-	_active: { bg: 'gray.7' },
-})
+	switch (button.action) {
+		case 'clear':
+			return handleClear()
+		case 'toggleSign':
+			return handleToggleSign()
+		case 'percent':
+			return handlePercent()
+		case 'dot':
+			return inputDot()
+		case 'equals':
+			return handleEquals()
+	}
+}
 
 export const CalculatorPage = reatomComponent(() => {
 	return (
@@ -139,7 +109,8 @@ export const CalculatorPage = reatomComponent(() => {
 				<VisuallyHidden as="h1">{m.calculator_title()}</VisuallyHidden>
 
 				<styled.div bg="gray.2" borderRadius="xl" p="4" borderWidth="1px" borderColor="border">
-					<styled.div
+					<styled.output
+						aria-label="Calculator display"
 						textAlign="right"
 						fontSize="3xl"
 						fontWeight="bold"
@@ -155,125 +126,19 @@ export const CalculatorPage = reatomComponent(() => {
 						overflow="hidden"
 					>
 						<styled.span truncate>{displayAtom()}</styled.span>
-					</styled.div>
+					</styled.output>
 
 					<styled.div display="grid" gridTemplateColumns="repeat(4, 1fr)" gap="2">
-						<Button
-							className={`${buttonStyle} ${functionStyle}`}
-							onClick={wrap(() => handleClear())}
-						>
-							AC
-						</Button>
-						<Button
-							className={`${buttonStyle} ${functionStyle}`}
-							onClick={wrap(() => handleToggleSign())}
-						>
-							+/−
-						</Button>
-						<Button
-							className={`${buttonStyle} ${functionStyle}`}
-							onClick={wrap(() => handlePercent())}
-						>
-							%
-						</Button>
-						<Button
-							className={`${buttonStyle} ${operatorStyle}`}
-							onClick={wrap(() => handleOperator('/'))}
-						>
-							÷
-						</Button>
-
-						<Button
-							className={`${buttonStyle} ${digitStyle}`}
-							onClick={wrap(() => inputDigit('7'))}
-						>
-							7
-						</Button>
-						<Button
-							className={`${buttonStyle} ${digitStyle}`}
-							onClick={wrap(() => inputDigit('8'))}
-						>
-							8
-						</Button>
-						<Button
-							className={`${buttonStyle} ${digitStyle}`}
-							onClick={wrap(() => inputDigit('9'))}
-						>
-							9
-						</Button>
-						<Button
-							className={`${buttonStyle} ${operatorStyle}`}
-							onClick={wrap(() => handleOperator('*'))}
-						>
-							×
-						</Button>
-
-						<Button
-							className={`${buttonStyle} ${digitStyle}`}
-							onClick={wrap(() => inputDigit('4'))}
-						>
-							4
-						</Button>
-						<Button
-							className={`${buttonStyle} ${digitStyle}`}
-							onClick={wrap(() => inputDigit('5'))}
-						>
-							5
-						</Button>
-						<Button
-							className={`${buttonStyle} ${digitStyle}`}
-							onClick={wrap(() => inputDigit('6'))}
-						>
-							6
-						</Button>
-						<Button
-							className={`${buttonStyle} ${operatorStyle}`}
-							onClick={wrap(() => handleOperator('-'))}
-						>
-							−
-						</Button>
-
-						<Button
-							className={`${buttonStyle} ${digitStyle}`}
-							onClick={wrap(() => inputDigit('1'))}
-						>
-							1
-						</Button>
-						<Button
-							className={`${buttonStyle} ${digitStyle}`}
-							onClick={wrap(() => inputDigit('2'))}
-						>
-							2
-						</Button>
-						<Button
-							className={`${buttonStyle} ${digitStyle}`}
-							onClick={wrap(() => inputDigit('3'))}
-						>
-							3
-						</Button>
-						<Button
-							className={`${buttonStyle} ${operatorStyle}`}
-							onClick={wrap(() => handleOperator('+'))}
-						>
-							+
-						</Button>
-
-						<Button
-							className={`${buttonStyle} ${digitStyle}`}
-							gridColumn="span 2"
-							onClick={wrap(() => inputDigit('0'))}
-						>
-							0
-						</Button>
-						<Button className={`${buttonStyle} ${digitStyle}`} onClick={wrap(() => inputDot())}>
-							.
-						</Button>
-						<Button
-							className={`${buttonStyle} ${operatorStyle}`}
-							onClick={wrap(() => handleEquals())}
-						>
-							=
-						</Button>
+						{BUTTONS.map((button) => (
+							<Button
+								key={button.label}
+								className={`${buttonStyle} ${buttonVariantClass[button.kind]}`}
+								gridColumn={'gridColumn' in button ? button.gridColumn : undefined}
+								onClick={wrap(() => pressButton(button))}
+							>
+								{button.label}
+							</Button>
+						))}
 					</styled.div>
 				</styled.div>
 			</styled.div>
