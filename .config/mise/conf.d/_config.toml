@@ -1,7 +1,7 @@
 min_version = "2026.4.18" # required for [deps] (renamed from [prepare])
 
 [tools]
-bun = "1.3.14"
+nub = { version = "0.2.7", npm_args = "--ignore-scripts=false" }
 node = "lts"
 jq = "latest"
 vp = "latest"
@@ -16,7 +16,7 @@ STORYBOOK_ENABLE_CRASH_REPORTS = 1
 HK_PKL_BACKEND = "pklr"
 HK_MISE = 1
 
-[deps.bun]
+[deps.nub]
 auto = true
 
 [shell_alias]

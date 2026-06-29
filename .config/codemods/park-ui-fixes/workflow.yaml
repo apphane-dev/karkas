@@ -14,7 +14,7 @@ nodes:
             - '**/*.ts'
             - '**/*.tsx'
       - name: 'Apply legacy react/19/remove-forward-ref'
-        run: 'bunx codemod@legacy react/19/remove-forward-ref -t ./src/shared/components/ --allow-dirty --no-interactive'
+        run: 'nubx codemod@legacy react/19/remove-forward-ref -t ./src/shared/components/ --allow-dirty --no-interactive'
       - name: 'Cleanup ref types'
         ast-grep:
           config_file: 'rules/remove-ref-types.yml'

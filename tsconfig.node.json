@@ -2,7 +2,7 @@
 	"extends": "./tsconfig.base.json",
 	"compilerOptions": {
 		"lib": ["ESNext"],
-		"types": ["bun-types", "vite-plus/test/globals"],
+		"types": ["node", "vite-plus/test/globals"],
 		"allowImportingTsExtensions": true,
 		"composite": true,
 		"tsBuildInfoFile": ".var/local/ts/node.tsbuildinfo"

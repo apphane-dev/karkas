@@ -1,4 +1,5 @@
-#!/usr/bin/env bun
+#!/usr/bin/env nub
+/// <reference types="node" />
 
 /**
  * Verifies that unused ParaglideJS translations are tree-shaken out of the
@@ -17,10 +18,12 @@
  * fresh build.
  */
 
-import { Glob } from 'bun'
-import { join } from 'node:path'
+import { existsSync } from 'node:fs'
+import { readdir, readFile } from 'node:fs/promises'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const root = join(import.meta.dir, '..')
+const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const distDir = join(root, '.var/dist/webapp/assets')
 
 // Translated values for the `reatomloc_tree_shake_canary` message key.
@@ -31,14 +34,12 @@ const sentinels = [
 	'reatomLoc árbol canario — no debe aparecer en el bundle',
 ]
 
-import { existsSync } from 'node:fs'
-
 if (!existsSync(distDir)) {
 	console.error(`✗ Build output not found: ${distDir}\n  Run \`mise run build:webapp\` first.`)
 	process.exit(1)
 }
 
-const files = await Array.fromAsync(new Glob('*.js').scan({ cwd: distDir }))
+const files = (await readdir(distDir)).filter((file) => file.endsWith('.js'))
 
 if (files.length === 0) {
 	console.error(`✗ No JS files found in ${distDir}\n  The build output may be empty or corrupted.`)
@@ -48,7 +49,7 @@ if (files.length === 0) {
 let failed = false
 
 for (const file of files) {
-	const content = await Bun.file(join(distDir, file)).text()
+	const content = await readFile(join(distDir, file), 'utf8')
 	for (const sentinel of sentinels) {
 		if (content.includes(sentinel)) {
 			console.error(`✗ "${sentinel}" leaked into ${file}`)

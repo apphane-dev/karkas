@@ -14,7 +14,7 @@ Project maintenance split:
 
 - `mise` owns named project workflows and low-level tool commands (`prepare`, tests, builds, codegen, Fallow, deployment artifacts, etc.).
 - `hk` owns file-scoped quality orchestration for hooks and fast local format/lint/typecheck (`hk check`, `hk fix`).
-- Project quality docs should point agents and contributors to `hk check` for validation and `hk fix` for auto-fixable issues. Use lower-level `mise`, `bun`, `vp`, or tool-specific commands only when a doc is about that specific subsystem or a narrower task.
+- Project quality docs should point agents and contributors to `hk check` for validation and `hk fix` for auto-fixable issues. Use lower-level `mise`, `nub`, `vp`, or tool-specific commands only when a doc is about that specific subsystem or a narrower task.
 
 Docs should avoid duplicating large code blocks that are already clear in source files.
 

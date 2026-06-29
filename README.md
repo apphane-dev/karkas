@@ -1,10 +1,10 @@
 # modern-stack
 
-A modern React application demonstrating an opinionated setup with Bun, React 19, Reatom state management, Panda CSS styling, and Storybook with Vitest integration.
+A modern React application demonstrating an opinionated setup with Nub, React 19, Reatom state management, Panda CSS styling, and Storybook with Vitest integration.
 
 ## Stack
 
-- Package Manager: Bun
+- Package Manager: Nub (using Aube's install engine)
 - Framework: React 19
 - State Management: Reatom
 - Styling: Panda CSS (with Park UI components)
@@ -38,7 +38,7 @@ Each `entity` is self-contained with `api/`, `model/`, `mocks/`, and an `index.t
 Install dependencies:
 
 ```bash
-bun install
+nub install
 ```
 
 This runs the `prepare` script, which:
@@ -53,7 +53,7 @@ This runs the `prepare` script, which:
 Run the development server:
 
 ```bash
-bun run dev
+nub run dev
 ```
 
 ## Validation loop
@@ -81,7 +81,7 @@ Quality orchestration is handled by `hk` (configuration in `.config/hk.pkl`), no
 | `pre-commit` | `fastSteps`  | Runs with auto-fix; format, lint, typecheck on staged files. |
 | `pre-push`   | `checkSteps` | Adds the Fallow step; same gate as `hk check`.               |
 
-`hk install --mise` is wired into the `prepare` task, so hooks are installed automatically after `bun install`.
+`hk install --mise` is wired into the `prepare` task, so hooks are installed automatically after `nub install`.
 
 ## Documentation
 

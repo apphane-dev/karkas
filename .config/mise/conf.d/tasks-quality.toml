@@ -36,7 +36,7 @@ run = "tsc -b"
 
 [tasks."lint:steiger"]
 description = "Check FSD architecture with steiger"
-run = "bun scripts/steiger.ts"
+run = "nub scripts/steiger.ts"
 
 [tasks."lint:fallow"]
 description = "Check dead code, duplication, and coverage-aware complexity with Fallow"
@@ -66,7 +66,7 @@ run = "fallow fix --config .config/fallow.toml --yes"
 [tasks."lint:paraglide-tree-shaking"]
 description = "Verify unused translations are tree-shaken from the production bundle"
 depends = ["build:webapp"]
-run = "bun scripts/check-tree-shaking.ts"
+run = "nub scripts/check-tree-shaking.ts"
 
 [tasks.validate]
 description = "Run all quality checks (format, lint, typecheck, test). Default validation task for LLMs"

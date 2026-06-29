@@ -14,7 +14,7 @@ outputs = ["{{ vars.panda_outdir }}/**/*"]
 
 [tasks."prepare:msw"]
 description = "Generate and verify Mock Service Worker"
-run = "bun .config/scripts/verify-msw-worker-version.ts --ensure"
+run = "nub .config/scripts/verify-msw-worker-version.ts --ensure"
 sources = [
 	"package.json",
 	"public/mockServiceWorker.js",

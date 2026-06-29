@@ -17,7 +17,7 @@ For anything related to format, lint, test execution, or Vite+ behavior, start w
 | `.config/mise/conf.d/tasks-quality.toml` | Quality task wrappers and full validation pipeline                             |
 | `.config/mise/conf.d/tasks-prepare.toml` | Code generation and local setup tasks                                          |
 | `.config/hk.pkl`                         | hk hook/check/fix orchestration                                                |
-| `package.json`                           | Package-manager scripts and Vite+ dependency aliases                           |
+| `package.json`                           | Nub package-manager scripts and Vite+ dependency aliases                       |
 
 ## Responsibility Split
 
@@ -85,7 +85,7 @@ Fallow may emit workspace discovery diagnostics for `tsconfig.json` references s
 
 ## Dependency Maintenance
 
-Prefer Vite+ package-manager commands for routine dependency operations:
+Prefer Vite+ package-manager commands for routine dependency operations when they cover the task:
 
 ```bash
 vp install
@@ -95,4 +95,17 @@ vp update
 vp why <package>
 ```
 
-Use raw `bun` commands only when Vite+ cannot express the needed operation or when debugging the package manager directly.
+Use Nub directly for lockfile-oriented operations and CI-equivalent installs:
+
+```bash
+nub install
+nub ci
+nub add <package>
+nub remove <package>
+nub update
+nub why <package>
+```
+
+This repository is a Nub-identity project (`packageManager: nub@…`, `lock.yaml`). Nub embeds Aube's install engine, so there is no separate Aube CLI in the project toolchain.
+
+Use raw `nub` / `nubx` commands only when Vite+ cannot express the needed operation or when debugging the package manager directly.

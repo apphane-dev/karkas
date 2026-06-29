@@ -15,7 +15,7 @@ depends_post = "park:fix"
 usage = '''
 arg "<name>..." help="Name of the component to add, e.g. 'button'"
 '''
-run = ["bun x @park-ui/cli add ${usage_name?}", { task = "prepare:panda" }]
+run = ["nubx @park-ui/cli add ${usage_name?}", { task = "prepare:panda" }]
 
 [tasks."park:fix"]
 description = "Replace styled-system imports with #styled-system in shared UI components"

@@ -2,5 +2,13 @@
 	"devDependencies": {
 		"@feature-sliced/steiger-plugin": "^0.5.7",
 		"steiger": "^0.5.11"
-	}
+	},
+	"devEngines": {
+		"packageManager": {
+			"name": "nub",
+			"version": "^0.2.7",
+			"onFail": "warn"
+		}
+	},
+	"packageManager": "nub@0.2.7"
 }

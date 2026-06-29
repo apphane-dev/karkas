@@ -1,6 +1,5 @@
-# dependencies (bun install)
+# dependencies
 node_modules
-scripts/steiger/bun.lock
 
 # output
 out
