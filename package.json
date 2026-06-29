@@ -31,8 +31,9 @@
 	"dependencies": {
 		"@ark-ui/react": "^5.37.2",
 		"@icons-pack/react-simple-icons": "^13.13.0",
-		"@reatom/core": "^1001.1.0",
-		"@reatom/react": "^1001.0.0",
+		"@reatom/core": "https://pkg.pr.new/reatom/reatom/@reatom/core@v1001",
+		"@reatom/react": "https://pkg.pr.new/reatom/reatom/@reatom/react@v1001",
+		"idb-keyval": "^6.2.1",
 		"lucide-react": "^1.21.0",
 		"react": "^19.2.7",
 		"react-dom": "^19.2.7"

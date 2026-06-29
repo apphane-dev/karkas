@@ -1,5 +1,10 @@
 entry = ["scripts/**/*.ts"]
-ignoreDependencies = ["typescript-7"]
+# `typescript-7`: editor/toolchain types, not imported by source.
+# `idb-keyval`: optional dependency of the @reatom/core v1001 pkg.pr.new
+# preview (IndexedDB persistence). The app doesn't use it directly, but the
+# Storybook/Vite optimizer eagerly analyzes reatom's dynamic import, so the
+# package must be resolvable. Drop once #1294 ships to stable npm.
+ignoreDependencies = ["typescript-7", "idb-keyval"]
 
 # Park UI and generated assets are committed vendor/generated code; keep them out of findings.
 ignorePatterns = [
