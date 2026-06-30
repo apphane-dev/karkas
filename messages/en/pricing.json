@@ -3,5 +3,12 @@
 	"pricing_desc": "Choose the plan that works best for you.",
 	"pricing_current_plan": "Current plan",
 	"pricing_upgrade_pro": "Upgrade to Pro",
-	"pricing_get_plan": "Get {name}"
+	"pricing_get_plan": "Get {name}",
+	"pricing_loading_page": "Loading pricing plans",
+	"pricing_error_title": "Could not load pricing",
+	"pricing_error_description": "We couldn't load the pricing plans. Try again in a moment.",
+	"pricing_subscribing": "Switching to {name}…",
+	"pricing_subscribed": "You're now on the {name} plan",
+	"pricing_subscribe_error": "Couldn't switch plans. Try again.",
+	"pricing_processing": "Processing…"
 }

@@ -5,11 +5,11 @@ import { styled } from '#styled-system/jsx'
  * {@link USAGE_WARN_THRESHOLD} the bar turns orange; at or above
  * {@link USAGE_CRITICAL_THRESHOLD} it turns red.
  */
-export const USAGE_WARN_THRESHOLD = 70
-export const USAGE_CRITICAL_THRESHOLD = 90
+const USAGE_WARN_THRESHOLD = 70
+const USAGE_CRITICAL_THRESHOLD = 90
 
 /** Maps a 0–100 utilization percentage to a semantic bar color token. */
-export function usageBarColor(percentage: number): string {
+function usageBarColor(percentage: number): string {
 	if (percentage >= USAGE_CRITICAL_THRESHOLD) return 'red.9'
 	if (percentage >= USAGE_WARN_THRESHOLD) return 'orange.9'
 	return 'blue.9'

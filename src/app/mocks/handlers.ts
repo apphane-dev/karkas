@@ -10,6 +10,7 @@ import {
 } from '#entities/conversation/mocks/handlers'
 import { dashboardStats } from '#entities/dashboard/mocks/handlers'
 import { itemDetail, itemList } from '#entities/item/mocks/handlers'
+import { pricingPlans, pricingSubscribe } from '#entities/pricing/mocks/handlers'
 import { settingHandlers } from '#entities/setting/mocks/handlers'
 import { timelineEventDetail, timelineEventList } from '#entities/timeline-event/mocks/handlers'
 import { usageStats } from '#entities/usage/mocks/handlers'
@@ -27,6 +28,8 @@ export const handlers = {
 	dashboardStats: dashboardStats.default,
 	itemList: itemList.default,
 	itemDetail: itemDetail.default,
+	pricingPlans: pricingPlans.default,
+	pricingSubscribe: pricingSubscribe.default,
 	settings: settingHandlers,
 	usageStats: usageStats.default,
 	timelineEventList: timelineEventList.default,

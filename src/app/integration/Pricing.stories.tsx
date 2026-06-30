@@ -1,6 +1,8 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
+import { pricingPlans } from '#entities/pricing/mocks/handlers'
 import { pricingActor as I, pricingLoc as loc } from '#pages/pricing/testing'
+import { role } from '#shared/test'
 
 const meta = preview.meta({
 	title: 'Integration/Pricing',
@@ -14,7 +16,10 @@ const meta = preview.meta({
 
 export default meta
 
-export const Default = meta.story({ name: 'Default' })
+export const Default = meta.story({
+	name: 'Default',
+	play: () => I.waitExit(role('status')),
+})
 
 Default.test('renders pricing heading', async () => {
 	await I.see(loc.heading)
@@ -24,15 +29,72 @@ Default.test('renders all plan cards', async () => {
 	await I.seePricingContent()
 })
 
+Default.test('marks Free as the current plan', async () => {
+	await I.seeCurrentPlanOn(loc.freeCard)
+})
+
+export const UpgradeToPro = meta.story({
+	name: 'Upgrade to Pro',
+	play: () => I.waitExit(role('status')),
+})
+
+UpgradeToPro.test('clicking Upgrade to Pro switches the current plan', async () => {
+	await I.seeCurrentPlanOn(loc.freeCard)
+	await I.subscribe(loc.proCard, 'Upgrade to Pro')
+	await I.seeSubscribeToast('Pro')
+	await I.seeCurrentPlanOn(loc.proCard)
+	await I.see(role('button', 'Get Free').within(loc.freeCard))
+})
+
+export const HandlesServerError = meta.story({
+	name: 'Server Error',
+	play: () => I.waitExit(role('status')),
+	parameters: {
+		msw: { handlers: { pricingPlans: pricingPlans.error } },
+	},
+})
+
+HandlesServerError.test('shows error state when pricing request fails', async () => {
+	await I.seeError()
+})
+
+export const RecoversAfterRetry = meta.story({
+	name: 'Retry Success',
+	play: () => I.waitExit(role('status')),
+	parameters: {
+		msw: { handlers: { pricingPlans: pricingPlans.retrySucceeds() } },
+	},
+})
+
+RecoversAfterRetry.test('loads pricing after retry succeeds', async () => {
+	await I.seeError()
+	await I.retry()
+	await I.waitExit(role('status'))
+	await I.seePricingContent()
+})
+
+export const KeepsLoading = meta.story({
+	name: 'Loading State',
+	parameters: {
+		msw: { handlers: { pricingPlans: pricingPlans.loading } },
+	},
+})
+
+KeepsLoading.test('shows loading state while pricing is pending', async () => {
+	await I.seeLoading()
+	await I.dontSee(loc.heading)
+})
+
 export const DefaultMobile = meta.story({
 	name: 'Default (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-})
-
-DefaultMobile.test('[mobile] renders pricing heading', async () => {
-	await I.see(loc.heading)
+	play: () => I.waitExit(role('status')),
 })
 
 DefaultMobile.test('[mobile] renders all plan cards', async () => {
 	await I.seePricingContent()
+})
+
+DefaultMobile.test('[mobile] marks Free as the current plan', async () => {
+	await I.seeCurrentPlanOn(loc.freeCard)
 })
