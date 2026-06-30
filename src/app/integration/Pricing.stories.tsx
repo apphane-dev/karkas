@@ -19,6 +19,7 @@ export default meta
 export const Default = meta.story({
 	name: 'Default',
 	play: () => I.waitExit(role('status')),
+	parameters: { msw: { handlers: { pricingPlans: pricingPlans.reset } } },
 })
 
 Default.test('renders pricing heading', async () => {
@@ -89,6 +90,7 @@ export const DefaultMobile = meta.story({
 	name: 'Default (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
 	play: () => I.waitExit(role('status')),
+	parameters: { msw: { handlers: { pricingPlans: pricingPlans.reset } } },
 })
 
 DefaultMobile.test('[mobile] renders all plan cards', async () => {

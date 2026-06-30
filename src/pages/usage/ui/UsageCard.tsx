@@ -46,10 +46,12 @@ export const UsageCard = reatomComponent<UsageCardProps>(({ active, data, loadGl
 					{m.usage_storage()}
 				</styled.span>
 				<styled.span>
-					{usedGB !== undefined && totalGB !== undefined ? `${usedGB} GB / ${totalGB} GB` : '—'}
+					{usedGB !== undefined && totalGB !== undefined
+						? m.usage_storage_desc({ usedGB, totalGB })
+						: '—'}
 				</styled.span>
 			</styled.div>
-			<UsageBar percentage={percentage ?? 0} />
+			{percentage !== null && <UsageBar percentage={percentage} />}
 			<styled.div fontSize="xs" color="muted" mt="0.5">
 				{percentage !== null ? m.usage_percentage_used({ percentage }) : '—'}
 			</styled.div>

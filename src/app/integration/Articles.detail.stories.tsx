@@ -160,6 +160,7 @@ EditArticle.test('changing status persists and reflects on return', async () => 
 		// in the global toaster, so `seeArticleSavedToast` can resolve against it
 		// before this save transitions to read mode. Wait for the real transition.
 		await I.retryTo(() => I.see(button('Edit')), 25)
+		await I.seeArticleDetailStatus('In Progress')
 	})
 })
 

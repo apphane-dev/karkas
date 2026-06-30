@@ -1,4 +1,4 @@
-import { retryComputed, wrap } from '@reatom/core'
+import { abortVar, retryComputed, wrap } from '@reatom/core'
 
 import { protectedRoute } from '#entities/auth'
 import { fetchConversationById, fetchConversations } from '#entities/conversation'
@@ -15,11 +15,14 @@ import { MessageThreadNoSelection } from '../ui/thread/MessageThreadNoSelection'
 import { MessageThreadNotFound } from '../ui/thread/MessageThreadNotFound'
 import { reatomChatThreadModel } from './chatThreadModel'
 
+const fetchConversationsForRoute = async () =>
+	await wrap(fetchConversations({ signal: abortVar.require().signal }))
+
 export const chatRoute = protectedRoute.reatomRoute(
 	{
 		path: 'chat',
 		layout: true,
-		loader: fetchConversations,
+		loader: fetchConversationsForRoute,
 		render: (self) => {
 			const detail = self.outlet().at(0)
 			const selectedConversationId = chatConversationRoute()?.conversationId
@@ -65,7 +68,9 @@ export const chatConversationRoute = chatRoute.reatomRoute(
 	{
 		path: ':conversationId',
 		loader: async ({ conversationId }) =>
-			reatomChatThreadModel(await fetchConversationById(conversationId)),
+			reatomChatThreadModel(
+				await wrap(fetchConversationById(conversationId, { signal: abortVar.require().signal })),
+			),
 		render: (self) => {
 			const { isPending, data: model } = self.loader.status()
 			const error = self.loader.error()

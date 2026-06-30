@@ -88,6 +88,13 @@ Default.test('handles consecutive operations', async () => {
 	await I.seeDisplay('12')
 })
 
+Default.test('chains the result of `=` into the next operation', async () => {
+	await I.pressMany('5', '+', '3', '=')
+	await I.seeDisplay('8')
+	await I.pressMany('+', '2', '=')
+	await I.seeDisplay('10')
+})
+
 Default.test('division by zero shows Error', async () => {
 	await I.pressMany('5', '÷', '0', '=')
 	await I.seeDisplay('Error')

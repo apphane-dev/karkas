@@ -1,6 +1,15 @@
 import type { Article } from '#entities/article'
 
-import { action, atom, framePromise, reatomForm, sleep, withAbort, wrap } from '@reatom/core'
+import {
+	abortVar,
+	action,
+	atom,
+	framePromise,
+	reatomForm,
+	sleep,
+	withAbort,
+	wrap,
+} from '@reatom/core'
 
 import { updateArticle } from '#entities/article'
 import { m } from '#paraglide/messages.js'
@@ -10,17 +19,14 @@ const SAVE_DELAY_MS = 300
 
 async function saveWithToast(articleId: string, values: Omit<Article, 'id'>) {
 	const id = toaster.create({ title: m.article_saving(), type: 'loading', closable: false })
-	let completed = false
-	void framePromise()
-		.finally(() => {
-			if (!completed) toaster.remove(id)
-		})
-		.catch(() => {})
+	void framePromise().catch(() => {})
 	try {
-		await wrap(updateArticle(articleId, values))
+		const updated = await wrap(
+			updateArticle(articleId, values, { signal: abortVar.require().signal }),
+		)
 		await wrap(sleep(SAVE_DELAY_MS))
 		toaster.update(id, { title: m.article_saved(), type: 'success' })
-		completed = true
+		return updated
 	} catch (error) {
 		toaster.remove(id)
 		throw error
@@ -40,7 +46,10 @@ export function reatomArticleDetailModel(article: Article) {
 			status: article.status,
 			content: article.content,
 		},
-		{ name: `article.${id}.editForm` },
+		{
+			name: `article.${id}.editForm`,
+			onSubmit: async (values) => await wrap(saveWithToast(id, values)),
+		},
 	)
 
 	const startEdit = action(() => {
@@ -61,10 +70,14 @@ export function reatomArticleDetailModel(article: Article) {
 		if (!form.focus().dirty || isSaving()) return
 		isSaving.set(true)
 		try {
-			const values = form()
-			await wrap(saveWithToast(id, values))
-			current.set({ id, ...values })
-			form.init(values)
+			const updated = await wrap(form.submit())
+			current.set(updated)
+			form.init({
+				title: updated.title,
+				description: updated.description,
+				status: updated.status,
+				content: updated.content,
+			})
 			isEditing.set(false)
 		} catch {
 			toaster.create({ title: m.article_save_error(), type: 'error' })

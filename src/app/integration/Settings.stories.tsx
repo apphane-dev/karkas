@@ -81,7 +81,7 @@ EditProfileShowsSave.test('save button appears after editing profile', async () 
 EditProfileShowsSave.test('save button disappears after saving', async () => {
 	await I.fill(role('textbox', 'Display name'), 'Jane Doe')
 	await I.see(button('Save changes'))
-	await I.save()
+	await I.saveProfile()
 	await I.seeProfileSavedToast()
 	await I.dontSee(button('Save changes'))
 })
@@ -218,7 +218,7 @@ export const SaveProfileSuccess = meta.story({ name: 'Save Profile', play: waitF
 SaveProfileSuccess.test('saving profile shows success toast and clears dirty', async () => {
 	await I.fill(role('textbox', 'Display name'), 'Jane Doe')
 	await I.see(button('Save changes'))
-	await I.save()
+	await I.saveProfile()
 	await I.seeProfileSavedToast()
 	await I.dontSee(button('Save changes'))
 	await I.seeInField(role('textbox', 'Display name'), 'Jane Doe')
@@ -234,7 +234,7 @@ SaveNotificationsSuccess.test(
 	async () => {
 		await I.selectOption(role('combobox', 'Email notifications'), 'Important only')
 		await I.see(button('Save changes'))
-		await I.save()
+		await I.saveNotifications()
 		await I.seeNotificationsSavedToast()
 		await I.dontSee(button('Save changes'))
 	},
@@ -250,7 +250,7 @@ export const SaveProfileError = meta.story({
 
 SaveProfileError.test('save server error shows error toast and keeps dirty', async () => {
 	await I.fill(role('textbox', 'Display name'), 'Jane Doe')
-	await I.save()
+	await I.saveProfile()
 	await I.seeSaveErrorToast()
 	await I.see(button('Save changes'))
 })

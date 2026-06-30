@@ -1,4 +1,4 @@
-import { retryComputed, wrap } from '@reatom/core'
+import { abortVar, retryComputed, wrap } from '@reatom/core'
 
 import { fetchPricing } from '#entities/pricing'
 import { m } from '#paraglide/messages.js'
@@ -7,17 +7,24 @@ import { PageError } from '#widgets/data-page'
 
 import { PricingPage } from '../ui/PricingPage'
 import { PricingPageLoading } from '../ui/PricingPageLoading'
-import { reatomPricingPageModel } from './pricingModel'
+import { reatomPricingPageModel, type PricingPageModel } from './pricingModel'
+
+const shouldShowLoading = (
+	isFirstPending: boolean,
+	isPending: boolean,
+	model: PricingPageModel | undefined,
+) => isFirstPending || (isPending && !model)
+
+const loadPricingModel = async () =>
+	reatomPricingPageModel(await wrap(fetchPricing({ signal: abortVar.require().signal })))
 
 export const pricingRoute = rootRoute.reatomRoute(
 	{
 		path: 'pricing',
-		loader: async () => reatomPricingPageModel(await fetchPricing()),
+		loader: loadPricingModel,
 		render: (self) => {
 			const { isFirstPending, isPending, data: model } = self.loader.status()
-			if (isFirstPending || (isPending && !model)) {
-				return <PricingPageLoading />
-			}
+			if (shouldShowLoading(isFirstPending, isPending, model)) return <PricingPageLoading />
 			if (!model) {
 				return (
 					<PageError

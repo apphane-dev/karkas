@@ -1,6 +1,6 @@
 import { action, atom } from '@reatom/core'
 
-export type CalculatorOperator = '+' | '-' | '*' | '/'
+type CalculatorOperator = '+' | '-' | '*' | '/'
 
 const ERROR_DISPLAY = 'Error'
 
@@ -8,7 +8,7 @@ export const displayAtom = atom('0', 'calculator.display')
 
 const prevValueAtom = atom<number | null>(null, 'calculator.prevValue')
 const operatorAtom = atom<CalculatorOperator | null>(null, 'calculator.operator')
-const resetNextAtom = atom(false, 'calculator.resetNext')
+const resetDisplayOnNextInputAtom = atom(false, 'calculator.resetDisplayOnNextInput')
 
 const readDisplayNumber = () => {
 	const value = Number.parseFloat(displayAtom())
@@ -19,26 +19,23 @@ const setError = () => {
 	displayAtom.set(ERROR_DISPLAY)
 	prevValueAtom.set(null)
 	operatorAtom.set(null)
-	resetNextAtom.set(true)
+	resetDisplayOnNextInputAtom.set(true)
 }
 
-const calculate = (left: number, operator: CalculatorOperator, right: number) => {
-	switch (operator) {
-		case '+':
-			return left + right
-		case '-':
-			return left - right
-		case '*':
-			return left * right
-		case '/':
-			return right === 0 ? null : left / right
-	}
-}
+const operatorCalculators = {
+	'+': (left: number, right: number) => left + right,
+	'-': (left: number, right: number) => left - right,
+	'*': (left: number, right: number) => left * right,
+	'/': (left: number, right: number) => (right === 0 ? null : left / right),
+} satisfies Record<CalculatorOperator, (left: number, right: number) => number | null>
+
+const calculate = (left: number, operator: CalculatorOperator, right: number) =>
+	operatorCalculators[operator](left, right)
 
 export const inputDigit = action((digit: string) => {
-	if (resetNextAtom() || displayAtom() === ERROR_DISPLAY) {
+	if (resetDisplayOnNextInputAtom() || displayAtom() === ERROR_DISPLAY) {
 		displayAtom.set(digit)
-		resetNextAtom.set(false)
+		resetDisplayOnNextInputAtom.set(false)
 		return
 	}
 
@@ -46,9 +43,9 @@ export const inputDigit = action((digit: string) => {
 }, 'calculator.inputDigit')
 
 export const inputDot = action(() => {
-	if (resetNextAtom() || displayAtom() === ERROR_DISPLAY) {
+	if (resetDisplayOnNextInputAtom() || displayAtom() === ERROR_DISPLAY) {
 		displayAtom.set('0.')
-		resetNextAtom.set(false)
+		resetDisplayOnNextInputAtom.set(false)
 		return
 	}
 
@@ -65,34 +62,51 @@ export const inputDot = action(() => {
 // `setError` has already been called, `{ result, current }` when a pending
 // operation was applied (`result` is already shown on the display), or
 // `{ result: null, current }` when there is no pending operation to apply.
-const evaluatePending = () => {
-	const current = readDisplayNumber()
-	if (current === null) {
-		setError()
-		return { error: true }
-	}
+const failEvaluation = () => {
+	setError()
+	return { error: true }
+}
 
+const readPendingOperation = () => {
 	const prev = prevValueAtom()
 	const operator = operatorAtom()
-	if (prev === null || operator === null) return { result: null, current }
+	return prev === null || operator === null ? null : { prev, operator }
+}
 
-	const result = calculate(prev, operator, current)
-	if (result === null) {
-		setError()
-		return { error: true }
-	}
-
+const commitResult = (result: number | null, current: number) => {
+	if (result === null || !Number.isFinite(result)) return failEvaluation()
 	displayAtom.set(String(result))
 	return { result, current }
 }
 
+const evaluatePending = () => {
+	const current = readDisplayNumber()
+	if (current === null) return failEvaluation()
+
+	const pending = readPendingOperation()
+	if (!pending) return { result: null, current }
+
+	return commitResult(calculate(pending.prev, pending.operator, current), current)
+}
+
+const carriedValue = (result: number | null, current: number) => result ?? current
+
 export const handleOperator = action((nextOperator: CalculatorOperator) => {
+	// When an operator is already pending and the next operand hasn't been
+	// entered yet, pressing another operator just replaces it. Falling through
+	// after `=` (operator null, reset-display true) seeds prevValue from the
+	// displayed result so it can be chained into the next operation.
+	if (operatorAtom() !== null && resetDisplayOnNextInputAtom()) {
+		operatorAtom.set(nextOperator)
+		return
+	}
+
 	const outcome = evaluatePending()
 	if ('error' in outcome) return
 
-	prevValueAtom.set(outcome.result ?? outcome.current)
+	prevValueAtom.set(carriedValue(outcome.result, outcome.current))
 	operatorAtom.set(nextOperator)
-	resetNextAtom.set(true)
+	resetDisplayOnNextInputAtom.set(true)
 }, 'calculator.handleOperator')
 
 export const handleEquals = action(() => {
@@ -101,14 +115,14 @@ export const handleEquals = action(() => {
 
 	prevValueAtom.set(null)
 	operatorAtom.set(null)
-	resetNextAtom.set(true)
+	resetDisplayOnNextInputAtom.set(true)
 }, 'calculator.handleEquals')
 
 export const handleClear = action(() => {
 	displayAtom.set('0')
 	prevValueAtom.set(null)
 	operatorAtom.set(null)
-	resetNextAtom.set(false)
+	resetDisplayOnNextInputAtom.set(false)
 }, 'calculator.handleClear')
 
 export const handlePercent = action(() => {

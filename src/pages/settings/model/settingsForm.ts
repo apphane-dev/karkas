@@ -1,6 +1,15 @@
 import type { NotificationSettings, ProfileSettings, SettingsData } from '#entities/setting'
 
-import { action, atom, framePromise, reatomForm, sleep, withAbort, wrap } from '@reatom/core'
+import {
+	abortVar,
+	action,
+	atom,
+	framePromise,
+	reatomForm,
+	sleep,
+	withAbort,
+	wrap,
+} from '@reatom/core'
 
 import { updateNotifications, updateProfile } from '#entities/setting'
 import { m } from '#paraglide/messages.js'
@@ -13,8 +22,12 @@ export type Density = 'compact' | 'comfortable' | 'spacious'
 const SAVE_DELAY_MS = 300
 
 // `framePromise()` must run before any `await` to bind to the action frame, so
-// each helper performs the API request itself (mirrors pricingModel.ts).
-async function saveProfileWithToast(values: ProfileSettings) {
+// the shared helper performs the API request itself (mirrors pricingModel.ts).
+async function saveWithToast<TValues>(
+	values: TValues,
+	save: (signal: AbortSignal) => Promise<unknown>,
+	successTitle: string,
+) {
 	const id = toaster.create({ title: m.settings_saving(), type: 'loading', closable: false })
 	let completed = false
 	void framePromise()
@@ -23,39 +36,35 @@ async function saveProfileWithToast(values: ProfileSettings) {
 		})
 		.catch(() => {})
 	try {
-		await wrap(updateProfile(values))
+		await wrap(save(abortVar.require().signal))
 		await wrap(sleep(SAVE_DELAY_MS))
-		toaster.update(id, { title: m.settings_profile_saved(), type: 'success' })
+		toaster.update(id, { title: successTitle, type: 'success' })
 		completed = true
 	} catch (error) {
 		toaster.remove(id)
 		throw error
 	}
+	return values
 }
 
-async function saveNotificationsWithToast(values: NotificationSettings) {
-	const id = toaster.create({ title: m.settings_saving(), type: 'loading', closable: false })
-	let completed = false
-	void framePromise()
-		.finally(() => {
-			if (!completed) toaster.remove(id)
-		})
-		.catch(() => {})
-	try {
-		await wrap(updateNotifications(values))
-		await wrap(sleep(SAVE_DELAY_MS))
-		toaster.update(id, { title: m.settings_notifications_saved(), type: 'success' })
-		completed = true
-	} catch (error) {
-		toaster.remove(id)
-		throw error
-	}
-}
+const saveProfileWithToast = (values: ProfileSettings) =>
+	saveWithToast(values, (signal) => updateProfile(values, { signal }), m.settings_profile_saved())
+
+const saveNotificationsWithToast = (values: NotificationSettings) =>
+	saveWithToast(
+		values,
+		(signal) => updateNotifications(values, { signal }),
+		m.settings_notifications_saved(),
+	)
 
 export function reatomSettingsPageModel(data: SettingsData) {
-	const profileForm = reatomForm(data.profile, { name: 'settings.profileForm' })
+	const profileForm = reatomForm(data.profile, {
+		name: 'settings.profileForm',
+		onSubmit: async (values) => await wrap(saveProfileWithToast(values)),
+	})
 	const notificationsForm = reatomForm(data.notifications, {
 		name: 'settings.notificationsForm',
+		onSubmit: async (values) => await wrap(saveNotificationsWithToast(values)),
 	})
 	const appearanceForm = reatomForm(
 		{ density: 'compact' as Density },
@@ -71,8 +80,8 @@ export function reatomSettingsPageModel(data: SettingsData) {
 		if (!profileForm.focus().dirty || isSavingProfile()) return
 		isSavingProfile.set(true)
 		try {
-			await wrap(saveProfileWithToast(profileForm()))
-			profileForm.init(profileForm())
+			const submitted = await wrap(profileForm.submit())
+			profileForm.init(submitted)
 		} catch {
 			toaster.create({ title: m.settings_save_error(), type: 'error' })
 		} finally {
@@ -84,8 +93,8 @@ export function reatomSettingsPageModel(data: SettingsData) {
 		if (!notificationsForm.focus().dirty || isSavingNotifications()) return
 		isSavingNotifications.set(true)
 		try {
-			await wrap(saveNotificationsWithToast(notificationsForm()))
-			notificationsForm.init(notificationsForm())
+			const submitted = await wrap(notificationsForm.submit())
+			notificationsForm.init(submitted)
 		} catch {
 			toaster.create({ title: m.settings_save_error(), type: 'error' })
 		} finally {

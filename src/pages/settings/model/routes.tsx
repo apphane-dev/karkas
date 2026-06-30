@@ -1,4 +1,4 @@
-import { retryComputed, wrap } from '@reatom/core'
+import { abortVar, retryComputed, wrap } from '@reatom/core'
 
 import { protectedRoute } from '#entities/auth'
 import { fetchSettings } from '#entities/setting'
@@ -7,15 +7,24 @@ import { PageError } from '#widgets/data-page'
 
 import { SettingsPage } from '../ui/SettingsPage'
 import { SettingsPageLoading } from '../ui/SettingsPageLoading'
-import { reatomSettingsPageModel } from './settingsForm'
+import { reatomSettingsPageModel, type SettingsPageModel } from './settingsForm'
+
+const shouldShowLoading = (
+	isFirstPending: boolean,
+	isPending: boolean,
+	model: SettingsPageModel | undefined,
+) => isFirstPending || (isPending && !model)
+
+const loadSettingsModel = async () =>
+	reatomSettingsPageModel(await wrap(fetchSettings({ signal: abortVar.require().signal })))
 
 export const settingsRoute = protectedRoute.reatomRoute(
 	{
 		path: 'settings',
-		loader: async () => reatomSettingsPageModel(await fetchSettings()),
+		loader: loadSettingsModel,
 		render: (self) => {
 			const { isFirstPending, isPending, data: model } = self.loader.status()
-			if (isFirstPending || (isPending && !model)) return <SettingsPageLoading />
+			if (shouldShowLoading(isFirstPending, isPending, model)) return <SettingsPageLoading />
 			if (!model) {
 				return (
 					<PageError
