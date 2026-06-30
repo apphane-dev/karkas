@@ -109,3 +109,21 @@ nub why <package>
 This repository is a Nub-identity project (`packageManager: nub@…`, `lock.yaml`). Nub embeds Aube's install engine, so there is no separate Aube CLI in the project toolchain.
 
 Use raw `nub` / `nubx` commands only when Vite+ cannot express the needed operation or when debugging the package manager directly.
+
+## Dependency Build Script Approvals
+
+Nub is deny-by-default for dependency install/build scripts. Review pending scripts with:
+
+```bash
+nub ignored-builds
+```
+
+Approved or rejected packages are tracked in `package.json#allowBuilds`.
+
+Current audit:
+
+- `esbuild`: allowed. Its `postinstall: node install.js` selects/verifies the platform binary from the matching optional `@esbuild/*` package, with version validation. It is required by Vite/Vite+ and related tooling.
+- `msw`: allowed. Its `postinstall` runs `msw init` only when root `package.json#msw.workerDirectory` is configured, updating the worker in `public`.
+- `sharp`: denied. Its `install: node install/check.js || npm run build` can enter native build/download paths; no current project workflow needs its install script. Keep denied unless an audited image pipeline requires it.
+
+Mise installs `@nubjs/nub` with its default script-blocking behavior. Nub's launcher has a runtime fallback that sets executable bits on its platform binary when the install-time `postinstall.js` is skipped. Project dependency scripts remain controlled by `allowBuilds`.

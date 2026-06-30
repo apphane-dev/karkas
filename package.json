@@ -72,7 +72,9 @@
 	},
 	"packageManager": "nub@0.2.7",
 	"allowBuilds": {
-		"sharp": false
+		"sharp": false,
+		"esbuild": true,
+		"msw": true
 	},
 	"msw": {
 		"workerDirectory": [
