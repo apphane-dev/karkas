@@ -33,6 +33,13 @@ function ReatomDecorator({
 	authenticated = true,
 }: PropsWithChildren<{ authenticated?: boolean; initialPath?: string }>) {
 	const frame = useMemo(() => {
+		// localStorage is shared across stories on the same origin. Atoms backed
+		// by withLocalStorage (theme, locale, top-bar toggles, auth) would otherwise
+		// inherit state a previous story persisted. Reset to defaults in test runs
+		// before the fresh frame reads them.
+		if ((globalThis as Record<string, unknown>)['__vitest_worker__']) {
+			window.localStorage.clear()
+		}
 		return setupStorybookUrl(initialPath, () => {
 			setAuthenticatedForTest(authenticated ? authMockSession : null)
 		})
