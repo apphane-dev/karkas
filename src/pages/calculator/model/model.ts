@@ -57,55 +57,51 @@ export const inputDot = action(() => {
 	}
 }, 'calculator.inputDot')
 
-export const handleOperator = action((nextOperator: CalculatorOperator) => {
+// Reads the current operand and, when a binary operation is pending,
+// evaluates it and writes the result to the display. Shared by
+// `handleOperator` (which chains into the next operator) and `handleEquals`
+// (which finalizes the calculation). Returns `{ error: true }` when the
+// display was non-numeric or the operation overflowed/divided by zero and
+// `setError` has already been called, `{ result, current }` when a pending
+// operation was applied (`result` is already shown on the display), or
+// `{ result: null, current }` when there is no pending operation to apply.
+const evaluatePending = () => {
 	const current = readDisplayNumber()
-	const prev = prevValueAtom()
-	const operator = operatorAtom()
-
 	if (current === null) {
 		setError()
-		return
+		return { error: true }
 	}
 
-	if (prev !== null && operator) {
-		const result = calculate(prev, operator, current)
-		if (result === null) {
-			setError()
-			return
-		}
+	const prev = prevValueAtom()
+	const operator = operatorAtom()
+	if (prev === null || operator === null) return { result: null, current }
 
-		displayAtom.set(String(result))
-		prevValueAtom.set(result)
-	} else {
-		prevValueAtom.set(current)
+	const result = calculate(prev, operator, current)
+	if (result === null) {
+		setError()
+		return { error: true }
 	}
 
+	displayAtom.set(String(result))
+	return { result, current }
+}
+
+export const handleOperator = action((nextOperator: CalculatorOperator) => {
+	const outcome = evaluatePending()
+	if ('error' in outcome) return
+
+	prevValueAtom.set(outcome.result ?? outcome.current)
 	operatorAtom.set(nextOperator)
 	resetNextAtom.set(true)
 }, 'calculator.handleOperator')
 
 export const handleEquals = action(() => {
-	const current = readDisplayNumber()
-	const prev = prevValueAtom()
-	const operator = operatorAtom()
+	const outcome = evaluatePending()
+	if ('error' in outcome || outcome.result === null) return
 
-	if (current === null) {
-		setError()
-		return
-	}
-
-	if (prev !== null && operator) {
-		const result = calculate(prev, operator, current)
-		if (result === null) {
-			setError()
-			return
-		}
-
-		displayAtom.set(String(result))
-		prevValueAtom.set(null)
-		operatorAtom.set(null)
-		resetNextAtom.set(true)
-	}
+	prevValueAtom.set(null)
+	operatorAtom.set(null)
+	resetNextAtom.set(true)
 }, 'calculator.handleEquals')
 
 export const handleClear = action(() => {

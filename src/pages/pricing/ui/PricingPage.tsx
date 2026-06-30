@@ -1,48 +1,35 @@
+import type { PricingPageModel } from '../model/pricingModel'
+
+import { wrap } from '@reatom/core'
+import { reatomComponent } from '@reatom/react'
+
 import { m } from '#paraglide/messages.js'
 import { Badge, Button, Text, VisuallyHidden } from '#shared/components'
 import { styled } from '#styled-system/jsx'
-
-const currentPlan = 'free'
-
-const plans = [
-	{
-		id: 'free',
-		name: 'Free',
-		price: '$0/mo',
-		features: ['1 GB storage', '3 users', 'Community support'],
-	},
-	{
-		id: 'pro',
-		name: 'Pro',
-		price: '$12/mo',
-		features: ['10 GB storage', '10 users', 'Priority support'],
-		highlighted: true,
-	},
-	{
-		id: 'team',
-		name: 'Team',
-		price: '$29/mo',
-		features: ['100 GB storage', 'Unlimited users', 'Dedicated support'],
-	},
-]
 
 type PlanCardProps = {
 	name: string
 	price: string
 	features: string[]
-	highlighted?: boolean
-	isCurrent?: boolean
+	highlighted?: boolean | undefined
+	isCurrent: boolean
+	isLoading: boolean
+	isBusy: boolean
+	onSubscribe: () => void
 }
 
-const getPlanButtonLabel = ({ name, highlighted, isCurrent }: PlanCardProps) => {
+const getPlanButtonLabel = ({
+	name,
+	highlighted,
+	isCurrent,
+}: Pick<PlanCardProps, 'name' | 'highlighted' | 'isCurrent'>) => {
 	if (isCurrent) return m.pricing_current_plan()
 	if (highlighted) return m.pricing_upgrade_pro()
 	return m.pricing_get_plan({ name })
 }
 
-const CurrentPlanBadge = ({ isCurrent }: { isCurrent: boolean | undefined }) => {
+const CurrentPlanBadge = ({ isCurrent }: { isCurrent: boolean }) => {
 	if (!isCurrent) return null
-
 	return (
 		<Badge
 			bg="green.subtle.bg"
@@ -75,10 +62,11 @@ const PlanFeatures = ({ features }: { features: string[] }) => (
 )
 
 function PlanCard(props: PlanCardProps) {
-	const { name, price, features, highlighted, isCurrent } = props
+	const { name, price, features, highlighted, isCurrent, isLoading, isBusy, onSubscribe } = props
 
 	return (
-		<styled.div
+		<styled.section
+			aria-label={name}
 			p="6"
 			borderWidth="1px"
 			borderColor={highlighted ? 'blue.9' : 'gray.4'}
@@ -105,15 +93,22 @@ function PlanCard(props: PlanCardProps) {
 				w="full"
 				{...(highlighted && { colorPalette: 'blue' })}
 				variant={isCurrent ? 'subtle' : highlighted ? 'solid' : 'outline'}
-				disabled={isCurrent}
+				disabled={isCurrent || (isBusy && !isLoading)}
+				loading={isLoading}
+				loadingText={m.pricing_processing()}
+				onClick={onSubscribe}
 			>
 				{getPlanButtonLabel(props)}
 			</Button>
-		</styled.div>
+		</styled.section>
 	)
 }
 
-export function PricingPage() {
+export const PricingPage = reatomComponent(({ model }: { model: PricingPageModel }) => {
+	const { plans, currentPlanId, pendingPlanId, subscribe } = model
+	const current = currentPlanId()
+	const pending = pendingPlanId()
+
 	return (
 		<styled.div p="8" maxW="800px">
 			<VisuallyHidden as="h1">{m.pricing_title()}</VisuallyHidden>
@@ -127,9 +122,19 @@ export function PricingPage() {
 				gap="4"
 			>
 				{plans.map((plan) => (
-					<PlanCard key={plan.name} {...plan} isCurrent={plan.id === currentPlan} />
+					<PlanCard
+						key={plan.id}
+						name={plan.name}
+						price={plan.price}
+						features={plan.features}
+						highlighted={plan.highlighted}
+						isCurrent={plan.id === current}
+						isLoading={pending === plan.id}
+						isBusy={pending !== null}
+						onSubscribe={wrap(() => subscribe(plan.id))}
+					/>
 				))}
 			</styled.div>
 		</styled.div>
 	)
-}
+}, 'PricingPage')
