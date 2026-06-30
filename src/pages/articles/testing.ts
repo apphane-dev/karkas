@@ -1,3 +1,5 @@
+import type { Canvas } from '#shared/test/loc'
+
 import { m } from '#paraglide/messages.js'
 import {
 	button,
@@ -26,6 +28,12 @@ const editLoc = {
 	titleField: role('textbox', 'Title'),
 	descriptionField: role('textbox', 'Description'),
 	statusSelect: role('combobox', 'Status'),
+}
+
+// The search input carries a placeholder but no label/aria-label, so its
+// accessible name is empty — target it by placeholder text instead.
+const searchLoc = {
+	searchInput: (canvas: Canvas) => canvas.getByPlaceholderText(m.article_search_placeholder()),
 }
 
 export const articlesActor = createActor()
@@ -69,6 +77,18 @@ export const articlesActor = createActor()
 				await I.see(button('Filters'))
 				await I.see(button('New article'))
 			})
+		},
+		search: async (term: string) => {
+			await I.fill(searchLoc.searchInput, term)
+		},
+		clearSearch: async () => {
+			await I.clear(searchLoc.searchInput)
+		},
+		seeArticleInList: async (name: RegExp | string) => {
+			await I.see(link(name))
+		},
+		dontSeeArticleInList: async (name: RegExp | string) => {
+			await I.dontSee(link(name))
 		},
 		seeArticleDetail: async (title: string) => {
 			await I.see(heading(title))
