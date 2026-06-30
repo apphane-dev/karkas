@@ -22,6 +22,7 @@ export function ListToolbar({
 		<styled.div px="3" py="3" borderBottomWidth="1px" borderColor="border">
 			<Group attached w="full" colorPalette="gray">
 				<Input
+					aria-label={placeholder}
 					placeholder={placeholder}
 					size="sm"
 					flex="1"

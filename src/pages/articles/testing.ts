@@ -1,5 +1,3 @@
-import type { Canvas } from '#shared/test/loc'
-
 import { m } from '#paraglide/messages.js'
 import {
 	button,
@@ -30,10 +28,8 @@ const editLoc = {
 	statusSelect: role('combobox', 'Status'),
 }
 
-// The search input carries a placeholder but no label/aria-label, so its
-// accessible name is empty — target it by placeholder text instead.
 const searchLoc = {
-	searchInput: (canvas: Canvas) => canvas.getByPlaceholderText(m.article_search_placeholder()),
+	searchInput: role('textbox', m.article_search_placeholder()),
 }
 
 export const articlesActor = createActor()
@@ -73,7 +69,7 @@ export const articlesActor = createActor()
 		},
 		seeSearchToolbar: async () => {
 			await I.scope(role('navigation', m.nav_articles()), async () => {
-				await I.see((canvas) => canvas.getByPlaceholderText(m.article_search_placeholder()))
+				await I.see(searchLoc.searchInput)
 				await I.see(button('Filters'))
 				await I.see(button('New article'))
 			})
@@ -109,9 +105,7 @@ export const articlesActor = createActor()
 			})
 		},
 		seeArticleDetailStatus: async (status: string) => {
-			await I.scope(role('main'), async () => {
-				await I.see(text(status))
-			})
+			await I.see((canvas) => canvas.getAllByText(status, { selector: '.badge' }).at(-1)!)
 		},
 		seeArticleNotFound: async (articleId: string) => {
 			await I.see(heading('Article not found'))
@@ -137,10 +131,9 @@ export const articlesActor = createActor()
 			await I.click(editLoc.saveButton)
 		},
 		seeArticleSavedToast: async () => {
-			// The "Saving…" loading toast is transient and the global toaster is
-			// shared across stories, so observe it best-effort, then firmly wait
-			// for the persistent "Article saved" success toast.
-			await I.tryTo(() => I.retryTo(() => I.see(role('status', 'Saving…').within('global')), 5))
+			// Require the current save's loading toast before accepting success, so a
+			// stale global success toast from another story/test cannot satisfy this helper.
+			await I.retryTo(() => I.see(role('status', 'Saving…').within('global')), 25)
 			await I.retryTo(() => I.see(role('status', 'Article saved').within('global')), 25)
 		},
 		seeArticleSaveErrorToast: async () => {

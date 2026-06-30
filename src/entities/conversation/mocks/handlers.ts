@@ -1,3 +1,5 @@
+import type { Conversation } from '../model/types'
+
 import { assert } from '@reatom/core'
 import { HttpResponse, delay, http, type HttpResponseResolver } from 'msw'
 
@@ -18,16 +20,48 @@ const sendMessageUrl = composeApiUrl(`${CONVERSATIONS_API_PATH}/:conversationId/
 
 const nowTime = () => new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
 
-const conversationListResolver = (async () => {
+// Per-story mutable conversation state (keyed by request origin), so a sent
+// message persists for that story's refetches without leaking across stories
+// or mutating the shared conversationsMockData fixture. Mirrors the pricing
+// handler's per-story isolation.
+const conversationsByStory = new Map<string, Conversation[]>()
+
+const stateKey = (request: Request) => request.headers.get('referer') ?? 'default'
+
+const storyConversations = (request: Request) => {
+	const key = stateKey(request)
+	let conversations = conversationsByStory.get(key)
+	if (!conversations) {
+		conversations = conversationsMockData.map((conversation) => ({
+			...conversation,
+			messages: conversation.messages.map((message) => ({ ...message })),
+		}))
+		conversationsByStory.set(key, conversations)
+	}
+	return conversations
+}
+
+const findConversation = (conversations: Conversation[], conversationId: string) => {
+	const conversation = conversations.find(({ id }) => id === conversationId)
+	assert(conversation, `Conversation with id ${conversationId} not found in mock data`, Error404)
+	return conversation
+}
+
+const cloneConversation = (conversation: Conversation) => ({
+	...conversation,
+	messages: conversation.messages.map((message) => ({ ...message })),
+})
+
+const conversationListResolver = (async ({ request }) => {
 	await delay()
 
-	return HttpResponse.json(conversationsMockData.map(({ messages: _, ...rest }) => rest))
+	return HttpResponse.json(storyConversations(request).map(({ messages: _, ...rest }) => rest))
 }) satisfies HttpResponseResolver
 
-const conversationUnreadCountResolver = (async () => {
+const conversationUnreadCountResolver = (async ({ request }) => {
 	await delay()
 
-	const unreadCount = conversationsMockData.reduce(
+	const unreadCount = storyConversations(request).reduce(
 		(totalUnread, conversation) => totalUnread + conversation.unread,
 		0,
 	)
@@ -35,22 +69,24 @@ const conversationUnreadCountResolver = (async () => {
 	return HttpResponse.json({ unreadCount })
 }) satisfies HttpResponseResolver
 
-const conversationDetailResolver = (async ({ params }) => {
+const conversationDetailResolver = (async ({ params, request }) => {
 	await delay()
 
-	const conversationId = params['conversationId']
-	const conversation = conversationsMockData.find(({ id }) => id === conversationId)
-	assert(conversation, `Conversation with id ${conversationId} not found in mock data`, Error404)
+	const conversation = findConversation(
+		storyConversations(request),
+		String(params['conversationId']),
+	)
 
-	return HttpResponse.json(conversation)
+	return HttpResponse.json(cloneConversation(conversation))
 }) satisfies HttpResponseResolver
 
 const conversationSendMessageResolver = (async ({ params, request }) => {
 	await delay()
 
-	const conversationId = params['conversationId']
-	const conversation = conversationsMockData.find(({ id }) => id === conversationId)
-	assert(conversation, `Conversation with id ${conversationId} not found in mock data`, Error404)
+	const conversation = findConversation(
+		storyConversations(request),
+		String(params['conversationId']),
+	)
 
 	const { text } = (await request.json()) as { text: string }
 	const message = { id: crypto.randomUUID(), sender: 'You', text, time: nowTime(), isOwn: true }

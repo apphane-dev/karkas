@@ -15,36 +15,35 @@ import {
 	handleToggleSign,
 	inputDigit,
 	inputDot,
-	type CalculatorOperator,
 } from '../model/model'
 
-type CalculatorButton =
-	| { kind: 'function'; label: string; action: 'clear' | 'toggleSign' | 'percent' }
-	| { kind: 'operator'; label: string; operator: CalculatorOperator }
-	| { kind: 'digit'; label: string; digit: string; gridColumn?: string }
-	| { kind: 'digit'; label: string; action: 'dot' }
-	| { kind: 'operator'; label: string; action: 'equals' }
+type CalculatorButton = {
+	kind: 'function' | 'operator' | 'digit'
+	label: string
+	press: () => void
+	gridColumn?: string
+}
 
 const BUTTONS = [
-	{ label: 'AC', kind: 'function', action: 'clear' },
-	{ label: '+/−', kind: 'function', action: 'toggleSign' },
-	{ label: '%', kind: 'function', action: 'percent' },
-	{ label: '÷', kind: 'operator', operator: '/' },
-	{ label: '7', kind: 'digit', digit: '7' },
-	{ label: '8', kind: 'digit', digit: '8' },
-	{ label: '9', kind: 'digit', digit: '9' },
-	{ label: '×', kind: 'operator', operator: '*' },
-	{ label: '4', kind: 'digit', digit: '4' },
-	{ label: '5', kind: 'digit', digit: '5' },
-	{ label: '6', kind: 'digit', digit: '6' },
-	{ label: '−', kind: 'operator', operator: '-' },
-	{ label: '1', kind: 'digit', digit: '1' },
-	{ label: '2', kind: 'digit', digit: '2' },
-	{ label: '3', kind: 'digit', digit: '3' },
-	{ label: '+', kind: 'operator', operator: '+' },
-	{ label: '0', kind: 'digit', digit: '0', gridColumn: 'span 2' },
-	{ label: '.', kind: 'digit', action: 'dot' },
-	{ label: '=', kind: 'operator', action: 'equals' },
+	{ label: 'AC', kind: 'function', press: handleClear },
+	{ label: '+/−', kind: 'function', press: handleToggleSign },
+	{ label: '%', kind: 'function', press: handlePercent },
+	{ label: '÷', kind: 'operator', press: () => handleOperator('/') },
+	{ label: '7', kind: 'digit', press: () => inputDigit('7') },
+	{ label: '8', kind: 'digit', press: () => inputDigit('8') },
+	{ label: '9', kind: 'digit', press: () => inputDigit('9') },
+	{ label: '×', kind: 'operator', press: () => handleOperator('*') },
+	{ label: '4', kind: 'digit', press: () => inputDigit('4') },
+	{ label: '5', kind: 'digit', press: () => inputDigit('5') },
+	{ label: '6', kind: 'digit', press: () => inputDigit('6') },
+	{ label: '−', kind: 'operator', press: () => handleOperator('-') },
+	{ label: '1', kind: 'digit', press: () => inputDigit('1') },
+	{ label: '2', kind: 'digit', press: () => inputDigit('2') },
+	{ label: '3', kind: 'digit', press: () => inputDigit('3') },
+	{ label: '+', kind: 'operator', press: () => handleOperator('+') },
+	{ label: '0', kind: 'digit', press: () => inputDigit('0'), gridColumn: 'span 2' },
+	{ label: '.', kind: 'digit', press: inputDot },
+	{ label: '=', kind: 'operator', press: handleEquals },
 ] as const satisfies ReadonlyArray<CalculatorButton>
 
 const buttonStyle = css({
@@ -78,23 +77,7 @@ const buttonVariantClass = {
 	}),
 } satisfies Record<CalculatorButton['kind'], string>
 
-const pressButton = (button: CalculatorButton) => {
-	if ('digit' in button) return inputDigit(button.digit)
-	if ('operator' in button) return handleOperator(button.operator)
-
-	switch (button.action) {
-		case 'clear':
-			return handleClear()
-		case 'toggleSign':
-			return handleToggleSign()
-		case 'percent':
-			return handlePercent()
-		case 'dot':
-			return inputDot()
-		case 'equals':
-			return handleEquals()
-	}
-}
+const pressButton = (button: CalculatorButton) => button.press()
 
 export const CalculatorPage = reatomComponent(() => {
 	return (

@@ -65,9 +65,14 @@ export const MessageThread = reatomComponent(({ model }: { model: ChatThreadMode
 	const [draft, setDraft] = useAtom('')
 	const { conversation, messages, isSending, send } = model
 
-	const handleSubmit = wrap(() => {
-		void send(draft)
-		setDraft('')
+	const handleSubmit = wrap(async () => {
+		if (draft.trim() === '') {
+			setDraft('')
+			return
+		}
+
+		const sent = await wrap(send(draft))
+		if (sent) setDraft('')
 	})
 
 	return (

@@ -1,6 +1,6 @@
 import type { Conversation, Message } from '#entities/conversation'
 
-import { action, atom, framePromise, withAbort, wrap } from '@reatom/core'
+import { abortVar, action, atom, framePromise, isAbort, withAbort, wrap } from '@reatom/core'
 
 import { sendMessage } from '#entities/conversation'
 import { m } from '#paraglide/messages.js'
@@ -16,29 +16,50 @@ export function reatomChatThreadModel(conversation: Conversation) {
 	const messages = atom<Message[]>([...conversation.messages], `chat.${id}.messages`)
 	const isSending = atom(false, `chat.${id}.isSending`)
 
+	const canSend = (text: string) => text !== '' && !isSending()
+	const createOptimisticMessage = (text: string): Message => ({
+		id: `${OPTIMISTIC_PREFIX}${crypto.randomUUID()}`,
+		sender: 'You',
+		text,
+		time: nowTime(),
+		isOwn: true,
+	})
+	const removeOptimisticMessage = (optimistic: Message) => {
+		messages.set(messages().filter((msg) => msg.id !== optimistic.id))
+	}
+	const replaceOptimisticMessage = (optimistic: Message, created: Message) => {
+		messages.set(messages().map((msg) => (msg.id === optimistic.id ? created : msg)))
+	}
+	const handleSendError = (error: unknown, optimistic: Message) => {
+		removeOptimisticMessage(optimistic)
+		if (!isAbort(error)) toaster.create({ title: m.chat_send_error(), type: 'error' })
+		return false
+	}
+	const deliverMessage = async (text: string, optimistic: Message) => {
+		const { controller, unsubscribe } = abortVar.subscribe()
+		try {
+			const created = await wrap(sendMessage(id, text, { signal: controller.signal }))
+			replaceOptimisticMessage(optimistic, created)
+			return true
+		} catch (error) {
+			return handleSendError(error, optimistic)
+		} finally {
+			unsubscribe()
+		}
+	}
+
 	const send = action(async (text: string) => {
 		const trimmed = text.trim()
-		if (trimmed === '' || isSending()) return
+		if (!canSend(trimmed)) return false
 		isSending.set(true)
 
-		// Optimistic append with a local id; replaced on success.
-		const optimistic: Message = {
-			id: `${OPTIMISTIC_PREFIX}${crypto.randomUUID()}`,
-			sender: 'You',
-			text: trimmed,
-			time: nowTime(),
-			isOwn: true,
-		}
+		const optimistic = createOptimisticMessage(trimmed)
 		messages.set([...messages(), optimistic])
 
 		// framePromise() must run before any await to stay on the action frame.
 		void framePromise().catch(() => {})
 		try {
-			const created = await wrap(sendMessage(id, trimmed))
-			messages.set(messages().map((msg) => (msg.id === optimistic.id ? created : msg)))
-		} catch {
-			messages.set(messages().filter((msg) => msg.id !== optimistic.id))
-			toaster.create({ title: m.chat_send_error(), type: 'error' })
+			return await wrap(deliverMessage(trimmed, optimistic))
 		} finally {
 			isSending.set(false)
 		}

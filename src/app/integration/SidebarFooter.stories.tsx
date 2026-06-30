@@ -1,8 +1,10 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
+import { m } from '#paraglide/messages.js'
 import { createActor, heading, role, text, link } from '#shared/test'
 
-const storageProgressNote = text(/GB \/ \d+ GB/).wait()
+const storageSummary = m.usage_storage_desc({ usedGB: 4.2, totalGB: 10 })
+const storageProgressNote = text(storageSummary).wait()
 const upgradeToProBanner = text('Unlimited storage & more')
 
 const I = createActor()
@@ -41,7 +43,7 @@ export const ActiveUsageRoute = meta.story({
 ActiveUsageRoute.test(
 	'shows storage card in sidebar and usage page content simultaneously',
 	async () => {
-		await I.see(storageProgressNote)
+		await I.seeNumberOfElements(text(storageSummary).all(), 2)
 		await I.see(heading('Usage'))
 	},
 )

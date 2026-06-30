@@ -18,6 +18,7 @@ function BreakdownRow({ label, gb, total }: { label: string; gb: number; total: 
 			</styled.div>
 			<styled.div w="24">
 				<UsageBar percentage={pct} color="blue.9" />
+				<VisuallyHidden>{m.usage_percentage_used({ percentage: pct })}</VisuallyHidden>
 			</styled.div>
 		</styled.div>
 	)

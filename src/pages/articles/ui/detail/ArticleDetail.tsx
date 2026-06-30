@@ -16,10 +16,10 @@ const statusCollection = reatomLoc(
 	() =>
 		createListCollection({
 			items: [
-				{ label: 'Draft', value: 'draft' },
-				{ label: 'In Progress', value: 'in-progress' },
-				{ label: 'Done', value: 'done' },
-			] as const satisfies ReadonlyArray<{ label: string; value: ArticleStatus }>,
+				{ label: m.article_status_draft(), value: 'draft' },
+				{ label: m.article_status_in_progress(), value: 'in-progress' },
+				{ label: m.article_status_done(), value: 'done' },
+			] satisfies ReadonlyArray<{ label: string; value: ArticleStatus }>,
 			itemToString: (item) => item.label,
 			itemToValue: (item) => item.value,
 		}),

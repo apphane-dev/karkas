@@ -18,9 +18,9 @@ export const chatLoc = {
 	conversationNotFoundHeading: heading('Conversation not found'),
 	messageThreadLoading: role('status', 'Loading message thread'),
 	// The compose input carries a placeholder but no label/aria-label, so its
-	// accessible name is empty — target it by placeholder text instead.
-	composeInput: (canvas: Canvas) => canvas.getByPlaceholderText('Type a message...'),
-	sendButton: role('button', 'Send'),
+	// accessible name is empty — target it by localized placeholder text instead.
+	composeInput: (canvas: Canvas) => canvas.getByPlaceholderText(m.chat_message_placeholder()),
+	sendButton: role('button', m.chat_send()),
 }
 
 export const chatActor = createActor()
@@ -79,10 +79,7 @@ export const chatActor = createActor()
 				}, 25)
 			},
 			seeSendErrorToast: async () => {
-				await I.retryTo(
-					() => I.see(text('Message could not be sent. Try again.').within('global')),
-					25,
-				)
+				await I.retryTo(() => I.see(text(m.chat_send_error()).within('global')), 25)
 			},
 			// The search input carries a placeholder but no label/aria-label, so its
 			// accessible name is empty — target it by placeholder text instead.

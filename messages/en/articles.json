@@ -21,5 +21,8 @@
 	"article_save": "Save",
 	"article_edit_title": "Title",
 	"article_edit_description": "Description",
-	"article_edit_status": "Status"
+	"article_edit_status": "Status",
+	"article_status_draft": "Draft",
+	"article_status_in_progress": "In Progress",
+	"article_status_done": "Done"
 }
