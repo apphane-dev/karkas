@@ -2,6 +2,7 @@ import type { Canvas } from '#shared/test/loc'
 
 import { expect } from 'storybook/test'
 
+import { m } from '#paraglide/messages.js'
 import {
 	createActor,
 	heading,
@@ -82,6 +83,20 @@ export const chatActor = createActor()
 					() => I.see(text('Message could not be sent. Try again.').within('global')),
 					25,
 				)
+			},
+			// The search input carries a placeholder but no label/aria-label, so its
+			// accessible name is empty — target it by placeholder text instead.
+			search: async (term: string) => {
+				await I.fill((canvas) => canvas.getByPlaceholderText(m.chat_search_placeholder()), term)
+			},
+			clearSearch: async () => {
+				await I.clear((canvas) => canvas.getByPlaceholderText(m.chat_search_placeholder()))
+			},
+			seeConversationInList: async (name: string | RegExp) => {
+				await I.see(link(name))
+			},
+			dontSeeConversationInList: async (name: string | RegExp) => {
+				await I.dontSee(link(name))
 			},
 		}
 	})

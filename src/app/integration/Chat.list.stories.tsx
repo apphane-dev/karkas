@@ -68,3 +68,40 @@ DefaultMobile.test('[mobile] can navigate back to conversation list', async () =
 	await I.see(link(/Engineering/))
 	await assertExpectedDetailTeardown()
 })
+
+export const SearchConversations = meta.story({
+	name: 'Search Conversations',
+	play: () => I.waitExit(role('status')),
+})
+
+SearchConversations.test('typing a query filters by name', async () => {
+	await I.search('alex')
+	await I.seeConversationInList(/Alex Johnson/i)
+	await I.dontSeeConversationInList(/Engineering/i)
+	await I.dontSeeConversationInList(/Design Sync/i)
+})
+
+SearchConversations.test('search matches last message', async () => {
+	await I.search('figma')
+	await I.seeConversationInList(/Design Sync/i)
+	await I.dontSeeConversationInList(/Engineering/i)
+})
+
+SearchConversations.test('search is case-insensitive', async () => {
+	await I.search('ENGINEERING')
+	await I.seeConversationInList(/Engineering/i)
+})
+
+SearchConversations.test('clearing restores the full list', async () => {
+	await I.search('alex')
+	await I.dontSeeConversationInList(/Engineering/i)
+	await I.clearSearch()
+	await I.seeConversationInList(/Engineering/i)
+	await I.seeConversationInList(/Alex Johnson/i)
+})
+
+SearchConversations.test('no results shows nothing matching', async () => {
+	await I.search('zzzznomatch')
+	await I.dontSeeConversationInList(/Engineering/i)
+	await I.dontSeeConversationInList(/Alex Johnson/i)
+})

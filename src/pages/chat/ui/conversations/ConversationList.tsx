@@ -1,5 +1,7 @@
 import type { Conversation } from '#entities/conversation'
 
+import { wrap } from '@reatom/core'
+import { reatomComponent } from '@reatom/react'
 import { SquarePen } from 'lucide-react'
 
 import { m } from '#paraglide/messages.js'
@@ -7,21 +9,36 @@ import { Avatar, Badge, IconButton } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 import { ListToolbar } from '#widgets/data-page'
 
+import { searchQueryAtom } from '../../model/search'
+
 type Props = {
 	conversations: { conversation: Conversation; href: string }[]
 	selectedId: string | undefined
 }
 
-export function ConversationList({ conversations, selectedId }: Props) {
+export const ConversationList = reatomComponent(({ conversations, selectedId }: Props) => {
+	const query = searchQueryAtom().trim().toLowerCase()
+	const filtered = query
+		? conversations.filter(
+				({ conversation }) =>
+					conversation.name.toLowerCase().includes(query) ||
+					conversation.lastMessage.toLowerCase().includes(query),
+			)
+		: conversations
+
 	return (
 		<>
-			<ListToolbar placeholder={m.chat_search_placeholder()}>
+			<ListToolbar
+				placeholder={m.chat_search_placeholder()}
+				searchValue={searchQueryAtom()}
+				onSearchChange={wrap((value: string) => searchQueryAtom.set(value))}
+			>
 				<IconButton size="sm" variant="outline" aria-label={m.chat_new_conversation()}>
 					<SquarePen />
 				</IconButton>
 			</ListToolbar>
 			<styled.ul role="list" aria-label={m.nav_chat()}>
-				{conversations.map(({ conversation, href }) => (
+				{filtered.map(({ conversation, href }) => (
 					<styled.li key={conversation.id}>
 						<styled.a
 							href={href}
@@ -102,4 +119,4 @@ export function ConversationList({ conversations, selectedId }: Props) {
 			</styled.ul>
 		</>
 	)
-}
+}, 'ConversationList')
