@@ -1,3 +1,8 @@
-// fallow-ignore-file unused-file
-// barrel public api file required by steiger
-// remove comments once the file is filled with actual exports
+export { fetchSettings, updateNotifications, updateProfile } from './api/settingsApi'
+export type {
+	DesktopNotification,
+	EmailNotification,
+	NotificationSettings,
+	ProfileSettings,
+	SettingsData,
+} from './model/types'

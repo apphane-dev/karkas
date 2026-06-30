@@ -37,5 +37,12 @@
 	"settings_show_github_link": "Show GitHub Link",
 	"settings_show_github_link_desc": "Show GitHub repository link in the top bar.",
 	"settings_show_theme_switcher": "Show Theme Switcher",
-	"settings_show_theme_switcher_desc": "Show theme switcher in the top bar."
+	"settings_show_theme_switcher_desc": "Show theme switcher in the top bar.",
+	"settings_loading_page": "Loading settings",
+	"settings_error_title": "Could not load settings",
+	"settings_error_description": "We couldn't load your settings. Try again in a moment.",
+	"settings_saving": "Saving…",
+	"settings_profile_saved": "Profile saved",
+	"settings_notifications_saved": "Notification preferences saved",
+	"settings_save_error": "Couldn't save. Try again."
 }

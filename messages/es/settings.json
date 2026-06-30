@@ -37,5 +37,12 @@
 	"settings_show_github_link": "Mostrar Enlace de GitHub",
 	"settings_show_github_link_desc": "Mostrar enlace del repositorio de GitHub en la barra superior.",
 	"settings_show_theme_switcher": "Mostrar Selector de Tema",
-	"settings_show_theme_switcher_desc": "Mostrar selector de tema en la barra superior."
+	"settings_show_theme_switcher_desc": "Mostrar selector de tema en la barra superior.",
+	"settings_loading_page": "Cargando ajustes",
+	"settings_error_title": "No se pudieron cargar los ajustes",
+	"settings_error_description": "No pudimos cargar tus ajustes. Inténtalo de nuevo en un momento.",
+	"settings_saving": "Guardando…",
+	"settings_profile_saved": "Perfil guardado",
+	"settings_notifications_saved": "Preferencias de notificaciones guardadas",
+	"settings_save_error": "No se pudo guardar. Inténtalo de nuevo."
 }

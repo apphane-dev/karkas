@@ -11,7 +11,11 @@ import {
 import { dashboardStats } from '#entities/dashboard/mocks/handlers'
 import { itemDetail, itemList } from '#entities/item/mocks/handlers'
 import { pricingPlans, pricingSubscribe } from '#entities/pricing/mocks/handlers'
-import { settingHandlers } from '#entities/setting/mocks/handlers'
+import {
+	settingsFetch,
+	settingsNotifications,
+	settingsProfile,
+} from '#entities/setting/mocks/handlers'
 import { timelineEventDetail, timelineEventList } from '#entities/timeline-event/mocks/handlers'
 import { usageStats } from '#entities/usage/mocks/handlers'
 
@@ -30,7 +34,9 @@ export const handlers = {
 	itemDetail: itemDetail.default,
 	pricingPlans: pricingPlans.default,
 	pricingSubscribe: pricingSubscribe.default,
-	settings: settingHandlers,
+	settingsFetch: settingsFetch.default,
+	settingsProfile: settingsProfile.default,
+	settingsNotifications: settingsNotifications.default,
 	usageStats: usageStats.default,
 	timelineEventList: timelineEventList.default,
 	timelineEventDetail: timelineEventDetail.default,
