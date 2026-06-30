@@ -1,8 +1,16 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
+import { SETTINGS_API_PATH } from '#entities/setting/api/settingsApi'
 import { settingsFetch, settingsProfile } from '#entities/setting/mocks/handlers'
 import { settingsActor as I, settingsLoc as loc } from '#pages/settings/testing'
-import { button, role, text } from '#shared/test'
+import { button, link, role, text } from '#shared/test'
+import {
+	createRouteFetchAbortProbe,
+	expectRouteFetchAbortOnNavigation,
+	routeFetchAbortLifecycle,
+} from '#shared/test/routeFetchAbortProbe'
+
+const settingsFetchAbortProbe = createRouteFetchAbortProbe(SETTINGS_API_PATH, 'settings')
 
 const meta = preview.meta({
 	title: 'Integration/Settings',
@@ -173,6 +181,23 @@ DefaultMobile.test('[mobile] renders profile form fields', async () => {
 })
 
 // ---------- new coverage ----------
+
+export const AbortsPendingSettingsRequestOnNavigation = meta.story({
+	name: 'Aborts Pending Settings Request On Navigation',
+	beforeEach: routeFetchAbortLifecycle(settingsFetchAbortProbe),
+	parameters: {
+		msw: { handlers: { settingsFetch: settingsFetch.loading } },
+	},
+})
+
+AbortsPendingSettingsRequestOnNavigation.test(
+	'aborts the pending settings request when navigating away',
+	async () => {
+		await expectRouteFetchAbortOnNavigation(settingsFetchAbortProbe, () => I.click(link('Timer')), {
+			assertLoading: () => I.seeLoading(),
+		})
+	},
+)
 
 export const LoadingState = meta.story({
 	name: 'Loading State',

@@ -1,9 +1,20 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
+import { ARTICLES_API_PATH } from '#entities/article/api/articlesApi'
 import { articleDetail, articleUpdate } from '#entities/article/mocks/handlers'
+import {
+	createRouteFetchAbortProbe,
+	expectRouteFetchAbortOnNavigation,
+	routeFetchAbortLifecycle,
+} from '#shared/test/routeFetchAbortProbe'
 // `articleUpdate` is still imported for the server-error story override below.
 import { articlesActor as I } from '#pages/articles/testing'
-import { button, heading, role } from '#shared/test'
+import { button, heading, link, role } from '#shared/test'
+
+const articleDetailFetchAbortProbe = createRouteFetchAbortProbe(
+	`${ARTICLES_API_PATH}/1`,
+	'article detail',
+)
 
 const meta = preview.meta({
 	title: 'Integration/Articles/Detail',
@@ -16,6 +27,27 @@ const meta = preview.meta({
 })
 
 export default meta
+
+export const AbortsPendingArticleDetailRequestOnNavigation = meta.story({
+	name: 'Aborts Pending Article Detail Request On Navigation',
+	beforeEach: routeFetchAbortLifecycle(articleDetailFetchAbortProbe),
+	parameters: {
+		msw: {
+			handlers: { articleDetail: articleDetail.loading },
+		},
+	},
+})
+
+AbortsPendingArticleDetailRequestOnNavigation.test(
+	'aborts the pending article detail request when navigating away',
+	async () => {
+		await expectRouteFetchAbortOnNavigation(
+			articleDetailFetchAbortProbe,
+			() => I.click(link('Timer')),
+			{ assertLoading: () => I.see(role('status', 'Loading article detail')) },
+		)
+	},
+)
 
 export const HandlesArticleDetailServerError = meta.story({
 	name: 'Article Detail Server Error',

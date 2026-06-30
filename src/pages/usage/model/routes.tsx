@@ -1,4 +1,4 @@
-import { retryComputed, wrap } from '@reatom/core'
+import { abortVar, retryComputed, wrap } from '@reatom/core'
 
 import { protectedRoute } from '#entities/auth'
 import { fetchUsageData } from '#entities/usage'
@@ -8,10 +8,13 @@ import { PageError } from '#widgets/data-page'
 import { UsagePage } from '../ui/UsagePage'
 import { UsagePageLoading } from '../ui/UsagePageLoading'
 
+const fetchUsageDataForRoute = async () =>
+	await wrap(fetchUsageData({ signal: abortVar.require().signal }))
+
 export const usageRoute = protectedRoute.reatomRoute(
 	{
 		path: 'usage',
-		loader: fetchUsageData,
+		loader: fetchUsageDataForRoute,
 		render: (self) => {
 			const { isFirstPending, isPending, data } = self.loader.status()
 			if (isFirstPending || (isPending && !data)) {

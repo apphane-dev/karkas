@@ -1,8 +1,16 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
+import { TIMELINE_EVENTS_API_PATH } from '#entities/timeline-event/api/timelineEventsApi'
 import { timelineEventList } from '#entities/timeline-event/mocks/handlers'
 import { timelineActor as I } from '#pages/timeline/testing'
-import { role, text } from '#shared/test'
+import { link, role, text } from '#shared/test'
+import {
+	createRouteFetchAbortProbe,
+	expectRouteFetchAbortOnNavigation,
+	routeFetchAbortLifecycle,
+} from '#shared/test/routeFetchAbortProbe'
+
+const timelineFetchAbortProbe = createRouteFetchAbortProbe(TIMELINE_EVENTS_API_PATH, 'timeline')
 
 const meta = preview.meta({
 	title: 'Integration/Timeline',
@@ -42,6 +50,25 @@ DefaultMobile.test('[mobile] renders timeline events', async () => {
 DefaultMobile.test('[mobile] shows date groups', async () => {
 	await I.seeDateGroups()
 })
+
+export const AbortsPendingTimelineRequestOnNavigation = meta.story({
+	name: 'Aborts Pending Timeline Request On Navigation',
+	beforeEach: routeFetchAbortLifecycle(timelineFetchAbortProbe),
+	parameters: {
+		msw: {
+			handlers: { timelineEventList: timelineEventList.loading },
+		},
+	},
+})
+
+AbortsPendingTimelineRequestOnNavigation.test(
+	'aborts the pending timeline request when navigating away',
+	async () => {
+		await expectRouteFetchAbortOnNavigation(timelineFetchAbortProbe, () => I.click(link('Timer')), {
+			assertLoading: () => I.seeLoading(),
+		})
+	},
+)
 
 export const HandlesTimelineLoadServerError = meta.story({
 	name: 'Timeline Load Server Error',

@@ -1,8 +1,16 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
+import { USAGE_API_PATH } from '#entities/usage/api/usageApi'
 import { usageStats } from '#entities/usage/mocks/handlers'
 import { usageActor as I, usageLoc as loc } from '#pages/usage/testing'
-import { role, text } from '#shared/test'
+import { link, role, text } from '#shared/test'
+import {
+	createRouteFetchAbortProbe,
+	expectRouteFetchAbortOnNavigation,
+	routeFetchAbortLifecycle,
+} from '#shared/test/routeFetchAbortProbe'
+
+const usageFetchAbortProbe = createRouteFetchAbortProbe(USAGE_API_PATH, 'usage')
 
 const meta = preview.meta({
 	title: 'Integration/Usage',
@@ -49,6 +57,25 @@ DefaultMobile.test('[mobile] renders usage heading', async () => {
 DefaultMobile.test('[mobile] renders usage content', async () => {
 	await I.seeUsageContent()
 })
+
+export const AbortsPendingUsageRequestOnNavigation = meta.story({
+	name: 'Aborts Pending Usage Request On Navigation',
+	beforeEach: routeFetchAbortLifecycle(usageFetchAbortProbe),
+	parameters: {
+		msw: {
+			handlers: { usageStats: usageStats.loading },
+		},
+	},
+})
+
+AbortsPendingUsageRequestOnNavigation.test(
+	'aborts the pending usage request when navigating away',
+	async () => {
+		await expectRouteFetchAbortOnNavigation(usageFetchAbortProbe, () => I.click(link('Timer')), {
+			assertLoading: () => I.seeLoading(),
+		})
+	},
+)
 
 export const HandlesUsageLoadServerError = meta.story({
 	name: 'Usage Load Server Error',

@@ -14,22 +14,45 @@ const listUrl = composeApiUrl(ARTICLES_API_PATH)
 const detailUrl = composeApiUrl(`${ARTICLES_API_PATH}/:articleId`)
 const updateUrl = composeApiUrl(`${ARTICLES_API_PATH}/:articleId`)
 
-const articleListResolver = (async () => {
+const articlesByStory = new Map<string, Article[]>()
+
+const stateKey = (request: Request) => request.headers.get('referer') ?? 'default'
+
+const cloneArticle = (article: Article) => ({
+	...article,
+	content: [...article.content],
+})
+
+const storyArticles = (request: Request) => {
+	const key = stateKey(request)
+	let articles = articlesByStory.get(key)
+	if (!articles) {
+		articles = articlesMockData.map(cloneArticle)
+		articlesByStory.set(key, articles)
+	}
+	return articles
+}
+
+const findArticle = (articles: Article[], articleId: string) => {
+	const article = articles.find(({ id }) => id === articleId)
+	assert(article, `Article with id ${articleId} not found in mock data`, Error404)
+	return article
+}
+
+const articleListResolver = (async ({ request }) => {
 	await delay()
 
 	return HttpResponse.json(
-		articlesMockData.map(({ content, ...rest }) => ({ ...rest, content: [content[0]] })),
+		storyArticles(request).map(({ content, ...rest }) => ({ ...rest, content: [content[0]] })),
 	)
 }) satisfies HttpResponseResolver
 
-const articleDetailResolver = (async ({ params }) => {
+const articleDetailResolver = (async ({ params, request }) => {
 	await delay()
 
-	const articleId = params['articleId']
-	const article = articlesMockData.find(({ id }) => id === articleId)
-	assert(article, `Article with id ${articleId} not found in mock data`, Error404)
+	const article = findArticle(storyArticles(request), String(params['articleId']))
 
-	return HttpResponse.json(article)
+	return HttpResponse.json(cloneArticle(article))
 }) satisfies HttpResponseResolver
 
 export const articleList = {
@@ -49,14 +72,11 @@ export const articleDetail = {
 const articleUpdateResolver = (async ({ params, request }) => {
 	await delay()
 
-	const articleId = params['articleId']
-	const article = articlesMockData.find(({ id }) => id === articleId)
-	assert(article, `Article with id ${articleId} not found in mock data`, Error404)
-
+	const article = findArticle(storyArticles(request), String(params['articleId']))
 	const body = (await request.json()) as Omit<Article, 'id'>
 	Object.assign(article, body)
 
-	return HttpResponse.json(article)
+	return HttpResponse.json(cloneArticle(article))
 }) satisfies HttpResponseResolver
 
 export const articleUpdate = {

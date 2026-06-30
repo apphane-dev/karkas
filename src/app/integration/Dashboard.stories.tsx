@@ -1,8 +1,16 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
+import { DASHBOARD_API_PATH } from '#entities/dashboard/api/dashboardApi'
 import { dashboardStats } from '#entities/dashboard/mocks/handlers'
 import { dashboardActor as I, dashboardLoc as loc } from '#pages/dashboard/testing'
-import { button, role, text } from '#shared/test'
+import { button, link, role, text } from '#shared/test'
+import {
+	createRouteFetchAbortProbe,
+	expectRouteFetchAbortOnNavigation,
+	routeFetchAbortLifecycle,
+} from '#shared/test/routeFetchAbortProbe'
+
+const dashboardFetchAbortProbe = createRouteFetchAbortProbe(DASHBOARD_API_PATH, 'dashboard')
 
 const meta = preview.meta({
 	title: 'Integration/Dashboard',
@@ -65,6 +73,27 @@ export const DefaultMobile = meta.story({
 	globals: { viewport: { value: 'sm', isRotated: false } },
 	play: () => I.waitExit(role('status')),
 })
+
+export const AbortsPendingDashboardRequestOnNavigation = meta.story({
+	name: 'Aborts Pending Dashboard Request On Navigation',
+	beforeEach: routeFetchAbortLifecycle(dashboardFetchAbortProbe),
+	parameters: {
+		msw: {
+			handlers: { dashboardStats: dashboardStats.loading },
+		},
+	},
+})
+
+AbortsPendingDashboardRequestOnNavigation.test(
+	'aborts the pending dashboard request when navigating away',
+	async () => {
+		await expectRouteFetchAbortOnNavigation(
+			dashboardFetchAbortProbe,
+			() => I.click(link('Timer')),
+			{ assertLoading: () => I.seeLoading() },
+		)
+	},
+)
 
 DefaultMobile.test('[mobile] renders dashboard heading', async () => {
 	await I.see(loc.heading)

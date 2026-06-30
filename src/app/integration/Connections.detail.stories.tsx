@@ -1,8 +1,19 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
+import { CONNECTIONS_API_PATH } from '#entities/connection/api/connectionsApi'
 import { connectionDetail } from '#entities/connection/mocks/handlers'
 import { connectionsActor as I, connectionsLoc as loc } from '#pages/connections/testing'
-import { button, heading, role, text } from '#shared/test'
+import { button, heading, link, role, text } from '#shared/test'
+import {
+	createRouteFetchAbortProbe,
+	expectRouteFetchAbortOnNavigation,
+	routeFetchAbortLifecycle,
+} from '#shared/test/routeFetchAbortProbe'
+
+const connectionDetailFetchAbortProbe = createRouteFetchAbortProbe(
+	`${CONNECTIONS_API_PATH}/1`,
+	'connection detail',
+)
 
 const meta = preview.meta({
 	title: 'Integration/Connections/Detail',
@@ -15,6 +26,27 @@ const meta = preview.meta({
 })
 
 export default meta
+
+export const AbortsPendingConnectionDetailRequestOnNavigation = meta.story({
+	name: 'Aborts Pending Connection Detail Request On Navigation',
+	beforeEach: routeFetchAbortLifecycle(connectionDetailFetchAbortProbe),
+	parameters: {
+		msw: {
+			handlers: { connectionDetail: connectionDetail.loading },
+		},
+	},
+})
+
+AbortsPendingConnectionDetailRequestOnNavigation.test(
+	'aborts the pending connection detail request when navigating away',
+	async () => {
+		await expectRouteFetchAbortOnNavigation(
+			connectionDetailFetchAbortProbe,
+			() => I.click(link('Timer')),
+			{ assertLoading: () => I.see(role('status', 'Loading connection detail')) },
+		)
+	},
+)
 
 export const HandlesConnectionDetailServerError = meta.story({
 	name: 'Connection Detail Server Error',

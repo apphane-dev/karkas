@@ -1,8 +1,16 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
+import { PRICING_API_PATH } from '#entities/pricing/api/pricingApi'
 import { pricingPlans } from '#entities/pricing/mocks/handlers'
 import { pricingActor as I, pricingLoc as loc } from '#pages/pricing/testing'
-import { role } from '#shared/test'
+import { link, role } from '#shared/test'
+import {
+	createRouteFetchAbortProbe,
+	expectRouteFetchAbortOnNavigation,
+	routeFetchAbortLifecycle,
+} from '#shared/test/routeFetchAbortProbe'
+
+const pricingFetchAbortProbe = createRouteFetchAbortProbe(PRICING_API_PATH, 'pricing')
 
 const meta = preview.meta({
 	title: 'Integration/Pricing',
@@ -46,6 +54,23 @@ UpgradeToPro.test('clicking Upgrade to Pro switches the current plan', async () 
 	await I.seeCurrentPlanOn(loc.proCard)
 	await I.see(role('button', 'Get Free').within(loc.freeCard))
 })
+
+export const AbortsPendingPricingRequestOnNavigation = meta.story({
+	name: 'Aborts Pending Pricing Request On Navigation',
+	beforeEach: routeFetchAbortLifecycle(pricingFetchAbortProbe),
+	parameters: {
+		msw: { handlers: { pricingPlans: pricingPlans.loading } },
+	},
+})
+
+AbortsPendingPricingRequestOnNavigation.test(
+	'aborts the pending pricing request when navigating away',
+	async () => {
+		await expectRouteFetchAbortOnNavigation(pricingFetchAbortProbe, () => I.click(link('Timer')), {
+			assertLoading: () => I.seeLoading(),
+		})
+	},
+)
 
 export const HandlesServerError = meta.story({
 	name: 'Server Error',

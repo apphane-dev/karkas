@@ -2,9 +2,18 @@ import { expect } from 'storybook/test'
 
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
+import { ITEMS_API_PATH } from '#entities/item/api/itemsApi'
 import { itemDetail, itemList } from '#entities/item/mocks/handlers'
 import { itemsActor as I } from '#pages/items/testing'
-import { role, text } from '#shared/test'
+import { link, role, text } from '#shared/test'
+import {
+	createRouteFetchAbortProbe,
+	expectRouteFetchAbortOnNavigation,
+	routeFetchAbortLifecycle,
+} from '#shared/test/routeFetchAbortProbe'
+
+const itemsFetchAbortProbe = createRouteFetchAbortProbe(ITEMS_API_PATH, 'items')
+const itemDetailFetchAbortProbe = createRouteFetchAbortProbe(`${ITEMS_API_PATH}/1`, 'item detail')
 
 const meta = preview.meta({
 	title: 'Integration/Items',
@@ -67,6 +76,25 @@ export const DefaultMobile = meta.story({
 	play: () => I.waitExit(role('status')),
 })
 
+export const AbortsPendingItemsRequestOnNavigation = meta.story({
+	name: 'Aborts Pending Items Request On Navigation',
+	beforeEach: routeFetchAbortLifecycle(itemsFetchAbortProbe),
+	parameters: {
+		msw: {
+			handlers: { itemList: itemList.loading },
+		},
+	},
+})
+
+AbortsPendingItemsRequestOnNavigation.test(
+	'aborts the pending items request when navigating away',
+	async () => {
+		await expectRouteFetchAbortOnNavigation(itemsFetchAbortProbe, () => I.click(link('Timer')), {
+			assertLoading: () => I.seeLoading(),
+		})
+	},
+)
+
 DefaultMobile.test('[mobile] renders items list', async () => {
 	await I.seeItemsList()
 })
@@ -74,6 +102,33 @@ DefaultMobile.test('[mobile] renders items list', async () => {
 DefaultMobile.test('[mobile] shows category badges', async () => {
 	await I.seeCategoryBadges()
 })
+
+export const AbortsPendingItemDetailRequestOnNavigation = meta.story({
+	name: 'Aborts Pending Item Detail Request On Navigation',
+	beforeEach: routeFetchAbortLifecycle(itemDetailFetchAbortProbe),
+	parameters: {
+		initialPath: 'items/1',
+		msw: {
+			handlers: { itemDetail: itemDetail.loading },
+		},
+	},
+})
+
+AbortsPendingItemDetailRequestOnNavigation.test(
+	'aborts the pending item detail request when navigating away',
+	async () => {
+		await expectRouteFetchAbortOnNavigation(
+			itemDetailFetchAbortProbe,
+			() => I.click(link('Timer')),
+			{
+				assertLoading: async () => {
+					await I.waitExit(role('status', 'Loading items page'))
+					await I.see(role('status', 'Loading item detail'))
+				},
+			},
+		)
+	},
+)
 
 export const HandlesItemsLoadServerError = meta.story({
 	name: 'Items Load Server Error',

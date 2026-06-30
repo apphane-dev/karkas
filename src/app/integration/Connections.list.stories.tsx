@@ -1,8 +1,17 @@
 import { assertNoRouteLoaderAbortErrors } from '#.storybook/abortErrorGuard'
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
+import { CONNECTIONS_API_PATH } from '#entities/connection/api/connectionsApi'
+import { connectionList } from '#entities/connection/mocks/handlers'
 import { connectionsActor as I } from '#pages/connections/testing'
 import { heading, link, role, text } from '#shared/test'
+import {
+	createRouteFetchAbortProbe,
+	expectRouteFetchAbortOnNavigation,
+	routeFetchAbortLifecycle,
+} from '#shared/test/routeFetchAbortProbe'
+
+const connectionsFetchAbortProbe = createRouteFetchAbortProbe(CONNECTIONS_API_PATH, 'connections')
 
 const meta = preview.meta({
 	title: 'Integration/Connections/List',
@@ -72,6 +81,27 @@ export const DefaultMobile = meta.story({
 	globals: { viewport: { value: 'sm', isRotated: false } },
 	play: () => I.waitExit(role('status')),
 })
+
+export const AbortsPendingConnectionsRequestOnNavigation = meta.story({
+	name: 'Aborts Pending Connections Request On Navigation',
+	beforeEach: routeFetchAbortLifecycle(connectionsFetchAbortProbe),
+	parameters: {
+		msw: {
+			handlers: { connectionList: connectionList.loading },
+		},
+	},
+})
+
+AbortsPendingConnectionsRequestOnNavigation.test(
+	'aborts the pending connections request when navigating away',
+	async () => {
+		await expectRouteFetchAbortOnNavigation(
+			connectionsFetchAbortProbe,
+			() => I.click(link('Timer')),
+			{ assertLoading: () => I.seeLoading() },
+		)
+	},
+)
 
 DefaultMobile.test('[mobile] renders connection list with all connections', async () => {
 	await I.seeConnectionList()

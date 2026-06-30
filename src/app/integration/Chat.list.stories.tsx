@@ -1,8 +1,20 @@
 import { assertNoRouteLoaderAbortErrors } from '#.storybook/abortErrorGuard'
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
+import { CONVERSATIONS_API_PATH } from '#entities/conversation/api/conversationsApi'
+import { conversationList } from '#entities/conversation/mocks/handlers'
 import { chatActor as I } from '#pages/chat/testing'
 import { link, role, text } from '#shared/test'
+import {
+	createRouteFetchAbortProbe,
+	expectRouteFetchAbortOnNavigation,
+	routeFetchAbortLifecycle,
+} from '#shared/test/routeFetchAbortProbe'
+
+const conversationsFetchAbortProbe = createRouteFetchAbortProbe(
+	CONVERSATIONS_API_PATH,
+	'conversations',
+)
 
 const meta = preview.meta({
 	title: 'Integration/Chat/List',
@@ -47,6 +59,27 @@ export const DefaultMobile = meta.story({
 	globals: { viewport: { value: 'sm', isRotated: false } },
 	play: () => I.waitExit(role('status')),
 })
+
+export const AbortsPendingConversationsRequestOnNavigation = meta.story({
+	name: 'Aborts Pending Conversations Request On Navigation',
+	beforeEach: routeFetchAbortLifecycle(conversationsFetchAbortProbe),
+	parameters: {
+		msw: {
+			handlers: { conversationList: conversationList.loading },
+		},
+	},
+})
+
+AbortsPendingConversationsRequestOnNavigation.test(
+	'aborts the pending conversations request when navigating away',
+	async () => {
+		await expectRouteFetchAbortOnNavigation(
+			conversationsFetchAbortProbe,
+			() => I.click(link('Timer')),
+			{ assertLoading: () => I.seeLoading() },
+		)
+	},
+)
 
 DefaultMobile.test('[mobile] renders conversation list', async () => {
 	await I.seeConversationList()

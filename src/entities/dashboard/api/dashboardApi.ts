@@ -4,6 +4,6 @@ import { apiClient } from '#shared/api'
 
 export const DASHBOARD_API_PATH = '/dashboard'
 
-export async function fetchDashboardData() {
-	return apiClient.get<DashboardData>(DASHBOARD_API_PATH)
+export async function fetchDashboardData(options?: Pick<RequestInit, 'signal'>) {
+	return apiClient.get<DashboardData>(DASHBOARD_API_PATH, options)
 }

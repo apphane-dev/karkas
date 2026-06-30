@@ -1,8 +1,19 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
+import { CONVERSATIONS_API_PATH } from '#entities/conversation/api/conversationsApi'
 import { conversationDetail, conversationSendMessage } from '#entities/conversation/mocks/handlers'
 import { chatActor as I, chatLoc as loc } from '#pages/chat/testing'
-import { role, text } from '#shared/test'
+import { link, role, text } from '#shared/test'
+import {
+	createRouteFetchAbortProbe,
+	expectRouteFetchAbortOnNavigation,
+	routeFetchAbortLifecycle,
+} from '#shared/test/routeFetchAbortProbe'
+
+const conversationDetailFetchAbortProbe = createRouteFetchAbortProbe(
+	`${CONVERSATIONS_API_PATH}/1`,
+	'conversation detail',
+)
 
 const meta = preview.meta({
 	title: 'Integration/Chat/Detail',
@@ -15,6 +26,27 @@ const meta = preview.meta({
 })
 
 export default meta
+
+export const AbortsPendingConversationDetailRequestOnNavigation = meta.story({
+	name: 'Aborts Pending Conversation Detail Request On Navigation',
+	beforeEach: routeFetchAbortLifecycle(conversationDetailFetchAbortProbe),
+	parameters: {
+		msw: {
+			handlers: { conversationDetail: conversationDetail.loading },
+		},
+	},
+})
+
+AbortsPendingConversationDetailRequestOnNavigation.test(
+	'aborts the pending conversation detail request when navigating away',
+	async () => {
+		await expectRouteFetchAbortOnNavigation(
+			conversationDetailFetchAbortProbe,
+			() => I.click(link('Timer')),
+			{ assertLoading: () => I.see(role('status', 'Loading message thread')) },
+		)
+	},
+)
 
 export const HandlesConversationDetailServerError = meta.story({
 	name: 'Conversation Detail Server Error',

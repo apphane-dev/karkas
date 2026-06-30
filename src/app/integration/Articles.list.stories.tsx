@@ -1,8 +1,17 @@
 import { assertNoRouteLoaderAbortErrors } from '#.storybook/abortErrorGuard'
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
+import { ARTICLES_API_PATH } from '#entities/article/api/articlesApi'
+import { articleList } from '#entities/article/mocks/handlers'
 import { articlesActor as I } from '#pages/articles/testing'
-import { role } from '#shared/test'
+import { link, role } from '#shared/test'
+import {
+	createRouteFetchAbortProbe,
+	expectRouteFetchAbortOnNavigation,
+	routeFetchAbortLifecycle,
+} from '#shared/test/routeFetchAbortProbe'
+
+const articlesFetchAbortProbe = createRouteFetchAbortProbe(ARTICLES_API_PATH, 'articles')
 
 const meta = preview.meta({
 	title: 'Integration/Articles/List',
@@ -69,6 +78,25 @@ export const DefaultMobile = meta.story({
 	globals: { viewport: { value: 'sm', isRotated: false } },
 	play: () => I.waitExit(role('status')),
 })
+
+export const AbortsPendingArticlesRequestOnNavigation = meta.story({
+	name: 'Aborts Pending Articles Request On Navigation',
+	beforeEach: routeFetchAbortLifecycle(articlesFetchAbortProbe),
+	parameters: {
+		msw: {
+			handlers: { articleList: articleList.loading },
+		},
+	},
+})
+
+AbortsPendingArticlesRequestOnNavigation.test(
+	'aborts the pending articles request when navigating away',
+	async () => {
+		await expectRouteFetchAbortOnNavigation(articlesFetchAbortProbe, () => I.click(link('Timer')), {
+			assertLoading: () => I.seeLoading(),
+		})
+	},
+)
 
 DefaultMobile.test('[mobile] shows article list when no article is selected', async () => {
 	await I.seeArticleList()

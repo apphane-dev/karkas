@@ -224,6 +224,41 @@ The canonical pattern keeps successful resolvers separate from their URL binding
 
 Key details about `withRetrySuccess`, `Error500`, and other error classes are in `src/shared/mocks/utils.ts` — error classes extend `Error` but return an `HttpResponse` via `assign`, so throwing them inside an MSW handler produces the corresponding HTTP error response.
 
+### Route fetch abort checks
+
+Every route loader that performs a fetch must have a Storybook/browser regression proving the pending request receives and aborts a `RequestInit.signal` when the route stops matching. This is required for route-based fetches, including nested detail loaders.
+
+Use `.loading` MSW handlers plus the shared fetch-boundary probe in `#shared/test/routeFetchAbortProbe`:
+
+```tsx
+const usersFetchAbortProbe = createRouteFetchAbortProbe(USERS_API_PATH, 'users')
+
+export const AbortsPendingUsersRequestOnNavigation = meta.story({
+	name: 'Aborts Pending Users Request On Navigation',
+	beforeEach: routeFetchAbortLifecycle(usersFetchAbortProbe),
+	parameters: {
+		msw: { handlers: { users: users.loading } },
+	},
+})
+
+AbortsPendingUsersRequestOnNavigation.test(
+	'aborts the pending users request when navigating away',
+	async () => {
+		await expectRouteFetchAbortOnNavigation(usersFetchAbortProbe, () => I.click(link('Timer')), {
+			assertLoading: () => I.seeLoading(),
+		})
+	},
+)
+```
+
+Important details:
+
+- Put probe setup/teardown in story-level `beforeEach`, returning the cleanup callback. Do not use `try/finally` inside the `.test()` body for normal probe cleanup.
+- Assert at the app `fetch(..., { signal })` boundary. In the browser Storybook runner, MSW resolver `request.signal` is not a reliable proof that the client-side fetch received the route abort signal.
+- Keep the MSW handler pending (`.loading`) so navigation away is the only thing that can abort the request.
+- Navigate to a non-fetching route such as `Timer` when possible; this keeps the assertion focused on the request being torn down.
+- When adding or changing this check, mutation-test it locally at least once: temporarily remove the loader's `{ signal: abortVar.require().signal }`, confirm the focused story fails, restore the signal, and confirm it passes.
+
 ## Responsive Testing
 
 Mobile stories use Storybook viewport globals:
@@ -296,8 +331,9 @@ Some branches are intentionally left uncovered because they cannot be exercised 
 3. Register defaults in `src/app/mocks/handlers.ts`.
 4. Create `src/pages/<page>/testing.ts` with page actor methods for reusable content, loading, error, and navigation expectations.
 5. Add `src/app/integration/<Page>.stories.tsx` with `Default`, `Default (Mobile)`, error, and loading variants.
-6. Add `play: () => I.waitExit(role('status'))` to loaded-state and async error variants, but not to persistent-loading stories.
-7. Review the tests against the quality bar above: assertions should be specific, accessible, scoped, and backed by the intended UX/mocks.
+6. If the route loader fetches data, add an `Aborts Pending <Feature> Request On Navigation` story with `createRouteFetchAbortProbe`, `routeFetchAbortLifecycle`, and `expectRouteFetchAbortOnNavigation`.
+7. Add `play: () => I.waitExit(role('status'))` to loaded-state and async error variants, but not to persistent-loading or abort-probe stories.
+8. Review the tests against the quality bar above: assertions should be specific, accessible, scoped, and backed by the intended UX/mocks.
 
 ## Adding Coverage for an Entity Model Branch
 
