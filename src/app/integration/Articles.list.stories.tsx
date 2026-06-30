@@ -100,3 +100,41 @@ DefaultMobile.test('[mobile] can navigate back to article list', async () => {
 	await I.see(role('list', 'Articles').wait())
 	await assertExpectedDetailTeardown()
 })
+
+export const SearchArticles = meta.story({
+	name: 'Search Articles',
+	play: () => I.waitExit(role('status')),
+})
+
+SearchArticles.test('typing a query filters the list by title', async () => {
+	await I.seeArticleList()
+	await I.search('security')
+	await I.seeArticleInList(/Security audit/i)
+	await I.dontSeeArticleInList(/Quarterly report/i)
+	await I.dontSeeArticleInList(/Hiring plan/i)
+})
+
+SearchArticles.test('search matches description too', async () => {
+	await I.search('headcount')
+	await I.seeArticleInList(/Hiring plan/i)
+	await I.dontSeeArticleInList(/Security audit/i)
+})
+
+SearchArticles.test('search is case-insensitive', async () => {
+	await I.search('ROADMAP')
+	await I.seeArticleInList(/Roadmap draft/i)
+})
+
+SearchArticles.test('clearing the search restores the full list', async () => {
+	await I.search('security')
+	await I.dontSeeArticleInList(/Quarterly report/i)
+	await I.clearSearch()
+	await I.seeArticleInList(/Quarterly report/i)
+	await I.seeArticleInList(/Security audit/i)
+})
+
+SearchArticles.test('no results shows nothing matching', async () => {
+	await I.search('zzzznomatch')
+	await I.dontSeeArticleInList(/Quarterly report/i)
+	await I.dontSeeArticleInList(/Security audit/i)
+})

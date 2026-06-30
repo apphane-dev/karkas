@@ -8,13 +8,26 @@ import { styled } from '#styled-system/jsx'
 type ListToolbarProps = {
 	placeholder: string
 	children?: ReactNode
+	searchValue?: string
+	onSearchChange?: (value: string) => void
 }
 
-export function ListToolbar({ placeholder, children }: ListToolbarProps) {
+export function ListToolbar({
+	placeholder,
+	children,
+	searchValue,
+	onSearchChange,
+}: ListToolbarProps) {
 	return (
 		<styled.div px="3" py="3" borderBottomWidth="1px" borderColor="border">
 			<Group attached w="full" colorPalette="gray">
-				<Input placeholder={placeholder} size="sm" flex="1" />
+				<Input
+					placeholder={placeholder}
+					size="sm"
+					flex="1"
+					value={searchValue}
+					onChange={onSearchChange ? (e) => onSearchChange(e.target.value) : undefined}
+				/>
 				<IconButton size="sm" variant="outline" aria-label={m.list_filters()}>
 					<SlidersHorizontal />
 				</IconButton>
