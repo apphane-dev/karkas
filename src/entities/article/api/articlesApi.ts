@@ -11,3 +11,7 @@ export async function fetchArticles() {
 export async function fetchArticleById(articleId: string) {
 	return apiClient.get<Article>(`${ARTICLES_API_PATH}/${articleId}`)
 }
+
+export async function updateArticle(articleId: string, values: Omit<Article, 'id'>) {
+	return apiClient.post<Article>(`${ARTICLES_API_PATH}/${articleId}`, { body: values })
+}

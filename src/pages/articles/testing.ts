@@ -19,6 +19,15 @@ const ARTICLE_LINKS = [
 	/Design system update/i,
 ] as const
 
+const editLoc = {
+	editButton: button('Edit'),
+	saveButton: button('Save'),
+	cancelButton: button('Cancel'),
+	titleField: role('textbox', 'Title'),
+	descriptionField: role('textbox', 'Description'),
+	statusSelect: role('combobox', 'Status'),
+}
+
 export const articlesActor = createActor()
 	.extend(withRetryAndLoading('Loading articles page'))
 	.extend(
@@ -95,5 +104,32 @@ export const articlesActor = createActor()
 			await I.see(role('status', 'Loading article detail').within(detail))
 			await I.dontSee(heading('Quarterly report').within(detail))
 			await I.dontSee(text('Article not found').within(detail))
+		},
+	}))
+	.extend((I) => ({
+		openEdit: async () => {
+			await I.click(editLoc.editButton)
+		},
+		cancelEdit: async () => {
+			await I.click(editLoc.cancelButton)
+		},
+		saveArticle: async () => {
+			await I.click(editLoc.saveButton)
+		},
+		seeArticleSavedToast: async () => {
+			// The "Saving…" loading toast is transient and the global toaster is
+			// shared across stories, so observe it best-effort, then firmly wait
+			// for the persistent "Article saved" success toast.
+			await I.tryTo(() => I.retryTo(() => I.see(role('status', 'Saving…').within('global')), 5))
+			await I.retryTo(() => I.see(role('status', 'Article saved').within('global')), 25)
+		},
+		seeArticleSaveErrorToast: async () => {
+			await I.retryTo(
+				() => I.see(text("Couldn't save the article. Try again.").within('global')),
+				25,
+			)
+		},
+		seeTitleIs: async (value: string) => {
+			await I.retryTo(() => I.seeInField(editLoc.titleField, value), 25)
 		},
 	}))

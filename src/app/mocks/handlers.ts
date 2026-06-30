@@ -1,6 +1,6 @@
 import type { RequestHandler } from 'msw'
 
-import { articleDetail, articleList } from '#entities/article/mocks/handlers'
+import { articleDetail, articleList, articleUpdate } from '#entities/article/mocks/handlers'
 import { authHandlers } from '#entities/auth/mocks/handlers'
 import { connectionDetail, connectionList } from '#entities/connection/mocks/handlers'
 import {
@@ -23,6 +23,7 @@ import { usageStats } from '#entities/usage/mocks/handlers'
 export const handlers = {
 	articleList: articleList.default,
 	articleDetail: articleDetail.default,
+	articleUpdate: articleUpdate.default,
 	authLogin: authHandlers.login,
 	authLogout: authHandlers.logout,
 	connectionList: connectionList.default,

@@ -1,8 +1,9 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
-import { articleDetail } from '#entities/article/mocks/handlers'
+import { articleDetail, articleUpdate } from '#entities/article/mocks/handlers'
+// `articleUpdate` is still imported for the server-error story override below.
 import { articlesActor as I } from '#pages/articles/testing'
-import { heading, role } from '#shared/test'
+import { button, heading, role } from '#shared/test'
 
 const meta = preview.meta({
 	title: 'Integration/Articles/Detail',
@@ -108,5 +109,75 @@ KeepsLoadingWhenArticleDetailNeverResolvesMobile.test(
 	async () => {
 		const detail = await I.see(role('main'))
 		await I.seeDetailLoading(detail)
+	},
+)
+
+export const EditArticle = meta.story({
+	name: 'Edit Article',
+	play: () => I.waitExit(role('status')),
+})
+
+EditArticle.test('clicking Edit opens the edit form with current values', async () => {
+	await I.scope(role('main'), async () => {
+		await I.see(button('Edit'))
+		await I.openEdit()
+		await I.see(role('textbox', 'Title'))
+		await I.seeTitleIs('Quarterly report')
+		await I.see(role('textbox', 'Description'))
+		await I.see(role('combobox'))
+		await I.see(button('Cancel'))
+	})
+})
+
+EditArticle.test('Cancel returns to read mode without saving', async () => {
+	await I.scope(role('main'), async () => {
+		await I.openEdit()
+		await I.fill(role('textbox', 'Title'), 'A discarded title')
+		await I.cancelEdit()
+		await I.see(button('Edit'))
+		await I.dontSee(role('textbox', 'Title'))
+	})
+})
+
+EditArticle.test('saving updates the title and returns to read mode', async () => {
+	await I.scope(role('main'), async () => {
+		await I.openEdit()
+		await I.fill(role('textbox', 'Title'), 'Updated quarterly report')
+		await I.saveArticle()
+		await I.seeArticleSavedToast()
+		await I.see(button('Edit'))
+		await I.see(heading('Updated quarterly report'))
+	})
+})
+
+EditArticle.test('changing status persists and reflects on return', async () => {
+	await I.scope(role('main'), async () => {
+		await I.openEdit()
+		await I.selectOption(role('combobox'), 'In Progress')
+		await I.saveArticle()
+		await I.seeArticleSavedToast()
+		// A prior save test in this story leaves a stale "Article saved" toast
+		// in the global toaster, so `seeArticleSavedToast` can resolve against it
+		// before this save transitions to read mode. Wait for the real transition.
+		await I.retryTo(() => I.see(button('Edit')), 25)
+	})
+})
+
+export const EditArticleServerError = meta.story({
+	name: 'Edit Article Server Error',
+	play: () => I.waitExit(role('status')),
+	parameters: { msw: { handlers: { articleUpdate: articleUpdate.error } } },
+})
+
+EditArticleServerError.test(
+	'save failure shows an error toast and stays in edit mode',
+	async () => {
+		await I.scope(role('main'), async () => {
+			await I.openEdit()
+			await I.fill(role('textbox', 'Title'), 'Will not save')
+			await I.saveArticle()
+			await I.seeArticleSaveErrorToast()
+			await I.see(role('textbox', 'Title'))
+		})
 	},
 )

@@ -1,3 +1,5 @@
+import type { Article } from '#entities/article/model/types'
+
 import { assert } from '@reatom/core'
 import { HttpResponse, delay, http, type HttpResponseResolver } from 'msw'
 
@@ -10,6 +12,7 @@ import { ARTICLES_API_PATH } from '../api/articlesApi'
 
 const listUrl = composeApiUrl(ARTICLES_API_PATH)
 const detailUrl = composeApiUrl(`${ARTICLES_API_PATH}/:articleId`)
+const updateUrl = composeApiUrl(`${ARTICLES_API_PATH}/:articleId`)
 
 const articleListResolver = (async () => {
 	await delay()
@@ -43,4 +46,22 @@ export const articleDetail = {
 	loading: http.get(detailUrl, neverResolve),
 }
 
-export const articleHandlers = [articleList.default, articleDetail.default]
+const articleUpdateResolver = (async ({ params, request }) => {
+	await delay()
+
+	const articleId = params['articleId']
+	const article = articlesMockData.find(({ id }) => id === articleId)
+	assert(article, `Article with id ${articleId} not found in mock data`, Error404)
+
+	const body = (await request.json()) as Omit<Article, 'id'>
+	Object.assign(article, body)
+
+	return HttpResponse.json(article)
+}) satisfies HttpResponseResolver
+
+export const articleUpdate = {
+	default: http.post(updateUrl, articleUpdateResolver),
+	error: http.post(updateUrl, () => to500()),
+}
+
+export const articleHandlers = [articleList.default, articleDetail.default, articleUpdate.default]
