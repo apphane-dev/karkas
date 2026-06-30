@@ -1,4 +1,4 @@
-import type { Conversation } from '#entities/conversation/model/types'
+import type { Conversation, Message } from '#entities/conversation/model/types'
 
 import { apiClient } from '#shared/api'
 
@@ -11,6 +11,12 @@ export async function fetchConversations() {
 
 export async function fetchConversationById(conversationId: string) {
 	return apiClient.get<Conversation>(`${CONVERSATIONS_API_PATH}/${conversationId}`)
+}
+
+export async function sendMessage(conversationId: string, text: string) {
+	return apiClient.post<Message>(`${CONVERSATIONS_API_PATH}/${conversationId}/messages`, {
+		body: { text },
+	})
 }
 
 type UnreadCountResponse = {

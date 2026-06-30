@@ -1,6 +1,6 @@
 import preview from '#.storybook/preview'
 import { App } from '#app/App'
-import { conversationDetail } from '#entities/conversation/mocks/handlers'
+import { conversationDetail, conversationSendMessage } from '#entities/conversation/mocks/handlers'
 import { chatActor as I, chatLoc as loc } from '#pages/chat/testing'
 import { role, text } from '#shared/test'
 
@@ -113,5 +113,58 @@ KeepsLoadingWhenConversationDetailNeverResolvesMobile.test(
 	async () => {
 		await I.see(loc.messageThreadLoading)
 		await I.dontSee(loc.conversationNotFoundHeading)
+	},
+)
+
+export const SendMessage = meta.story({
+	name: 'Send Message',
+	play: () => I.waitExit(role('status')),
+})
+
+SendMessage.test(
+	'typing and sending adds the message to the thread and clears the input',
+	async () => {
+		await I.scope(role('main'), async () => {
+			const before = await I.messageCount()
+			await I.sendMessage('On my way to review it')
+			await I.seeSentMessage('On my way to review it')
+			await I.seeComposeCleared()
+			await I.seeMessageCountIs(before + 1)
+		})
+	},
+)
+
+export const EmptySendIsIgnored = meta.story({
+	name: 'Empty Send Ignored',
+	play: () => I.waitExit(role('status')),
+})
+
+EmptySendIsIgnored.test('submitting an empty message does not add a bubble', async () => {
+	await I.scope(role('main'), async () => {
+		const before = await I.messageCount()
+		await I.sendMessage('   ')
+		// The submit handler still ran (draft cleared), yet no bubble was added.
+		await I.seeComposeCleared()
+		await I.seeMessageCountIs(before)
+	})
+})
+
+export const SendServerError = meta.story({
+	name: 'Send Server Error',
+	play: () => I.waitExit(role('status')),
+	parameters: {
+		msw: { handlers: { conversationSendMessage: conversationSendMessage.error } },
+	},
+})
+
+SendServerError.test(
+	'send failure shows an error toast and removes the optimistic message',
+	async () => {
+		await I.scope(role('main'), async () => {
+			const before = await I.messageCount()
+			await I.sendMessage('this will fail')
+			await I.seeSendErrorToast()
+			await I.seeMessageCountIs(before)
+		})
 	},
 )

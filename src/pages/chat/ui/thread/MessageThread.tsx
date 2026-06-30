@@ -1,5 +1,8 @@
-import type { Conversation } from '#entities/conversation'
+import type { Message } from '#entities/conversation'
+import type { ChatThreadModel } from '../../model/chatThreadModel'
 
+import { wrap } from '@reatom/core'
+import { reatomComponent, useAtom } from '@reatom/react'
 import { Send } from 'lucide-react'
 
 import { m } from '#paraglide/messages.js'
@@ -7,8 +10,6 @@ import { Button, Input } from '#shared/components'
 import { styled } from '#styled-system/jsx'
 
 import { ConversationHeaderContent } from './ConversationHeaderContent'
-
-type Message = Conversation['messages'][number]
 
 const MessageSender = ({ message }: { message: Message }) => {
 	if (message.isOwn) return null
@@ -52,22 +53,23 @@ const MessageItem = ({ message }: { message: Message }) => (
 	</styled.div>
 )
 
-const MessageLog = ({ conversation }: { conversation: Conversation }) => (
-	<styled.div
-		role="log"
-		aria-label={conversation.name}
-		mt="auto"
-		display="flex"
-		flexDirection="column"
-		gap="4"
-	>
-		{conversation.messages.map((message) => (
+const MessageLog = ({ messages, name }: { messages: Message[]; name: string }) => (
+	<styled.div role="log" aria-label={name} mt="auto" display="flex" flexDirection="column" gap="4">
+		{messages.map((message) => (
 			<MessageItem key={message.id} message={message} />
 		))}
 	</styled.div>
 )
 
-export function MessageThread({ conversation }: { conversation: Conversation }) {
+export const MessageThread = reatomComponent(({ model }: { model: ChatThreadModel }) => {
+	const [draft, setDraft] = useAtom('')
+	const { conversation, messages, isSending, send } = model
+
+	const handleSubmit = wrap(() => {
+		void send(draft)
+		setDraft('')
+	})
+
 	return (
 		<styled.div display="flex" flexDirection="column" h="calc(100dvh - var(--app-header-h, 0px))">
 			<styled.div
@@ -77,13 +79,13 @@ export function MessageThread({ conversation }: { conversation: Conversation }) 
 				borderColor="border"
 				display={{ base: 'none', md: 'flex' }}
 				alignItems="center"
-				flexShrink={0}
+				flexShrink="0"
 			>
 				<ConversationHeaderContent conversation={conversation} />
 			</styled.div>
 
 			<styled.div flex="1" overflowY="auto" p="6" display="flex" flexDirection="column">
-				<MessageLog conversation={conversation} />
+				<MessageLog messages={messages()} name={model.name} />
 			</styled.div>
 
 			<styled.form
@@ -91,16 +93,32 @@ export function MessageThread({ conversation }: { conversation: Conversation }) 
 				py="3"
 				borderTopWidth="1px"
 				borderColor="border"
-				flexShrink={0}
-				onSubmit={(e) => e.preventDefault()}
+				flexShrink="0"
+				onSubmit={(e) => {
+					e.preventDefault()
+					handleSubmit()
+				}}
 			>
 				<styled.div display="flex" gap="2" alignItems="center">
-					<Input placeholder={m.chat_message_placeholder()} size="sm" flex="1" />
-					<Button size="sm" variant="solid">
+					<Input
+						placeholder={m.chat_message_placeholder()}
+						size="sm"
+						flex="1"
+						value={draft}
+						onChange={(e) => setDraft(e.target.value)}
+						disabled={isSending()}
+					/>
+					<Button
+						type="submit"
+						size="sm"
+						variant="solid"
+						aria-label={m.chat_send()}
+						disabled={isSending()}
+					>
 						<Send />
 					</Button>
 				</styled.div>
 			</styled.form>
 		</styled.div>
 	)
-}
+}, 'MessageThread')
