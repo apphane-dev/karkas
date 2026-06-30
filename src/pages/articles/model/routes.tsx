@@ -13,6 +13,7 @@ import { ArticleDetailLoadingState } from '../ui/detail/ArticleDetailLoadingStat
 import { ArticleNoSelection } from '../ui/detail/ArticleNoSelection'
 import { ArticleNotFound } from '../ui/detail/ArticleNotFound'
 import { ArticleList } from '../ui/list/ArticleList'
+import { reatomArticleDetailModel } from './articleDetailModel'
 
 const isArticlesLoading = (isFirstPending: boolean, isPending: boolean, articles: unknown) =>
 	isFirstPending || (isPending && !articles)
@@ -66,9 +67,9 @@ export const articlesRoute = protectedRoute.reatomRoute(
 export const articleDetailRoute = articlesRoute.reatomRoute(
 	{
 		path: ':articleId',
-		loader: ({ articleId }) => fetchArticleById(articleId),
+		loader: async ({ articleId }) => reatomArticleDetailModel(await fetchArticleById(articleId)),
 		render: (self) => {
-			const { isPending, data: article } = self.loader.status()
+			const { isPending, data: model } = self.loader.status()
 			const error = self.loader.error()
 			if (isPending) return <ArticleDetailLoadingState />
 			if (error && !(isApiError(error) && error.status === 404)) {
@@ -80,8 +81,8 @@ export const articleDetailRoute = articlesRoute.reatomRoute(
 					/>
 				)
 			}
-			return article ? (
-				<ArticleDetail article={article} />
+			return model ? (
+				<ArticleDetail model={model} />
 			) : (
 				<ArticleNotFound articleId={self().articleId} />
 			)

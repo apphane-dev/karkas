@@ -13,5 +13,13 @@
 	"article_detail": "Article detail",
 	"article_new": "New article",
 	"article_search_placeholder": "Search articles...",
-	"article_loading_detail": "Loading article detail"
+	"article_loading_detail": "Loading article detail",
+	"article_saving": "Saving…",
+	"article_saved": "Article saved",
+	"article_save_error": "Couldn't save the article. Try again.",
+	"article_cancel": "Cancel",
+	"article_save": "Save",
+	"article_edit_title": "Title",
+	"article_edit_description": "Description",
+	"article_edit_status": "Status"
 }

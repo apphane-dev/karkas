@@ -13,7 +13,7 @@ articlesRoute.match.extend(
 
 articleDetailRoute.match.extend(
 	withMatchHeaderTrail(2, {
-		label: () => articleDetailRoute.loader.data()?.title ?? m.article_not_found(),
+		label: () => articleDetailRoute.loader.data()?.current()?.title ?? m.article_not_found(),
 		isLoading: () => articleDetailRoute.loader.pending() > 0,
 	}),
 )
