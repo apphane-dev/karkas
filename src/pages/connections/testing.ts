@@ -1,3 +1,4 @@
+import { m } from '#paraglide/messages.js'
 import {
 	createActor,
 	heading,
@@ -67,5 +68,19 @@ export const connectionsActor = createActor()
 			await I.see(text('API').all())
 			await I.see(text('Database').all())
 			await I.see(text('Webhook').all())
+		},
+		// The search input carries a placeholder but no label/aria-label, so its
+		// accessible name is empty — target it by placeholder text instead.
+		search: async (term: string) => {
+			await I.fill((canvas) => canvas.getByPlaceholderText(m.connection_search_placeholder()), term)
+		},
+		clearSearch: async () => {
+			await I.clear((canvas) => canvas.getByPlaceholderText(m.connection_search_placeholder()))
+		},
+		seeConnectionInList: async (name: string | RegExp) => {
+			await I.see(link(name))
+		},
+		dontSeeConnectionInList: async (name: string | RegExp) => {
+			await I.dontSee(link(name))
 		},
 	}))

@@ -114,3 +114,40 @@ DefaultMobile.test('[mobile] displays correct status badges for all statuses', a
 DefaultMobile.test('[mobile] displays correct type badges for all types', async () => {
 	await I.seeTypeBadges()
 })
+
+export const SearchConnections = meta.story({
+	name: 'Search Connections',
+	play: () => I.waitExit(role('status')),
+})
+
+SearchConnections.test('typing a query filters by name', async () => {
+	await I.search('stripe')
+	await I.seeConnectionInList(/Stripe API/i)
+	await I.dontSeeConnectionInList(/Analytics DB/i)
+	await I.dontSeeConnectionInList(/Slack Notifications/i)
+})
+
+SearchConnections.test('search matches description', async () => {
+	await I.search('webhook')
+	await I.seeConnectionInList(/Slack Notifications/i)
+	await I.dontSeeConnectionInList(/Stripe API/i)
+})
+
+SearchConnections.test('search is case-insensitive', async () => {
+	await I.search('ANALYTICS')
+	await I.seeConnectionInList(/Analytics DB/i)
+})
+
+SearchConnections.test('clearing restores the full list', async () => {
+	await I.search('stripe')
+	await I.dontSeeConnectionInList(/Analytics DB/i)
+	await I.clearSearch()
+	await I.seeConnectionInList(/Stripe API/i)
+	await I.seeConnectionInList(/Analytics DB/i)
+})
+
+SearchConnections.test('no results shows nothing matching', async () => {
+	await I.search('zzzznomatch')
+	await I.dontSeeConnectionInList(/Stripe API/i)
+	await I.dontSeeConnectionInList(/S3 Data Lake/i)
+})
