@@ -14,6 +14,9 @@ import {
 const listUrl = composeApiUrl(CONVERSATIONS_API_PATH)
 const unreadCountUrl = composeApiUrl(CONVERSATIONS_UNREAD_COUNT_API_PATH)
 const detailUrl = composeApiUrl(`${CONVERSATIONS_API_PATH}/:conversationId`)
+const sendMessageUrl = composeApiUrl(`${CONVERSATIONS_API_PATH}/:conversationId/messages`)
+
+const nowTime = () => new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
 
 const conversationListResolver = (async () => {
 	await delay()
@@ -42,6 +45,20 @@ const conversationDetailResolver = (async ({ params }) => {
 	return HttpResponse.json(conversation)
 }) satisfies HttpResponseResolver
 
+const conversationSendMessageResolver = (async ({ params, request }) => {
+	await delay()
+
+	const conversationId = params['conversationId']
+	const conversation = conversationsMockData.find(({ id }) => id === conversationId)
+	assert(conversation, `Conversation with id ${conversationId} not found in mock data`, Error404)
+
+	const { text } = (await request.json()) as { text: string }
+	const message = { id: crypto.randomUUID(), sender: 'You', text, time: nowTime(), isOwn: true }
+	conversation.messages.push(message)
+
+	return HttpResponse.json(message)
+}) satisfies HttpResponseResolver
+
 export const conversationList = {
 	default: http.get(listUrl, conversationListResolver),
 	error: http.get(listUrl, () => to500()),
@@ -60,8 +77,14 @@ export const conversationDetail = {
 	loading: http.get(detailUrl, neverResolve),
 }
 
+export const conversationSendMessage = {
+	default: http.post(sendMessageUrl, conversationSendMessageResolver),
+	error: http.post(sendMessageUrl, () => to500()),
+}
+
 export const conversationHandlers = [
 	conversationList.default,
 	conversationUnreadCount.default,
 	conversationDetail.default,
+	conversationSendMessage.default,
 ]

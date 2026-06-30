@@ -1,3 +1,3 @@
-export { fetchConversationById, fetchConversations } from './api/conversationsApi'
+export { fetchConversationById, fetchConversations, sendMessage } from './api/conversationsApi'
 export { conversationUnreadCountAtom } from './model/unreadCount'
-export type { Conversation } from './model/types'
+export type { Conversation, Message } from './model/types'

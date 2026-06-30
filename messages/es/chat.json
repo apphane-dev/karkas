@@ -13,5 +13,7 @@
 	"chat_search_placeholder": "Buscar conversaciones...",
 	"chat_new_conversation": "Nueva conversación",
 	"chat_message_placeholder": "Escribe un mensaje...",
-	"chat_back_to_conversations": "Volver a conversaciones"
+	"chat_back_to_conversations": "Volver a conversaciones",
+	"chat_send": "Enviar",
+	"chat_send_error": "No se pudo enviar el mensaje. Inténtalo de nuevo."
 }

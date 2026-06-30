@@ -6,6 +6,7 @@ import { connectionDetail, connectionList } from '#entities/connection/mocks/han
 import {
 	conversationDetail,
 	conversationList,
+	conversationSendMessage,
 	conversationUnreadCount,
 } from '#entities/conversation/mocks/handlers'
 import { dashboardStats } from '#entities/dashboard/mocks/handlers'
@@ -29,6 +30,7 @@ export const handlers = {
 	conversationList: conversationList.default,
 	conversationUnreadCount: conversationUnreadCount.default,
 	conversationDetail: conversationDetail.default,
+	conversationSendMessage: conversationSendMessage.default,
 	dashboardStats: dashboardStats.default,
 	itemList: itemList.default,
 	itemDetail: itemDetail.default,

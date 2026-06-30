@@ -13,6 +13,7 @@ import { MessageThread } from '../ui/thread/MessageThread'
 import { MessageThreadLoadingState } from '../ui/thread/MessageThreadLoadingState'
 import { MessageThreadNoSelection } from '../ui/thread/MessageThreadNoSelection'
 import { MessageThreadNotFound } from '../ui/thread/MessageThreadNotFound'
+import { reatomChatThreadModel } from './chatThreadModel'
 
 export const chatRoute = protectedRoute.reatomRoute(
 	{
@@ -63,9 +64,10 @@ export const chatRoute = protectedRoute.reatomRoute(
 export const chatConversationRoute = chatRoute.reatomRoute(
 	{
 		path: ':conversationId',
-		loader: ({ conversationId }) => fetchConversationById(conversationId),
+		loader: async ({ conversationId }) =>
+			reatomChatThreadModel(await fetchConversationById(conversationId)),
 		render: (self) => {
-			const { isPending, data: conversation } = self.loader.status()
+			const { isPending, data: model } = self.loader.status()
 			const error = self.loader.error()
 			if (isPending) return <MessageThreadLoadingState />
 			if (error && !(isApiError(error) && error.status === 404)) {
@@ -77,8 +79,8 @@ export const chatConversationRoute = chatRoute.reatomRoute(
 					/>
 				)
 			}
-			return conversation ? (
-				<MessageThread conversation={conversation} />
+			return model ? (
+				<MessageThread model={model} />
 			) : (
 				<MessageThreadNotFound conversationId={self().conversationId} />
 			)
