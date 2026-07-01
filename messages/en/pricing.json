@@ -10,5 +10,12 @@
 	"pricing_subscribing": "Switching to {name}…",
 	"pricing_subscribed": "You're now on the {name} plan",
 	"pricing_subscribe_error": "Couldn't switch plans. Try again.",
-	"pricing_processing": "Processing…"
+	"pricing_processing": "Processing…",
+	"pricing_sidebar_upgrade_title": "Upgrade to Pro",
+	"pricing_sidebar_upgrade_desc": "{storage} & priority support",
+	"pricing_sidebar_upgrade_storage": "10 GB storage",
+	"pricing_sidebar_current_title": "{name} plan active",
+	"pricing_sidebar_current_generic_title": "Plan active",
+	"pricing_sidebar_manage_desc": "Review billing and plan options",
+	"pricing_sidebar_view_plans": "View plans →"
 }

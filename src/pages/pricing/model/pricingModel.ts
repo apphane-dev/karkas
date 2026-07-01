@@ -2,7 +2,7 @@ import type { PricingData, PlanId } from '#entities/pricing'
 
 import { abortVar, action, atom, framePromise, sleep, withAbort, wrap } from '@reatom/core'
 
-import { subscribeToPlan } from '#entities/pricing'
+import { currentPlanIdAtom, setCurrentPlanId, subscribeToPlan } from '#entities/pricing'
 import { m } from '#paraglide/messages.js'
 import { toaster } from '#shared/components'
 
@@ -21,13 +21,14 @@ async function subscribeWithToast(planId: PlanId, planName: string) {
 	void framePromise().catch(() => {})
 
 	try {
-		await wrap(subscribeToPlan(planId, { signal: abortVar.require().signal }))
+		const result = await wrap(subscribeToPlan(planId, { signal: abortVar.require().signal }))
 		await wrap(sleep(SUBSCRIBE_DELAY_MS))
 		toaster.update(id, {
 			title: m.pricing_subscribed({ name: planName }),
 			type: 'success',
 		})
 		globalThis.setTimeout(() => toaster.remove(id), SUBSCRIBE_DELAY_MS)
+		return result.currentPlanId
 	} catch (error) {
 		toaster.remove(id)
 		throw error
@@ -36,26 +37,25 @@ async function subscribeWithToast(planId: PlanId, planName: string) {
 
 export function reatomPricingPageModel(data: PricingData) {
 	const plans = data.plans
-	const currentPlanId = atom<PlanId>(data.currentPlanId, 'pricing.currentPlanId')
+	const currentPlanId = currentPlanIdAtom
 	const pendingPlanId = atom<PlanId | null>(null, 'pricing.pendingPlanId')
 
 	const isSubscribable = (planId: PlanId) => planId !== currentPlanId() && pendingPlanId() === null
 	const planName = (planId: PlanId) => plans.find((plan) => plan.id === planId)?.name ?? ''
 	const subscribeSafely = async (planId: PlanId) => {
 		try {
-			await wrap(subscribeWithToast(planId, planName(planId)))
-			return true
+			return await wrap(subscribeWithToast(planId, planName(planId)))
 		} catch {
 			toaster.create({ title: m.pricing_subscribe_error(), type: 'error' })
-			return false
+			return null
 		}
 	}
 
 	const subscribe = action(async (planId: PlanId) => {
 		if (!isSubscribable(planId)) return
 		pendingPlanId.set(planId)
-		const didSubscribe = await wrap(subscribeSafely(planId))
-		if (didSubscribe) currentPlanId.set(planId)
+		const subscribedPlanId = await wrap(subscribeSafely(planId))
+		if (subscribedPlanId) setCurrentPlanId(subscribedPlanId)
 		pendingPlanId.set(null)
 	}, 'pricing.subscribe').extend(withAbort())
 

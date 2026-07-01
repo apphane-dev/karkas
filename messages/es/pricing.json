@@ -10,5 +10,12 @@
 	"pricing_subscribing": "Cambiando a {name}…",
 	"pricing_subscribed": "Ahora estás en el plan {name}",
 	"pricing_subscribe_error": "No se pudo cambiar de plan. Inténtalo de nuevo.",
-	"pricing_processing": "Procesando…"
+	"pricing_processing": "Procesando…",
+	"pricing_sidebar_upgrade_title": "Actualizar a Pro",
+	"pricing_sidebar_upgrade_desc": "{storage} y soporte prioritario",
+	"pricing_sidebar_upgrade_storage": "10 GB de almacenamiento",
+	"pricing_sidebar_current_title": "Plan {name} activo",
+	"pricing_sidebar_current_generic_title": "Plan activo",
+	"pricing_sidebar_manage_desc": "Revisa la facturación y las opciones del plan",
+	"pricing_sidebar_view_plans": "Ver planes →"
 }
