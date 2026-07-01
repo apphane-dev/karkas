@@ -1,8 +1,2 @@
-export {
-	authSessionAtom,
-	isAuthenticatedAtom,
-	loginAction,
-	logoutAction,
-	setAuthenticatedForTest,
-} from './model/auth'
+export { authSessionAtom, isAuthenticatedAtom, loginAction, logoutAction } from './model/auth'
 export { protectedRoute } from './model/routes'

@@ -5,7 +5,7 @@ import { UsageCard } from './UsageCard'
 
 export const UsageSidebarItem = reatomComponent(() => {
 	const isActive = usageRoute.match()
-	const routeData = isActive ? usageRoute.loader.data() : undefined
+	const routeData = isActive ? usageRoute.loader.status().data : undefined
 
 	return (
 		<a href={usageRoute.path()} aria-current={isActive ? 'page' : undefined}>

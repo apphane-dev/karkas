@@ -64,7 +64,7 @@ export const ArticleDetail = reatomComponent(({ model }: { model: ArticleDetailM
 									{m.article_save()}
 								</Button>
 							)}
-							<Button variant="outline" onClick={wrap(() => model.cancelEdit())}>
+							<Button variant="outline" onClick={wrap(() => model.isEditing.set(false))}>
 								{m.article_cancel()}
 							</Button>
 						</styled.div>

@@ -12,7 +12,7 @@ import { clearAbortErrors, drainAbortErrors, formatAbortErrors } from './abortEr
 import { useEffect, useMemo, type PropsWithChildren } from 'react'
 
 import { handlers } from '#app/mocks/handlers'
-import { setAuthenticatedForTest } from '#entities/auth'
+import { authSessionAtom } from '#entities/auth'
 import { authMockSession } from '#entities/auth/mocks/data'
 import { css } from '#styled-system/css'
 
@@ -41,7 +41,7 @@ function ReatomDecorator({
 			window.localStorage.clear()
 		}
 		return setupStorybookUrl(initialPath, () => {
-			setAuthenticatedForTest(authenticated ? authMockSession : null)
+			authSessionAtom.set(authenticated ? authMockSession : null)
 		})
 	}, [authenticated, initialPath])
 

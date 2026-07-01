@@ -8,6 +8,11 @@ import { PageError } from '#widgets/data-page'
 import { UsagePage } from '../ui/UsagePage'
 import { UsagePageLoading } from '../ui/UsagePageLoading'
 
+// The route owns its own fetch so it can abort on navigation and surface
+// retry/error through `self.loader.status()`. The sidebar's global
+// `usageDataAtom` is a separate cached query; the two intentionally do not
+// share/seed each other to avoid a manual `.data` write that a concurrent
+// fetch could clobber.
 const fetchUsageDataForRoute = async () =>
 	await wrap(fetchUsageData({ signal: abortVar.require().signal }))
 

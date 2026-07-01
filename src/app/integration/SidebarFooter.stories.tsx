@@ -5,7 +5,7 @@ import { createActor, heading, role, text, link } from '#shared/test'
 
 const storageSummary = m.usage_storage_desc({ usedGB: 4.2, totalGB: 10 })
 const storageProgressNote = text(storageSummary).wait()
-const upgradeToProBanner = text('Unlimited storage & more')
+const upgradeToProBanner = text('10 GB storage & priority support')
 
 const I = createActor()
 

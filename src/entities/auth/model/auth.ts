@@ -32,7 +32,3 @@ export const logoutAction = action(async () => {
 	authSessionAtom.set(null)
 	await wrap(logout())
 }, 'logoutAction')
-
-export const setAuthenticatedForTest = action((session: AuthSession | null) => {
-	authSessionAtom.set(session)
-}, 'setAuthenticatedForTest')

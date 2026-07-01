@@ -62,10 +62,6 @@ export function reatomArticleDetailModel(article: Article) {
 		isEditing.set(true)
 	}, `article.${id}.startEdit`)
 
-	const cancelEdit = action(() => {
-		isEditing.set(false)
-	}, `article.${id}.cancelEdit`)
-
 	const save = action(async () => {
 		if (!form.focus().dirty || isSaving()) return
 		isSaving.set(true)
@@ -86,7 +82,7 @@ export function reatomArticleDetailModel(article: Article) {
 		}
 	}, `article.${id}.save`).extend(withAbort())
 
-	return { id, current, isEditing, isSaving, form, startEdit, cancelEdit, save }
+	return { id, current, isEditing, isSaving, form, startEdit, save }
 }
 
 export type ArticleDetailModel = ReturnType<typeof reatomArticleDetailModel>

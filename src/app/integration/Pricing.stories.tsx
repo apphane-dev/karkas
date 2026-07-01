@@ -3,7 +3,7 @@ import { App } from '#app/App'
 import { PRICING_API_PATH } from '#entities/pricing/api/pricingApi'
 import { pricingPlans } from '#entities/pricing/mocks/handlers'
 import { pricingActor as I, pricingLoc as loc } from '#pages/pricing/testing'
-import { link, role } from '#shared/test'
+import { link, role, text } from '#shared/test'
 import {
 	createRouteFetchAbortProbe,
 	expectRouteFetchAbortOnNavigation,
@@ -53,6 +53,7 @@ UpgradeToPro.test('clicking Upgrade to Pro switches the current plan', async () 
 	await I.seeSubscribeToast('Pro')
 	await I.seeCurrentPlanOn(loc.proCard)
 	await I.see(role('button', 'Get Free').within(loc.freeCard))
+	await I.see(text('Pro plan active'))
 })
 
 export const AbortsPendingPricingRequestOnNavigation = meta.story({

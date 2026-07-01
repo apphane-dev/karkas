@@ -37,11 +37,13 @@ Default.test('renders storage reset note', async () => {
 	await I.see(loc.storageResetNote)
 })
 
-Default.test('renders breakdown section', async () => {
+Default.test('renders breakdown and insights sections', async () => {
 	await I.see(loc.breakdownHeading)
 	await I.see(loc.documentsRow)
 	await I.see(loc.mediaRow)
 	await I.see(loc.otherRow)
+	await I.see(loc.insightsHeading)
+	await I.see(loc.recommendedCleanup)
 })
 
 export const DefaultMobile = meta.story({
