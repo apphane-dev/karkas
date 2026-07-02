@@ -1,9 +1,10 @@
-import { abortVar, retryComputed, wrap } from '@reatom/core'
+import { retryComputed, wrap } from '@reatom/core'
 
 import { protectedRoute } from '#entities/auth'
 import { fetchItems, fetchItemById } from '#entities/item'
 import { m } from '#paraglide/messages.js'
 import { isApiError } from '#shared/api'
+import { withRouteAbort } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 
 import { ItemDetail } from '../ui/detail/ItemDetail'
@@ -15,7 +16,7 @@ import { ItemsPageLoading } from '../ui/ItemsPageLoading'
 const isItemsLoading = (isFirstPending: boolean, isPending: boolean, items: unknown) =>
 	isFirstPending || (isPending && !items)
 
-const fetchItemsForRoute = async () => await wrap(fetchItems({ signal: abortVar.require().signal }))
+const fetchItemsForRoute = () => withRouteAbort(fetchItems)
 
 export const itemsRoute = protectedRoute.reatomRoute(
 	{
@@ -56,8 +57,7 @@ export const itemsRoute = protectedRoute.reatomRoute(
 export const itemDetailRoute = itemsRoute.reatomRoute(
 	{
 		path: ':itemId',
-		loader: async ({ itemId }) =>
-			await wrap(fetchItemById(itemId, { signal: abortVar.require().signal })),
+		loader: async ({ itemId }) => await withRouteAbort((options) => fetchItemById(itemId, options)),
 		render: (self) => {
 			const { isPending, data: item } = self.loader.status()
 			const error = self.loader.error()

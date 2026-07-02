@@ -1,9 +1,10 @@
-import { abortVar, retryComputed, wrap } from '@reatom/core'
+import { retryComputed, wrap } from '@reatom/core'
 
 import { fetchArticles, fetchArticleById } from '#entities/article'
 import { protectedRoute } from '#entities/auth'
 import { m } from '#paraglide/messages.js'
 import { isApiError } from '#shared/api'
+import { withRouteAbort } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 import { MasterDetails } from '#widgets/master-details'
 
@@ -18,8 +19,7 @@ import { reatomArticleDetailModel } from './articleDetailModel'
 const isArticlesLoading = (isFirstPending: boolean, isPending: boolean, articles: unknown) =>
 	isFirstPending || (isPending && !articles)
 
-const fetchArticlesForRoute = async () =>
-	await wrap(fetchArticles({ signal: abortVar.require().signal }))
+const fetchArticlesForRoute = () => withRouteAbort(fetchArticles)
 
 export const articlesRoute = protectedRoute.reatomRoute(
 	{
@@ -72,7 +72,7 @@ export const articleDetailRoute = articlesRoute.reatomRoute(
 		path: ':articleId',
 		loader: async ({ articleId }) =>
 			reatomArticleDetailModel(
-				await wrap(fetchArticleById(articleId, { signal: abortVar.require().signal })),
+				await withRouteAbort((options) => fetchArticleById(articleId, options)),
 			),
 		render: (self) => {
 			const { isPending, data: model } = self.loader.status()

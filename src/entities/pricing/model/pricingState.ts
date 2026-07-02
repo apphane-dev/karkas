@@ -1,6 +1,8 @@
 import type { PlanId } from './types'
 
-import { abortVar, atom, computed, withAsyncData, wrap } from '@reatom/core'
+import { atom, computed, withAsyncData } from '@reatom/core'
+
+import { withRouteAbort } from '#shared/router'
 
 import { fetchPricing } from '../api/pricingApi'
 
@@ -8,7 +10,7 @@ import { fetchPricing } from '../api/pricingApi'
 // page. An async computed with `withAsyncData` is an abortable context, so the
 // fetch receives the computed's own abort signal.
 export const pricingDataAtom = computed(
-	async () => await wrap(fetchPricing({ signal: abortVar.require().signal })),
+	async () => await withRouteAbort(fetchPricing),
 	'pricing.data',
 ).extend(withAsyncData())
 

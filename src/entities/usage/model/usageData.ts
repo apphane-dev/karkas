@@ -1,6 +1,7 @@
-import { abortVar, computed, withAsyncData, wrap } from '@reatom/core'
+import { computed, withAsyncData } from '@reatom/core'
 
 import { fetchUsageData } from '#entities/usage/api/usageApi'
+import { withRouteAbort } from '#shared/router'
 
 /**
  * Global usage data atom for the sidebar usage summary widget, which renders on
@@ -13,6 +14,6 @@ import { fetchUsageData } from '#entities/usage/api/usageApi'
  * race a concurrent fetch here.
  */
 export const usageDataAtom = computed(
-	async () => await wrap(fetchUsageData({ signal: abortVar.require().signal })),
+	async () => await withRouteAbort(fetchUsageData),
 	'usageData',
 ).extend(withAsyncData())

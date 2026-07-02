@@ -1,9 +1,10 @@
-import { abortVar, retryComputed, wrap } from '@reatom/core'
+import { retryComputed, wrap } from '@reatom/core'
 
 import { protectedRoute } from '#entities/auth'
 import { fetchConversationById, fetchConversations } from '#entities/conversation'
 import { m } from '#paraglide/messages.js'
 import { isApiError } from '#shared/api'
+import { withRouteAbort } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 import { MasterDetails } from '#widgets/master-details'
 
@@ -15,8 +16,7 @@ import { MessageThreadNoSelection } from '../ui/thread/MessageThreadNoSelection'
 import { MessageThreadNotFound } from '../ui/thread/MessageThreadNotFound'
 import { reatomChatThreadModel } from './chatThreadModel'
 
-const fetchConversationsForRoute = async () =>
-	await wrap(fetchConversations({ signal: abortVar.require().signal }))
+const fetchConversationsForRoute = () => withRouteAbort(fetchConversations)
 
 export const chatRoute = protectedRoute.reatomRoute(
 	{
@@ -69,7 +69,7 @@ export const chatConversationRoute = chatRoute.reatomRoute(
 		path: ':conversationId',
 		loader: async ({ conversationId }) =>
 			reatomChatThreadModel(
-				await wrap(fetchConversationById(conversationId, { signal: abortVar.require().signal })),
+				await withRouteAbort((options) => fetchConversationById(conversationId, options)),
 			),
 		render: (self) => {
 			const { isPending, data: model } = self.loader.status()

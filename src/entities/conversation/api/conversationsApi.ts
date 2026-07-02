@@ -31,7 +31,10 @@ type UnreadCountResponse = {
 	unreadCount: number
 }
 
-export async function fetchConversationsUnreadCount() {
-	const response = await apiClient.get<UnreadCountResponse>(CONVERSATIONS_UNREAD_COUNT_API_PATH)
+export async function fetchConversationsUnreadCount(options?: Pick<RequestInit, 'signal'>) {
+	const response = await apiClient.get<UnreadCountResponse>(
+		CONVERSATIONS_UNREAD_COUNT_API_PATH,
+		options,
+	)
 	return response.unreadCount
 }

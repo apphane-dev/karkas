@@ -1,15 +1,15 @@
-import { abortVar, retryComputed, wrap } from '@reatom/core'
+import { retryComputed, wrap } from '@reatom/core'
 
 import { protectedRoute } from '#entities/auth'
 import { fetchDashboardData } from '#entities/dashboard'
 import { m } from '#paraglide/messages.js'
+import { withRouteAbort } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 
 import { DashboardPage } from '../ui/DashboardPage'
 import { DashboardPageLoading } from '../ui/DashboardPageLoading'
 
-const fetchDashboardDataForRoute = async () =>
-	await wrap(fetchDashboardData({ signal: abortVar.require().signal }))
+const fetchDashboardDataForRoute = () => withRouteAbort(fetchDashboardData)
 
 export const dashboardRoute = protectedRoute.reatomRoute(
 	{

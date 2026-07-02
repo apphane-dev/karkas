@@ -1,8 +1,9 @@
-import { abortVar, retryComputed, wrap } from '@reatom/core'
+import { retryComputed, wrap } from '@reatom/core'
 
 import { protectedRoute } from '#entities/auth'
 import { fetchUsageData } from '#entities/usage'
 import { m } from '#paraglide/messages.js'
+import { withRouteAbort } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 
 import { UsagePage } from '../ui/UsagePage'
@@ -13,8 +14,7 @@ import { UsagePageLoading } from '../ui/UsagePageLoading'
 // `usageDataAtom` is a separate cached query; the two intentionally do not
 // share/seed each other to avoid a manual `.data` write that a concurrent
 // fetch could clobber.
-const fetchUsageDataForRoute = async () =>
-	await wrap(fetchUsageData({ signal: abortVar.require().signal }))
+const fetchUsageDataForRoute = () => withRouteAbort(fetchUsageData)
 
 export const usageRoute = protectedRoute.reatomRoute(
 	{
