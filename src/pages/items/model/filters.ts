@@ -1,6 +1,8 @@
 import { reatomEnum, withSearchParams } from '@reatom/core'
 
-const itemSearchParam = { path: '/items/*', replace: true } as const
+import { createSearchParamsPath } from '#shared/router'
+
+const itemSearchParam = { path: createSearchParamsPath('items'), replace: true } as const
 
 export const sortFieldAtom = reatomEnum(['name', 'price'], 'items.sortField').extend(
 	withSearchParams('sort', itemSearchParam),
