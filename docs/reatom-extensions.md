@@ -10,16 +10,19 @@ Use extensions to add behavior at the atom/action boundary: validation, persiste
 
 ## Read Source First
 
-| File                                                                | Why read it                                                      |
-| ------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `src/shared/model/locale.ts`                                        | `withParams` + `withLocalStorage` + `withChangeHook` composition |
-| `src/shared/model/theme.ts`                                         | enum coercion and persisted preferences                          |
-| `src/pages/items/model/filters.ts`                                  | URL-bound filters via `withSearchParams`                         |
-| `src/entities/conversation/model/unreadCount.ts`                    | async read model with `withAsyncData` + `withConnectHook`        |
-| `src/pages/timer/model/atoms.ts`                                    | action lifecycle with `withAbort` and change hooks               |
-| `src/shared/model/headerTrail.ts`                                   | custom domain extension (`withMatch*`) and cleanup mechanics     |
-| `node_modules/@reatom/core/build/src/extensions/withConnectHook.js` | connect/disconnect runtime behavior                              |
-| `node_modules/@reatom/core/build/src/extensions/withChangeHook.js`  | state-change hook scheduling semantics                           |
+| File                                                                                          | Why read it                                                           |
+| --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `src/shared/model/locale.ts`                                                                  | `withParams` + `withLocalStorage` + `withChangeHook` composition      |
+| `src/shared/model/theme.ts`                                                                   | enum coercion and persisted preferences                               |
+| `src/pages/items/model/filters.ts`                                                            | URL-bound filters via `withSearchParams`                              |
+| `src/entities/conversation/model/unreadCount.ts`                                              | async read model with `withAsyncData`                                 |
+| `src/shared/model/documentTitle.ts`                                                           | connect-scoped side effects with `withConnectHook` + `addChangeHook`  |
+| `src/pages/timer/model/model.ts`                                                              | action lifecycle with `withAbort` and change hooks                    |
+| `src/shared/model/headerTrail.ts`                                                             | custom domain extension (`withMatch*`) with module-level registration |
+| `https://github.com/reatom/reatom/blob/v1001/packages/core/src/extensions/withConnectHook.ts` | connect/disconnect runtime behavior                                   |
+| `https://github.com/reatom/reatom/blob/v1001/packages/core/src/extensions/withChangeHook.ts`  | state-change hook scheduling semantics                                |
+
+> The `@reatom/core` package ships only compiled `dist/` output, so the `withConnectHook` / `withChangeHook` sources above point at the upstream `v1001` branch.
 
 ## Rules
 
@@ -34,17 +37,17 @@ Use extensions to add behavior at the atom/action boundary: validation, persiste
 
 ## Extension Points
 
-| Need                                        | Primary extension(s)                    | Example                                                                             |
-| ------------------------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------- |
-| Normalize input before write                | `withParams`, custom coercion           | `src/shared/model/locale.ts`                                                        |
-| Persist state                               | `withLocalStorage`/`withSessionStorage` | `src/shared/model/topBar.ts`, `src/shared/model/theme.ts`                           |
-| React to value changes                      | `withChangeHook`                        | `src/shared/model/locale.ts`, `src/pages/timer/model/atoms.ts`                      |
-| React to action calls                       | `withCallHook`                          | Use when behavior depends on action invocations, not atom value                     |
-| Resource lifecycle on first/last subscriber | `withConnectHook`/`withDisconnectHook`  | `src/entities/conversation/model/unreadCount.ts`, `src/shared/model/headerTrail.ts` |
-| Async state (`pending/data/error/retry`)    | `withAsync`, `withAsyncData`            | `src/entities/conversation/model/unreadCount.ts`                                    |
-| Concurrency/abort strategy                  | `withAbort`                             | `src/pages/timer/model/atoms.ts`                                                    |
-| URL query synchronization                   | `withSearchParams`                      | `src/pages/items/model/filters.ts`                                                  |
-| Custom cross-cutting behavior               | custom `Ext<T>` + helpers               | `src/shared/model/headerTrail.ts`                                                   |
+| Need                                        | Primary extension(s)                    | Example                                                         |
+| ------------------------------------------- | --------------------------------------- | --------------------------------------------------------------- |
+| Normalize input before write                | `withParams`, custom coercion           | `src/shared/model/locale.ts`                                    |
+| Persist state                               | `withLocalStorage`/`withSessionStorage` | `src/shared/model/topBar.ts`, `src/shared/model/theme.ts`       |
+| React to value changes                      | `withChangeHook`                        | `src/shared/model/locale.ts`, `src/pages/timer/model/model.ts`  |
+| React to action calls                       | `withCallHook`                          | Use when behavior depends on action invocations, not atom value |
+| Resource lifecycle on first/last subscriber | `withConnectHook`/`withDisconnectHook`  | `src/shared/model/documentTitle.ts`                             |
+| Async state (`pending/data/error/retry`)    | `withAsync`, `withAsyncData`            | `src/entities/conversation/model/unreadCount.ts`                |
+| Concurrency/abort strategy                  | `withAbort`                             | `src/pages/timer/model/model.ts`                                |
+| URL query synchronization                   | `withSearchParams`                      | `src/pages/items/model/filters.ts`                              |
+| Custom cross-cutting behavior               | custom `Ext<T>` + helpers               | `src/shared/model/headerTrail.ts`                               |
 
 ## Workflows
 
