@@ -10,14 +10,10 @@ const coerceThemePreference = (value: string | undefined) => {
 export const themePreferenceAtom = reatomEnum(
 	['system', 'light', 'dark'],
 	'themePreference',
-).extend(
-	(target) =>
-		target.extend(withLocalStorage({ key: 'theme', fromSnapshot: coerceThemePreference })),
-	(target) => ({
-		resolved: computed(() => {
-			const pref = target()
-			if (pref === 'system') return isDarkModeMedia() ? 'dark' : 'light'
-			return pref
-		}, 'resolved'),
-	}),
-)
+).extend(withLocalStorage({ key: 'theme', fromSnapshot: coerceThemePreference }), (target) => ({
+	resolved: computed(() => {
+		const pref = target()
+		if (pref === 'system') return isDarkModeMedia() ? 'dark' : 'light'
+		return pref
+	}, 'resolved'),
+}))
