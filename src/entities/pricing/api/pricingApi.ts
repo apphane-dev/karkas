@@ -5,8 +5,8 @@ import { apiClient } from '#shared/api'
 export const PRICING_API_PATH = '/pricing'
 export const SUBSCRIBE_API_PATH = '/pricing/subscribe'
 
-export async function fetchPricing(options?: Pick<RequestInit, 'signal'>) {
-	return apiClient.get<PricingData>(PRICING_API_PATH, options)
+export async function fetchPricing() {
+	return apiClient.get<PricingData>(PRICING_API_PATH)
 }
 
 export async function subscribeToPlan(planId: PlanId, options?: Pick<RequestInit, 'signal'>) {

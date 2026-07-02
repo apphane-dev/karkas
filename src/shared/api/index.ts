@@ -1,3 +1,5 @@
+import { abortVar } from '@reatom/core'
+
 const API_PREFIX = '/api'
 
 export function composeApiUrl(path = '') {
@@ -40,6 +42,16 @@ async function parseResponsePayload(response: Response) {
 	return response.text()
 }
 
+// Reads the ambient Reatom abort controller. Outside any Reatom frame (this app
+// uses strict clearStack context) there is no implicit cancellation.
+function frameAbortSignal(): AbortSignal | undefined {
+	try {
+		return abortVar.get()?.signal
+	} catch {
+		return undefined
+	}
+}
+
 async function request<TResponse>(path: string, options: RequestOptions = {}) {
 	const { body, headers, ...restOptions } = options
 
@@ -50,6 +62,7 @@ async function request<TResponse>(path: string, options: RequestOptions = {}) {
 
 	const requestInit = {
 		...restOptions,
+		signal: restOptions.signal ?? frameAbortSignal() ?? null,
 		headers: requestHeaders,
 		...(body !== undefined ? { body: JSON.stringify(body) } : {}),
 	} satisfies RequestInit

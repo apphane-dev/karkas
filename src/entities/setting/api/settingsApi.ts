@@ -10,8 +10,8 @@ export const SETTINGS_API_PATH = '/settings'
 export const SETTINGS_PROFILE_API_PATH = '/settings/profile'
 export const SETTINGS_NOTIFICATIONS_API_PATH = '/settings/notifications'
 
-export async function fetchSettings(options?: Pick<RequestInit, 'signal'>) {
-	return apiClient.get<SettingsData>(SETTINGS_API_PATH, options)
+export async function fetchSettings() {
+	return apiClient.get<SettingsData>(SETTINGS_API_PATH)
 }
 
 export async function updateProfile(

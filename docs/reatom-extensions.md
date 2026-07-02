@@ -92,5 +92,5 @@ Use extensions to add behavior at the atom/action boundary: validation, persiste
 - `withChangeHook` alone is not a connect/disconnect lifecycle primitive.
 - Forgetting `unhook()` from `addChangeHook` will leak middleware permanently.
 - URL/persistence extensions can create cross-tab or history side effects; use intentionally.
-- Pure API helpers are not extension points; keep Reatom imports at model, route, and UI binding boundaries.
+- Pure API helpers are not extension points; keep Reatom imports at model, route, and UI binding boundaries, except the API transport may read `abortVar.get()` for request cancellation so fetches are abortable by the frame that issues them; explicit signals override the frame signal.
 - For long-lived async resources, isolate scope with `withConnectHook` cleanup and abort-aware flows.
