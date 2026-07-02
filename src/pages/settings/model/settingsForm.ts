@@ -3,11 +3,11 @@ import type { NotificationSettings, ProfileSettings, SettingsData } from '#entit
 import {
 	abortVar,
 	action,
-	atom,
 	framePromise,
 	reatomForm,
 	sleep,
 	withAbort,
+	withAsync,
 	wrap,
 } from '@reatom/core'
 
@@ -73,42 +73,31 @@ export function reatomSettingsPageModel(data: SettingsData) {
 		},
 	)
 
-	const isSavingProfile = atom(false, 'settings.isSavingProfile')
-	const isSavingNotifications = atom(false, 'settings.isSavingNotifications')
-
 	const saveProfile = action(async () => {
-		if (!profileForm.focus().dirty || isSavingProfile()) return
-		isSavingProfile.set(true)
+		if (!profileForm.focus().dirty) return
 		try {
 			const submitted = await wrap(profileForm.submit())
 			profileForm.init(submitted)
 		} catch {
 			toaster.create({ title: m.settings_save_error(), type: 'error' })
-		} finally {
-			isSavingProfile.set(false)
 		}
-	}, 'settings.profileForm.save').extend(withAbort())
+	}, 'settings.profileForm.save').extend(withAbort(), withAsync())
 
 	const saveNotifications = action(async () => {
-		if (!notificationsForm.focus().dirty || isSavingNotifications()) return
-		isSavingNotifications.set(true)
+		if (!notificationsForm.focus().dirty) return
 		try {
 			const submitted = await wrap(notificationsForm.submit())
 			notificationsForm.init(submitted)
 		} catch {
 			toaster.create({ title: m.settings_save_error(), type: 'error' })
-		} finally {
-			isSavingNotifications.set(false)
 		}
-	}, 'settings.notificationsForm.save').extend(withAbort())
+	}, 'settings.notificationsForm.save').extend(withAbort(), withAsync())
 
 	return {
 		profileForm,
 		saveProfile,
-		isSavingProfile,
 		notificationsForm,
 		saveNotifications,
-		isSavingNotifications,
 		appearanceForm,
 	}
 }

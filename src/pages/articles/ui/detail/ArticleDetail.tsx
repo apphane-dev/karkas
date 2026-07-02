@@ -60,7 +60,11 @@ export const ArticleDetail = reatomComponent(({ model }: { model: ArticleDetailM
 						/>
 						<styled.div display="flex" gap="3">
 							{isDirty && (
-								<Button loading={model.isSaving()} loadingText={m.article_saving()} type="submit">
+								<Button
+									loading={!model.save.ready()}
+									loadingText={m.article_saving()}
+									type="submit"
+								>
 									{m.article_save()}
 								</Button>
 							)}
