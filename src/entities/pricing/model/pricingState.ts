@@ -1,16 +1,15 @@
 import type { PlanId } from './types'
 
-import { abortVar, atom, computed, withAsyncData, wrap } from '@reatom/core'
+import { atom, computed, withAsyncData } from '@reatom/core'
 
 import { fetchPricing } from '../api/pricingApi'
 
 // Global cached pricing query for the sidebar banner, which renders on every
-// page. An async computed with `withAsyncData` is an abortable context, so the
-// fetch receives the computed's own abort signal.
-export const pricingDataAtom = computed(
-	async () => await wrap(fetchPricing({ signal: abortVar.require().signal })),
-	'pricing.data',
-).extend(withAsyncData())
+// page. The transport reads this async computed's abort frame, so the fetch
+// receives the computed's own abort signal.
+export const pricingDataAtom = computed(() => fetchPricing(), 'pricing.data').extend(
+	withAsyncData(),
+)
 
 // Shared across the /pricing route model and the sidebar banner. Cleared on
 // logout (see the app-layer `signOut` orchestration) so a second user logging

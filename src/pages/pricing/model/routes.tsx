@@ -1,4 +1,4 @@
-import { abortVar, retryComputed, wrap } from '@reatom/core'
+import { retryComputed, wrap } from '@reatom/core'
 
 import { currentPlanIdAtom, fetchPricing } from '#entities/pricing'
 import { m } from '#paraglide/messages.js'
@@ -16,7 +16,7 @@ const shouldShowLoading = (
 ) => isFirstPending || (isPending && !model)
 
 const loadPricingModel = async () => {
-	const data = await wrap(fetchPricing({ signal: abortVar.require().signal }))
+	const data = await wrap(fetchPricing())
 	currentPlanIdAtom.set(data.currentPlanId)
 	return reatomPricingPageModel(data)
 }

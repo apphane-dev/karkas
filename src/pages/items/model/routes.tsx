@@ -1,4 +1,4 @@
-import { abortVar, retryComputed, wrap } from '@reatom/core'
+import { retryComputed, wrap } from '@reatom/core'
 
 import { protectedRoute } from '#entities/auth'
 import { fetchItems, fetchItemById } from '#entities/item'
@@ -15,13 +15,11 @@ import { ItemsPageLoading } from '../ui/ItemsPageLoading'
 const isItemsLoading = (isFirstPending: boolean, isPending: boolean, items: unknown) =>
 	isFirstPending || (isPending && !items)
 
-const fetchItemsForRoute = async () => await wrap(fetchItems({ signal: abortVar.require().signal }))
-
 export const itemsRoute = protectedRoute.reatomRoute(
 	{
 		path: 'items',
 		layout: true,
-		loader: fetchItemsForRoute,
+		loader: () => wrap(fetchItems()),
 		render: (self) => {
 			const { isFirstPending, isPending, data: items } = self.loader.status()
 			if (isItemsLoading(isFirstPending, isPending, items)) return <ItemsPageLoading />
@@ -56,8 +54,7 @@ export const itemsRoute = protectedRoute.reatomRoute(
 export const itemDetailRoute = itemsRoute.reatomRoute(
 	{
 		path: ':itemId',
-		loader: async ({ itemId }) =>
-			await wrap(fetchItemById(itemId, { signal: abortVar.require().signal })),
+		loader: ({ itemId }) => wrap(fetchItemById(itemId)),
 		render: (self) => {
 			const { isPending, data: item } = self.loader.status()
 			const error = self.loader.error()

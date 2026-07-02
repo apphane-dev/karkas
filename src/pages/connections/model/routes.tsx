@@ -4,7 +4,6 @@ import { protectedRoute } from '#entities/auth'
 import { fetchConnectionById, fetchConnections } from '#entities/connection'
 import { m } from '#paraglide/messages.js'
 import { isApiError } from '#shared/api'
-import { withRouteAbort } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 import { MasterDetails } from '#widgets/master-details'
 
@@ -16,13 +15,11 @@ import { ConnectionNotFound } from '../ui/detail/ConnectionNotFound'
 import { ConnectionList } from '../ui/list/ConnectionList'
 import { reatomConnectionDetailModel } from './connectionDetailModel'
 
-const fetchConnectionsForRoute = () => withRouteAbort(fetchConnections)
-
 export const connectionsRoute = protectedRoute.reatomRoute(
 	{
 		path: 'connections',
 		layout: true,
-		loader: fetchConnectionsForRoute,
+		loader: () => wrap(fetchConnections()),
 		render: (self) => {
 			const detail = self.outlet().at(0)
 			const selectedConnectionId = connectionDetailRoute()?.connectionId
@@ -68,9 +65,7 @@ export const connectionDetailRoute = connectionsRoute.reatomRoute(
 	{
 		path: ':connectionId',
 		loader: async ({ connectionId }) =>
-			reatomConnectionDetailModel(
-				await withRouteAbort((options) => fetchConnectionById(connectionId, options)),
-			),
+			reatomConnectionDetailModel(await wrap(fetchConnectionById(connectionId))),
 		render: (self) => {
 			const { isPending, data: model } = self.loader.status()
 			const error = self.loader.error()

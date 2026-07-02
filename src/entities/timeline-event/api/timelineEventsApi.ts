@@ -4,6 +4,6 @@ import { apiClient } from '#shared/api'
 
 export const TIMELINE_EVENTS_API_PATH = '/timeline'
 
-export async function fetchTimelineEvents(options?: Pick<RequestInit, 'signal'>) {
-	return apiClient.get<TimelineEvent[]>(TIMELINE_EVENTS_API_PATH, options)
+export async function fetchTimelineEvents() {
+	return apiClient.get<TimelineEvent[]>(TIMELINE_EVENTS_API_PATH)
 }

@@ -1,4 +1,4 @@
-import { abortVar, retryComputed, wrap } from '@reatom/core'
+import { retryComputed, wrap } from '@reatom/core'
 
 import { protectedRoute } from '#entities/auth'
 import { fetchUsageData } from '#entities/usage'
@@ -13,13 +13,10 @@ import { UsagePageLoading } from '../ui/UsagePageLoading'
 // `usageDataAtom` is a separate cached query; the two intentionally do not
 // share/seed each other to avoid a manual `.data` write that a concurrent
 // fetch could clobber.
-const fetchUsageDataForRoute = async () =>
-	await wrap(fetchUsageData({ signal: abortVar.require().signal }))
-
 export const usageRoute = protectedRoute.reatomRoute(
 	{
 		path: 'usage',
-		loader: fetchUsageDataForRoute,
+		loader: () => wrap(fetchUsageData()),
 		render: (self) => {
 			const { isFirstPending, isPending, data } = self.loader.status()
 			if (isFirstPending || (isPending && !data)) {

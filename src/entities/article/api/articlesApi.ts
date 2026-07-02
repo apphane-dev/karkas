@@ -4,12 +4,12 @@ import { apiClient } from '#shared/api'
 
 export const ARTICLES_API_PATH = '/articles'
 
-export async function fetchArticles(options?: Pick<RequestInit, 'signal'>) {
-	return apiClient.get<Article[]>(ARTICLES_API_PATH, options)
+export async function fetchArticles() {
+	return apiClient.get<Article[]>(ARTICLES_API_PATH)
 }
 
-export async function fetchArticleById(articleId: string, options?: Pick<RequestInit, 'signal'>) {
-	return apiClient.get<Article>(`${ARTICLES_API_PATH}/${articleId}`, options)
+export async function fetchArticleById(articleId: string) {
+	return apiClient.get<Article>(`${ARTICLES_API_PATH}/${articleId}`)
 }
 
 export async function updateArticle(
