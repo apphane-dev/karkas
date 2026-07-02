@@ -2,7 +2,7 @@ import { abortVar, assert, reatomRoute, wrap } from '@reatom/core'
 import { createElement, Fragment } from 'react'
 
 assert(import.meta.env['BASE_URL'], 'BASE_URL must be set in the environment variables')
-const base = import.meta.env['BASE_URL'].replace(/^\//, '')
+const base = import.meta.env['BASE_URL'].replace(/^\/+|\/+$/g, '')
 const basePath = base ? `/${base}` : ''
 
 export const createAppPath = (path = '') => {
@@ -10,6 +10,8 @@ export const createAppPath = (path = '') => {
 	if (!basePath) return `/${normalizedPath}`
 	return normalizedPath ? `${basePath}/${normalizedPath}` : basePath
 }
+
+export const createSearchParamsPath = (section: string) => `${createAppPath(section)}/*`
 
 export const withRouteAbort = <T>(request: (options: Pick<RequestInit, 'signal'>) => Promise<T>) =>
 	wrap(request({ signal: abortVar.require().signal }))
