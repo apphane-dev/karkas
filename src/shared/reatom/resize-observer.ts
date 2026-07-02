@@ -20,7 +20,7 @@ export const withResizeObserver = () => {
 			})
 
 			return stateAtom?.()
-		}, `${target.name}.result`)
+		}, `${target.name}.sizeEntry`)
 
 		return { sizeEntry }
 	}

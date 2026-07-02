@@ -1,5 +1,5 @@
 import { SiGithub } from '@icons-pack/react-simple-icons'
-import { atom, computed, memo, reatomBoolean, reatomMediaQuery, wrap } from '@reatom/core'
+import { atom, computed, reatomBoolean, reatomMediaQuery, wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
 import { Languages, Monitor, Moon, PanelLeft, Search, Sun } from 'lucide-react'
 import { type CSSProperties, type ReactNode } from 'react'
@@ -35,10 +35,7 @@ const desktopSidebarCollapsedAtom = reatomBoolean(false, 'desktopSidebar.collaps
 const measureRefAtom = atom<HTMLElement | null>(null, 'appShell.measureRef').extend(
 	withResizeObserver(),
 	(target) => ({
-		height: computed(
-			() => memo(() => target.sizeEntry()?.contentRect.height) ?? 0,
-			'appShell.headerHeight',
-		),
+		height: computed(() => target.sizeEntry()?.contentRect.height ?? 0, 'appShell.headerHeight'),
 	}),
 )
 
