@@ -94,15 +94,7 @@ const languageCollection = reatomLoc(
 )
 
 export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageModel }) => {
-	const {
-		profileForm,
-		saveProfile,
-		isSavingProfile,
-		notificationsForm,
-		saveNotifications,
-		isSavingNotifications,
-		appearanceForm,
-	} = model
+	const { profileForm, saveProfile, notificationsForm, saveNotifications, appearanceForm } = model
 
 	return (
 		<styled.div p="8" maxW="800px">
@@ -114,7 +106,7 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 					profileForm.focus().dirty ? (
 						<Button
 							size="sm"
-							loading={isSavingProfile()}
+							loading={!saveProfile.ready()}
 							loadingText={m.settings_saving()}
 							onClick={wrap(() => saveProfile())}
 						>
@@ -142,7 +134,7 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 					notificationsForm.focus().dirty ? (
 						<Button
 							size="sm"
-							loading={isSavingNotifications()}
+							loading={!saveNotifications.ready()}
 							loadingText={m.settings_saving()}
 							onClick={wrap(() => saveNotifications())}
 						>

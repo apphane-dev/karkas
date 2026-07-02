@@ -63,7 +63,7 @@ const MessageLog = ({ messages, name }: { messages: Message[]; name: string }) =
 
 export const MessageThread = reatomComponent(({ model }: { model: ChatThreadModel }) => {
 	const [draft, setDraft] = useAtom('')
-	const { conversation, messages, isSending, send } = model
+	const { conversation, messages, send } = model
 
 	const handleSubmit = wrap(async () => {
 		if (draft.trim() === '') {
@@ -111,14 +111,14 @@ export const MessageThread = reatomComponent(({ model }: { model: ChatThreadMode
 						flex="1"
 						value={draft}
 						onChange={(e) => setDraft(e.target.value)}
-						disabled={isSending()}
+						disabled={!send.ready()}
 					/>
 					<Button
 						type="submit"
 						size="sm"
 						variant="solid"
 						aria-label={m.chat_send()}
-						disabled={isSending()}
+						disabled={!send.ready()}
 					>
 						<Send />
 					</Button>

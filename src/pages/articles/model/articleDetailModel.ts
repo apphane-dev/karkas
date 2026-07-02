@@ -8,6 +8,7 @@ import {
 	reatomForm,
 	sleep,
 	withAbort,
+	withAsync,
 	wrap,
 } from '@reatom/core'
 
@@ -37,7 +38,6 @@ export function reatomArticleDetailModel(article: Article) {
 	const id = article.id
 	const current = atom<Article>(article, `article.${id}.current`)
 	const isEditing = atom(false, `article.${id}.isEditing`)
-	const isSaving = atom(false, `article.${id}.isSaving`)
 
 	const form = reatomForm(
 		{
@@ -63,8 +63,7 @@ export function reatomArticleDetailModel(article: Article) {
 	}, `article.${id}.startEdit`)
 
 	const save = action(async () => {
-		if (!form.focus().dirty || isSaving()) return
-		isSaving.set(true)
+		if (!form.focus().dirty) return
 		try {
 			const updated = await wrap(form.submit())
 			current.set(updated)
@@ -77,12 +76,10 @@ export function reatomArticleDetailModel(article: Article) {
 			isEditing.set(false)
 		} catch {
 			toaster.create({ title: m.article_save_error(), type: 'error' })
-		} finally {
-			isSaving.set(false)
 		}
-	}, `article.${id}.save`).extend(withAbort())
+	}, `article.${id}.save`).extend(withAbort(), withAsync())
 
-	return { id, current, isEditing, isSaving, form, startEdit, save }
+	return { id, current, isEditing, form, startEdit, save }
 }
 
 export type ArticleDetailModel = ReturnType<typeof reatomArticleDetailModel>
