@@ -1,0 +1,22 @@
+{
+	"name": "modern-stack-e2e",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"description": "End-to-end tests (CodeceptJS 4 + Playwright) for the Modern Stack app. Deliberately isolated from the app's nub-managed dependency graph and installed with npm — CodeceptJS 4's transitive peer graph does not converge under nub 0.2.7. See e2e/README.md.",
+	"scripts": {
+		"e2e": "codeceptjs run --steps",
+		"e2e:headed": "HEADLESS=false codeceptjs run --steps",
+		"e2e:debug": "codeceptjs run --steps --debug",
+		"def": "codeceptjs def"
+	},
+	"devDependencies": {
+		"codeceptjs": "^4.0.9",
+		"playwright": "^1.61.1",
+		"tsx": "^4.23.1",
+		"typescript": "^5.9.2"
+	},
+	"allowScripts": {
+		"esbuild@0.28.1": true
+	}
+}

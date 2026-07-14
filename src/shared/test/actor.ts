@@ -49,7 +49,8 @@ const attemptRetry = async <T>(
 	}
 }
 
-// Inspired by codecept.js
+// Inspired by codecept.js — see https://codecept.io/blog/codeceptjs-4/ for the
+// actor API this mirrors (selectOption, hopeThat soft assertions, retryTo, etc.)
 function createBase(ctx: () => StoryContext): BaseActor {
 	const scopeStack: HTMLElement[] = []
 	const softErrors: Error[] = []

@@ -1,16 +1,23 @@
 amends "package://github.com/jdx/hk/releases/download/v1.46.0/hk@1.46.0#/Config.pkl"
 import "package://github.com/jdx/hk/releases/download/v1.46.0/hk@1.46.0#/Builtins.pkl"
 
+// The `e2e/**` package is an isolated npm + CodeceptJS toolchain with its own
+// tsconfig and types; keep it out of the app's file-scoped quality steps. hk
+// passes changed files explicitly, which bypasses .eslintignore/.prettierignore,
+// so it must be excluded here as well. See e2e/README.md.
 local format = (Builtins.vp_fmt) {
   workspace_indicator = null
+  exclude = new Listing { "e2e/**" }
 }
 
 local lint = (Builtins.vp_lint) {
   workspace_indicator = null
+  exclude = new Listing { "e2e/**" }
 }
 
 local typecheck = (Builtins.tsc) {
   check = "mise run typecheck"
+  exclude = new Listing { "e2e/**" }
 }
 
 local fallow = new Step {

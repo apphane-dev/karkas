@@ -7,7 +7,10 @@ entry = ["scripts/**/*.ts"]
 ignoreDependencies = ["typescript-7", "idb-keyval"]
 
 # Park UI and generated assets are committed vendor/generated code; keep them out of findings.
+# `e2e/**` is an isolated npm package (CodeceptJS) with its own toolchain; its
+# page objects are wired via codecept.conf, not TS imports, so exclude it here.
 ignorePatterns = [
+	"e2e/**",
 	"public/mockServiceWorker.js",
 	"scripts/steiger/**",
 	"src/paraglide/**",

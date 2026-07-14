@@ -4,7 +4,12 @@ This doc follows the source-first approach in `docs/README.md`.
 
 ## Overview
 
-All tests are Storybook integration stories with inline `.test()` assertions. There are no standalone `*.test.ts` or `*.spec.ts` files — the only `.test.` file is `src/shared/test/actor.test-stories.tsx`, which tests the actor helpers themselves.
+There are two test layers:
+
+- **Component/integration tests** — Storybook integration stories with inline `.test()` assertions (the bulk of this doc). They mount components/pages in isolation.
+- **End-to-end tests** — a real browser driving the running app via [CodeceptJS 4](https://codecept.io/blog/codeceptjs-4/) + Playwright, in the isolated `e2e/` package. See [End-to-End Tests](#end-to-end-tests) below and `e2e/README.md`.
+
+All component tests are Storybook integration stories with inline `.test()` assertions. There are no standalone `*.test.ts` or `*.spec.ts` files — the only `.test.` file is `src/shared/test/actor.test-stories.tsx`, which tests the actor helpers themselves.
 
 The default stabilization strategy is:
 
@@ -127,7 +132,7 @@ If a test exposes that the UI copy is misleading, fix the product copy and updat
 
 ## Actor and Locator Guidance
 
-The actor is codecept-style and should stay declarative. Extend per-page actors in `src/pages/<page>/testing.ts`.
+The actor is codecept-style ([CodeceptJS 4](https://codecept.io/blog/codeceptjs-4/)) and should stay declarative. Extend per-page actors in `src/pages/<page>/testing.ts`.
 
 Key base methods:
 
@@ -277,6 +282,26 @@ mise run test:run               # single run (CI)
 mise run test:coverage          # single run + coverage report
 mise run test                   # watch mode
 ```
+
+## End-to-End Tests
+
+E2E tests drive the real app in a real browser with [CodeceptJS 4](https://codecept.io/blog/codeceptjs-4/) + Playwright. The base actor above is codecept-style on purpose, so the two layers read the same way (`I.see`, `I.click`, `I.waitForText`, page objects).
+
+They live in the isolated `e2e/` package, which has its own `package.json` installed with **npm** (not nub) and its own toolchain. Full rationale, layout, and authoring notes are in `e2e/README.md`. In short:
+
+- CodeceptJS 4's transitive peer graph does not converge under nub 0.2.7, and isolating it keeps ~360 test-only packages out of the app lockfile.
+- `e2e/**` is excluded from the app's quality gates (`.eslintignore`, `.prettierignore`, `.config/fallow.toml`, `.config/hk.pkl`).
+- Scenarios run against the same MSW mocks the app ships with — no backend needed. The runner auto-starts the Vite dev server (MSW enabled) via a `bootstrap` hook, or reuses one already running on `E2E_PORT` (default 5199).
+
+```bash
+mise run e2e:install            # one-time: npm install + Playwright chromium
+mise run e2e                    # headless, auto-starts the app with MSW
+mise run e2e:headed             # visible browser
+mise run e2e:debug              # step-by-step debug output
+mise run e2e:def                # regenerate e2e/steps.d.ts after adding steps
+```
+
+Current coverage: anonymous → login redirect, invalid-credential error, sign-in to dashboard, dashboard widgets, and sidebar navigation. Add scenarios under `e2e/specs/*_test.ts`, page objects under `e2e/pages/`, and shared actor steps in `e2e/support/steps_file.ts`.
 
 ## Coverage
 

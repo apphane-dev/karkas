@@ -1,0 +1,31 @@
+# End-to-end tests live in the isolated `e2e/` package (CodeceptJS 4 + Playwright).
+# It is installed with npm, not nub: CodeceptJS 4's transitive peer graph does not
+# converge under nub 0.2.7. Keeping it out of the app's package.json also keeps the
+# ~360 e2e-only packages out of the app's lockfile. See e2e/README.md.
+
+[tasks."e2e:install"]
+description = "Install the isolated e2e toolchain (npm) and the Playwright browser"
+dir = "{{ config_root }}/e2e"
+run = ["npm install", "npx playwright install chromium"]
+sources = ["e2e/package.json", "e2e/package-lock.json"]
+outputs = ["e2e/node_modules/.package-lock.json"]
+
+[tasks.e2e]
+description = "Run the end-to-end suite (auto-starts the app with MSW, headless)"
+dir = "{{ config_root }}/e2e"
+run = "npm run e2e"
+
+[tasks."e2e:headed"]
+description = "Run the end-to-end suite with a visible browser"
+dir = "{{ config_root }}/e2e"
+run = "npm run e2e:headed"
+
+[tasks."e2e:debug"]
+description = "Run the end-to-end suite with step-by-step debug output"
+dir = "{{ config_root }}/e2e"
+run = "npm run e2e:debug"
+
+[tasks."e2e:def"]
+description = "Regenerate CodeceptJS TypeScript step definitions (e2e/steps.d.ts)"
+dir = "{{ config_root }}/e2e"
+run = "npm run def"
