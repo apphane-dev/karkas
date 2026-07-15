@@ -30,7 +30,7 @@ description = "Lint code and apply fixes with oxlint"
 run = "vp lint --fix"
 
 [tasks.typecheck]
-description = "Type check with TypeScript 7 RC"
+description = "Type check with TypeScript 7"
 alias = "tc"
 run = "tsc -b"
 

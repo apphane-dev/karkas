@@ -51,6 +51,7 @@
 		"@total-typescript/ts-reset": "^0.6.1",
 		"@types/react": "^19.2.17",
 		"@types/react-dom": "^19.2.3",
+		"@typescript/native": "npm:typescript@^7.0.2",
 		"@vitejs/plugin-react": "^6.0.3",
 		"@vitest/browser-playwright": "4.1.10",
 		"@vitest/coverage-v8": "^4.1.10",
@@ -58,8 +59,7 @@
 		"msw-storybook-addon": "^2.0.7",
 		"playwright": "^1.61.1",
 		"storybook": "^10.5.0",
-		"typescript": "npm:@typescript/typescript6@^6.0.1",
-		"typescript-7": "npm:typescript@^7.0.1-rc",
+		"typescript": "npm:@typescript/typescript6@^6.0.2",
 		"vite": "^8.1.0",
 		"vite-plus": "^0.2.1",
 		"vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.24"
