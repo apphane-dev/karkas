@@ -136,5 +136,12 @@ export default defineConfig({
 		react(),
 		paraglideVitePlugin({ project: './project.inlang', outdir: './src/paraglide' }),
 	],
+	// Compile-time constant so the E2E-only mock-control hook is dead-code
+	// eliminated from the public build. Env vars use bracket access here
+	// (noPropertyAccessFromIndexSignature), which Vite does not statically
+	// inline — a define does, enabling tree-shaking of the dynamic import.
+	define: {
+		__ENABLE_MOCK_CONTROL__: JSON.stringify(process.env['VITE_ENABLE_MOCK_CONTROL'] === 'true'),
+	},
 	base,
 } as never)

@@ -66,19 +66,53 @@ The Playwright helper points at `http://localhost:5199/`. Vite binds to
 `Search Articles` stories) as full-browser E2E, with `pages/articles.ts`
 paralleling the Storybook page actor `src/pages/articles/testing.ts`.
 
-What each Storybook technique maps to in E2E:
+What each Storybook technique maps to in E2E (all verified, not assumed):
 
 | Storybook technique                    | E2E equivalent                                                        |
 | -------------------------------------- | --------------------------------------------------------------------- |
 | Viewport globals (mobile)              | ✅ `I.resizeWindow(390, 844)` — see `articles_mobile_test.ts`         |
 | 404 / not-found state                  | ✅ navigate to an unknown id (`/articles/missing-42`) — the default handler already 404s |
 | Direct-URL entry                       | ✅ `I.amOnPage('/articles/1')`                                        |
-| Per-story `msw.handlers` error/loading | ⚠️ needs a runtime MSW-scenario hook exposed on `window` (small app affordance) or full Playwright `mockRoute` with the service worker blocked — not wired up yet |
-| Route-fetch-abort probe                | ⚠️ only a behavioural proxy is possible; the exact AbortSignal assertion can't be made in browser E2E because the MSW service worker absorbs the request, so no network request reaches Playwright to observe as `ERR_ABORTED` |
+| Per-story `msw.handlers` error/loading | ✅ runtime `window.__mockControl` hook (see below) — `articles_states_test.ts` |
+| Route-fetch-abort probe                | ⚠️ only a behavioural proxy is possible — see below                  |
 
-The last two are the genuine gaps. Everything else — including mobile and 404,
-which an earlier version of this doc wrongly excluded — is covered. Mirror the
-**journeys**, not the per-story mock plumbing.
+Only the abort probe is a genuine gap now. Mirror the **journeys**, not the
+per-story mock plumbing.
+
+### Forcing error / loading states (`window.__mockControl`)
+
+Playwright's `I.mockRoute` does **not** work against this app — verified: forcing
+a 500 on `**/api/articles`, the route handler fired **0 times** and MSW still
+served the list, because the MSW **service worker** answers the `fetch` from
+inside the SW before any network request is made. (`serviceWorkers: 'block'`
+would let `mockRoute` see the requests — the app does still boot with the SW
+blocked, also verified — but then MSW is entirely off and every endpoint would
+need mocking.)
+
+So instead the app exposes a tiny runtime hook (`src/app/mocks/mockControl.ts`):
+
+```ts
+articlesPage.forceMock('articleList', 'error') // or 'loading' / 'default'
+articlesPage.openRaw()
+articlesPage.seeListError()
+```
+
+`__mockControl.use(name, variant)` calls `worker.use(...)` with the entity's
+`.error` / `.loading` handler and persists the choice in `sessionStorage`, so it
+survives the full-page reload that navigation triggers (re-applied on boot,
+before the app fetches). It is gated behind the `__ENABLE_MOCK_CONTROL__` Vite
+define (set from `VITE_ENABLE_MOCK_CONTROL`, which only the E2E bootstrap sets)
+and **dead-code-eliminated from the public build** — verified by grepping the
+production bundle.
+
+### The abort probe (genuine gap)
+
+The Storybook probe asserts the loader passed an `AbortSignal` to `fetch` and
+that it fired on navigation. In the browser the MSW service worker absorbs the
+pending request, so no network request reaches Playwright to observe as
+`ERR_ABORTED`. E2E can only assert the *effect* (navigate away from a loading
+route → spinner gone, no stale content), which is weaker — Storybook is the
+better tool here.
 
 ## Writing tests
 

@@ -38,6 +38,41 @@ export default {
 		I.amOnPage(`/articles/${articleId}`)
 	},
 
+	// Navigate to the list without waiting for it to render (for error/loading states).
+	openRaw() {
+		I.amOnPage('/articles')
+	},
+
+	// Force a runtime MSW override (mirrors Storybook's per-story msw.handlers).
+	// The override persists across the reload that open* triggers.
+	forceMock(name: string, variant: 'default' | 'error' | 'loading') {
+		I.executeScript(
+			(args: { name: string; variant: string }) =>
+				(
+					window as unknown as {
+						__mockControl: { use: (name: string, variant: string) => void }
+					}
+				).__mockControl.use(args.name, args.variant),
+			{ name, variant },
+		)
+	},
+
+	resetMocks() {
+		I.executeScript(() =>
+			(window as unknown as { __mockControl: { reset: () => void } }).__mockControl.reset(),
+		)
+	},
+
+	seeListError() {
+		I.waitForText('Could not load articles', 10)
+		I.see("We couldn't load the article list. Try again in a moment.")
+		I.see('Try again')
+	},
+
+	seeListLoading() {
+		I.waitForElement('[aria-label="Loading articles page"]', 10)
+	},
+
 	useMobileViewport() {
 		// Matches the Storybook `sm` viewport used by the mobile stories.
 		I.resizeWindow(390, 844)

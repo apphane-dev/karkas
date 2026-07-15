@@ -18,4 +18,13 @@ export async function startBrowserMocking() {
 			url: `${import.meta.env['BASE_URL']}mockServiceWorker.js`,
 		},
 	})
+
+	// E2E-only: expose window.__mockControl for runtime handler overrides.
+	// `__ENABLE_MOCK_CONTROL__` is a Vite define (see vite.config.ts), so this
+	// whole branch — and the dynamic import — is dead-code-eliminated from the
+	// public build.
+	if (__ENABLE_MOCK_CONTROL__) {
+		const { installMockControl } = await import('./mockControl.ts')
+		installMockControl(worker)
+	}
 }

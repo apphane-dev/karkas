@@ -58,6 +58,9 @@ export async function startAppServer(): Promise<void> {
 			...process.env,
 			VITE_PORT: String(PORT),
 			VITE_ENABLE_MSW: 'true',
+			// Exposes window.__mockControl so scenarios can force error/loading
+			// states. Only ever set here for E2E — never in the gh-pages build.
+			VITE_ENABLE_MOCK_CONTROL: 'true',
 			VITE_CONNECT_LOGGER: 'false',
 		},
 	})
