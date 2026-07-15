@@ -1,3 +1,5 @@
+import type { Plugin } from 'vite-plus'
+
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -11,6 +13,18 @@ const coverageThresholds = {
 	functions: Number(process.env['COVERAGE_THRESHOLD_FUNCTIONS']),
 	statements: Number(process.env['COVERAGE_THRESHOLD_STATEMENTS']),
 }
+
+const storybookFocusVisibleCompat = {
+	name: 'storybook-focus-visible-compat',
+	enforce: 'pre',
+	transform(code, id) {
+		if (!id.endsWith('/storybook/dist/csf/index.js')) return
+		return code.replace(
+			'let originalFocus = HTMLElement.prototype.focus, currentFocus = HTMLElement.prototype.focus, noopFocus = () => {',
+			'let originalFocus = Object.getOwnPropertyDescriptor(HTMLElement.prototype, "focus")?.value ?? HTMLElement.prototype.focus, currentFocus = HTMLElement.prototype.focus, noopFocus = () => {',
+		)
+	},
+} satisfies Plugin
 
 export default defineConfig({
 	optimizeDeps: {
@@ -46,6 +60,7 @@ export default defineConfig({
 			{
 				extends: true,
 				plugins: [
+					storybookFocusVisibleCompat,
 					// The plugin will run tests for the stories defined in your Storybook config
 					// See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
 					storybookTest({

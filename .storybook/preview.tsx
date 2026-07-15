@@ -20,7 +20,14 @@ import { css } from '#styled-system/css'
 import { setupStorybookUrl } from './setupStorybookUrl'
 import { FALLBACK_VIEWPORT, getViewportSize } from './viewports'
 
-configureDiagnostics()
+// Storybook 10.5's test preview replaces `HTMLElement.prototype.focus` with an
+// accessor for interaction instrumentation. Zag's focus-visible manager reads
+// that property from the prototype, invoking the accessor with an invalid
+// receiver and causing `TypeError: Illegal invocation`. Keep the native method
+// and restore it before each story until the upstream compatibility issue is resolved.
+const nativeHTMLElementFocus = globalThis.HTMLElement
+	? Object.getOwnPropertyDescriptor(globalThis.HTMLElement.prototype, 'focus')?.value
+	: undefined
 
 initialize({
 	onUnhandledRequest: 'bypass',
@@ -81,7 +88,15 @@ const preview = definePreview({
 		msw: { handlers },
 	},
 	// fallow-ignore-next-line complexity
-	beforeEach: async ({ globals }) => {
+	beforeEach: async ({ globals, parameters }) => {
+		// Run before a story mounts, so Zag observes the native focus method.
+		if (nativeHTMLElementFocus) {
+			Object.defineProperty(HTMLElement.prototype, 'focus', {
+				configurable: true,
+				value: nativeHTMLElementFocus,
+			})
+		}
+		configureDiagnostics(parameters['kahraman'])
 		clearAbortErrors()
 		if (!(globalThis as Record<string, unknown>)['__vitest_worker__']) return
 		const { page } = await import('vite-plus/test/browser')
