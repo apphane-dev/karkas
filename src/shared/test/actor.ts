@@ -5,6 +5,76 @@ import { assert } from '@reatom/core'
 import { expect, waitFor, within as withinElement } from 'storybook/test'
 
 type MaybePromise<T> = T | Promise<T>
+type Step = { label: string; status: 'pass' | 'fail' }
+
+const actorStepsAppended = Symbol('actorStepsAppended')
+
+type AugmentedError = Error & { [actorStepsAppended]?: boolean }
+
+const callbackArgument = (name: string, index: number) =>
+	(name === 'scope' || name === 'within') && index === 1
+		? true
+		: (name === 'tryTo' || name === 'retryTo') && index === 0
+
+const formatStepArgument = (name: string, argument: unknown, index: number) => {
+	if (callbackArgument(name, index)) return '…'
+	if (typeof argument === 'string') return JSON.stringify(argument)
+	if (typeof argument === 'function') {
+		const { __label } = argument as { __label?: unknown }
+		return typeof __label === 'string' ? __label : 'fn()'
+	}
+	return String(argument)
+}
+
+const stepLabel = (name: string, args: unknown[]) =>
+	`I.${name}(${args.map((argument, index) => formatStepArgument(name, argument, index)).join(', ')})`
+
+const isInternalStackFrame = (line: string) =>
+	line.includes('/src/shared/test/') ||
+	line.includes('/.storybook/') ||
+	line.includes('node_modules')
+
+// Point the code frame at the story/page-actor line that invoked the actor
+// instead of DSL internals (loc.ts) or the getElementError override. callSite
+// is captured synchronously in track(), so its stack holds the caller frames.
+const retargetStackToCallSite = (error: Error, callSite: Error) => {
+	if (typeof error.stack !== 'string' || typeof callSite.stack !== 'string') return
+	const isFrame = (line: string) => /^\s+at /.test(line)
+	const callFrames = callSite.stack
+		.split('\n')
+		.filter((line) => isFrame(line) && !isInternalStackFrame(line))
+	if (callFrames.length === 0) return
+	const lines = error.stack.split('\n')
+	const firstFrame = lines.findIndex(isFrame)
+	if (firstFrame === -1) return
+	error.stack = [...lines.slice(0, firstFrame), ...callFrames, ...lines.slice(firstFrame)].join(
+		'\n',
+	)
+}
+
+const augmentActorError = (error: Error, steps: Step[], callSite: Error) => {
+	const augmentedError = error as AugmentedError
+	if (augmentedError[actorStepsAppended]) return
+	augmentedError[actorStepsAppended] = true
+	retargetStackToCallSite(error, callSite)
+	error.message += `\n\nActor steps (most recent last):\n${steps
+		.slice(-15)
+		.map((step) => `  ${step.status === 'pass' ? '✔' : '✖'} ${step.label}`)
+		.join('\n')}`
+}
+
+const trackBaseMethods = <T extends object>(
+	methods: T,
+	track: (name: string, callback: (...args: unknown[]) => Promise<unknown>) => unknown,
+) =>
+	Object.fromEntries(
+		Object.entries(methods).map(([name, method]) => [
+			name,
+			name === 'resolveLocator' || name === 'hopeThat' || typeof method !== 'function'
+				? method
+				: track(name, method as (...args: unknown[]) => Promise<unknown>),
+		]),
+	) as T
 
 export interface HopeThat {
 	(callback: () => MaybePromise<unknown>): Promise<boolean>
@@ -49,9 +119,28 @@ const attemptRetry = async <T>(
 	}
 }
 
-// Inspired by codecept.js
-function createBase(ctx: () => StoryContext): BaseActor {
+// Inspired by codecept.js — see https://codecept.io/blog/codeceptjs-4/ for the
+// actor API this mirrors (selectOption, hopeThat soft assertions, retryTo, etc.)
+function createBase(ctx: () => StoryContext, steps: Step[]): BaseActor {
 	const scopeStack: HTMLElement[] = []
+	const track =
+		(name: string, callback: (...args: unknown[]) => Promise<unknown>) =>
+		async (...args: unknown[]) => {
+			const step = { label: stepLabel(name, args), status: 'pass' as Step['status'] } satisfies Step
+			// Captured before any await so the stack still holds the caller frames.
+			const callSite = new Error('actor call site')
+			steps.push(step)
+			if (import.meta.env['VITE_TEST_STEPS'] === 'true') console.info(step.label)
+			try {
+				const result = await callback(...args)
+				step.status = 'pass'
+				return result
+			} catch (error) {
+				step.status = 'fail'
+				if (error instanceof Error) augmentActorError(error, steps, callSite)
+				throw error
+			}
+		}
 	const softErrors: Error[] = []
 
 	function rootCanvas() {
@@ -188,7 +277,7 @@ function createBase(ctx: () => StoryContext): BaseActor {
 		},
 	) satisfies HopeThat
 
-	return {
+	const methods = {
 		resolveLocator,
 		see: async (locator: AnyLocator) => {
 			const [el] = await elementsFrom(locator)
@@ -282,7 +371,9 @@ function createBase(ctx: () => StoryContext): BaseActor {
 		},
 		retryTo,
 		hopeThat,
-	}
+	} satisfies BaseActor
+
+	return trackBaseMethods(methods, track)
 }
 
 export interface BaseActor {
@@ -347,7 +438,10 @@ export const createActor = () => {
 		return _ctx
 	}
 
-	return makeActor(createBase(ctx), (context) => {
+	const steps: Step[] = []
+
+	return makeActor(createBase(ctx, steps), (context) => {
 		_ctx = context
+		steps.length = 0
 	})
 }

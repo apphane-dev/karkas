@@ -59,7 +59,10 @@ export default defineConfig({
 					browser: {
 						enabled: true,
 						headless: true,
-						screenshotFailures: false,
+						// Artifact-on-failure, mirroring a CodeceptJS-style reporter
+						// (see docs/testing.md, Failure diagnostics). Screenshots land in
+						// __screenshots__/ next to the story file (gitignored).
+						screenshotFailures: true,
 						provider: playwright(),
 						instances: [{ browser: 'chromium' }],
 					},

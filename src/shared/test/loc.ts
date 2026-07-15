@@ -3,8 +3,8 @@ import type { AriaRole } from 'react'
 
 export type Canvas = NonNullable<StoryContext['canvas']>
 
-// All locator functions carry optional __within for scope resolution
-type LocatorMeta = { __within?: WithinScope }
+// All locator functions carry optional metadata for actor diagnostics and scope resolution
+type LocatorMeta = { __label?: string; __within?: WithinScope }
 type LocatorFn<T> = ((canvas: Canvas) => T | Promise<T>) & LocatorMeta
 
 export type Locator = LocatorFn<HTMLElement | null>
@@ -33,6 +33,7 @@ type LocatorConfigMap = {
 		initialOptions: OptsMap['role'] | undefined
 		options: OptsMap['role'] | undefined
 		scope: WithinScope | undefined
+		label: string
 	}
 	text: {
 		type: 'text'
@@ -40,6 +41,7 @@ type LocatorConfigMap = {
 		initialOptions: OptsMap['text'] | undefined
 		options: OptsMap['text'] | undefined
 		scope: WithinScope | undefined
+		label: string
 	}
 }
 
@@ -48,6 +50,7 @@ type LocatorConfig<T extends QueryType = QueryType> = LocatorConfigMap[T]
 // Fluent locator interfaces — Self ensures within/options return the correct variant
 interface BaseFluentLocator<T extends QueryType, Self> {
 	within(element: WithinScope): Self
+	__label?: string
 	__within?: WithinScope
 	options(opts: OptsMap[T]): Self
 }
@@ -175,18 +178,37 @@ function invalidMaybeTransition(action: string) {
 	throw new Error(`Cannot call .${action}() after .maybe()`)
 }
 
+const formatLabelValue = (value: NameOption) =>
+	typeof value === 'string' ? JSON.stringify(value) : String(value)
+
+const formatOptions = (options: object) => {
+	const value = JSON.stringify(options, (_key, option) =>
+		option instanceof RegExp ? String(option) : option,
+	)
+	return value.length > 80 ? `${value.slice(0, 77)}...` : value
+}
+
+const scopeLabel = (scope: WithinScope) => {
+	if (scope === 'global') return 'global'
+	if (scope instanceof HTMLElement) return '<element>'
+	return scope.__label ?? 'fn()'
+}
+
 // Shared base methods for all locator variants
 function createBaseMethods<T extends QueryType, Self>(
 	config: LocatorConfig<T>,
 	rebuild: (nextConfig: LocatorConfig<T>) => Self,
 ) {
 	return {
+		__label: config.label,
 		__within: config.scope,
-		within: (scope: WithinScope): Self => rebuild({ ...config, scope }),
+		within: (scope: WithinScope): Self =>
+			rebuild({ ...config, scope, label: `${config.label} .within(${scopeLabel(scope)})` }),
 		options: (opts: OptsMap[T]): Self =>
 			rebuild({
 				...config,
 				options: config.options ? { ...config.options, ...opts } : opts,
+				label: `${config.label} .options(${formatOptions(opts)})`,
 			}),
 	}
 }
@@ -205,7 +227,7 @@ function createWaitLocator<T extends QueryType>(config: LocatorConfig<T>): Fluen
 	return Object.assign(
 		(canvas: Canvas) => invokeSingle(canvas, config, 'find'),
 		createBaseMethods(config, (c) => createWaitLocator(c)),
-		{ all: () => createWaitAllLocator(config) },
+		{ all: () => createWaitAllLocator({ ...config, label: `${config.label} .all()` }) },
 	) as FluentWaitLocator<T>
 }
 
@@ -213,7 +235,7 @@ function createAllLocator<T extends QueryType>(config: LocatorConfig<T>): Fluent
 	return Object.assign(
 		(canvas: Canvas) => invokeAll(canvas, config, 'get'),
 		createBaseMethods(config, (c) => createAllLocator(c)),
-		{ wait: () => createWaitAllLocator(config) },
+		{ wait: () => createWaitAllLocator({ ...config, label: `${config.label} .wait()` }) },
 	) as FluentAllLocator<T>
 }
 
@@ -233,9 +255,9 @@ function createLocator<T extends QueryType>(config: LocatorConfig<T>): FluentLoc
 		(canvas: Canvas) => invokeSingle(canvas, config, 'get'),
 		createBaseMethods(config, (c) => createLocator(c)),
 		{
-			wait: () => createWaitLocator(config),
-			maybe: () => createMaybeLocator(config),
-			all: () => createAllLocator(config),
+			wait: () => createWaitLocator({ ...config, label: `${config.label} .wait()` }),
+			maybe: () => createMaybeLocator({ ...config, label: `${config.label} .maybe()` }),
+			all: () => createAllLocator({ ...config, label: `${config.label} .all()` }),
 		},
 	) as FluentLocator<T>
 }
@@ -247,6 +269,7 @@ export const role = (roleName: AriaRole | (string & {}), name?: NameOption) =>
 		initialOptions: name === undefined ? undefined : { name },
 		options: undefined,
 		scope: undefined,
+		label: `${roleName}${name === undefined ? '' : ` ${formatLabelValue(name)}`}`,
 	})
 
 export const text = (value: NameOption) =>
@@ -256,6 +279,7 @@ export const text = (value: NameOption) =>
 		initialOptions: undefined,
 		options: undefined,
 		scope: undefined,
+		label: `text ${formatLabelValue(value)}`,
 	})
 
 export const heading = (name?: NameOption) => role('heading', name)

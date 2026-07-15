@@ -20,7 +20,7 @@ Grepping `test|spec|vitest` inside an entity directory will not find its tests �
 
 | What you are looking for       | Where to look                                            |
 | ------------------------------ | -------------------------------------------------------- |
-| Integration (end-to-end) tests | `src/app/integration/*.stories.tsx`                      |
+| Integration tests              | `src/app/integration/*.stories.tsx`                      |
 | Current product test coverage  | Integration stories above                                |
 | Reusable page actor helpers    | `src/pages/<page>/testing.ts`                            |
 | Mock handlers and fixture data | `src/entities/<entity>/mocks/handlers.ts`, `.../data.ts` |
@@ -162,6 +162,24 @@ When to use tryTo vs hopeThat:
 - `I.hopeThat(...)` when you want to collect multiple soft failures and report them all at once. Always pair with `I.hopeThat.noErrors()` at the end of the test.
 
 Prefer grab helpers over raw `I.resolveLocator(...)` when extracting text or values.
+
+### Failure diagnostics
+
+The actor augments failures with CodeceptJS-style diagnostics (borrowed from a
+comparison experiment preserved on the `experiment/codecept-comparison` branch):
+
+- On failure, the error message ends with a step trace — every actor call that ran,
+  `✔`/`✖`, with locator labels (e.g. `✖ I.see(heading "X")`).
+- Element-not-found output is capped (`.storybook/preview.tsx` `getElementError`)
+  instead of dumping the whole rendered tree.
+- For failed role queries, the accessible-roles listing is filtered to the queried
+  role, so the near-miss candidate is what you see.
+- The code frame is retargeted to the page-actor or story call site, rather than
+  `src/shared/test/loc.ts`.
+- A failure screenshot is written to `__screenshots__/` next to the story file
+  (gitignored).
+- `VITE_TEST_STEPS=true mise run test:run <file>` logs each actor step live, like
+  `codeceptjs run --steps`.
 
 ### Page actor guidance
 
