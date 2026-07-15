@@ -1,4 +1,4 @@
-import type { Canvas } from '#shared/test/loc'
+import type { Canvas } from 'kahraman'
 
 import {
 	button,

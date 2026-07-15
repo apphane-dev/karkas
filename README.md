@@ -28,7 +28,7 @@ The app follows a Feature-Sliced Design (FSD) layout under `src/`:
 | `pages/`     | Route-level compositions and per-page UI, navigation, loading/error states    |
 | `widgets/`   | Compositional blocks combining entities and shared UI (e.g. `AppShell`)       |
 | `entities/`  | Domain models: API client calls, types, mocks, and Reatom atoms               |
-| `shared/`    | Cross-cutting infra: API client, router, test actor/locator DSL, components   |
+| `shared/`    | Cross-cutting infra: API client, router, kahraman test extensions, components |
 | `paraglide/` | Generated ParaglideJS output (do not edit)                                    |
 
 Each `entity` is self-contained with `api/`, `model/`, `mocks/`, and an `index.ts` barrel. Tests live in `src/app/integration/*.stories.tsx` as user-observable Storybook stories — see [docs/testing.md](docs/testing.md).
@@ -88,7 +88,7 @@ Quality orchestration is handled by `hk` (configuration in `.config/hk.pkl`), no
 In-depth, source-first documentation lives in [`docs/`](docs/):
 
 - [Tooling](docs/tooling.md) — the Vite+ / `mise` / `hk` responsibility split and known alias notes
-- [Testing](docs/testing.md) — the Storybook integration-story approach, actor/locator DSL, and coverage policy
+- [Testing](docs/testing.md) — the Storybook integration-story approach, kahraman actor/locator DSL, and coverage policy
 - [Localization](docs/localization.md) — ParaglideJS setup and message catalogs
 - [Reatom patterns](docs/reatom-patterns.md) — conventions for Reatom state management
 - [Reatom extensions](docs/reatom-extensions.md) — reusable Reatom extension helpers

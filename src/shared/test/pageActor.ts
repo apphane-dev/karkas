@@ -1,6 +1,4 @@
-import type { BaseActor } from './actor'
-
-import { button, heading, role, text } from './loc'
+import { button, heading, role, text, type BaseActor } from 'kahraman'
 
 type LocatorName = string | RegExp
 

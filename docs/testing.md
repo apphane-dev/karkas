@@ -4,7 +4,7 @@ This doc follows the source-first approach in `docs/README.md`.
 
 ## Overview
 
-All tests are Storybook integration stories with inline `.test()` assertions. There are no standalone `*.test.ts` or `*.spec.ts` files — the only `.test.` file is `src/shared/test/actor.test-stories.tsx`, which tests the actor helpers themselves.
+All tests are Storybook integration stories with inline `.test()` assertions. There are no standalone `*.test.ts` or `*.spec.ts` files — the only `.test.` file is `src/shared/test/actor.test.stories.tsx`, which tests the kahraman integration.
 
 The default stabilization strategy is:
 
@@ -30,19 +30,19 @@ To find tests for an entity, search for `.test(` in `src/app/integration/` or lo
 
 ### Key files
 
-| File                                          | Why read it                                                                           |
-| --------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `src/shared/test/actor.ts`                    | Base actor API (`I.see`, `I.click`, `I.waitExit`, `I.within`, grab/effect helpers)    |
-| `src/shared/test/loc.ts`                      | Locator DSL (`role`, `text`, `heading`, `.wait()`, `.maybe()`, `.all()`, `.within()`) |
-| `src/shared/test/actor.test.stories.tsx`      | Focused examples of scoping and locator behavior                                      |
-| `src/app/integration/Articles.stories.tsx`    | Canonical master-detail integration patterns (default, error, loading, detail states) |
-| `src/app/integration/Connections.stories.tsx` | Advanced master-detail and mobile navigation coverage                                 |
-| `src/app/integration/Dashboard.stories.tsx`   | Simple page with success/error/loading variants                                       |
-| `src/pages/articles/testing.ts`               | Page actor style for master-detail pages                                              |
-| `src/pages/dashboard/testing.ts`              | Page actor style for simple pages                                                     |
-| `src/entities/item/mocks/handlers.ts`         | All handler variants including `retrySucceeds` assert pattern                         |
-| `src/app/mocks/handlers.ts`                   | Central default MSW handler registry                                                  |
-| `src/shared/mocks/utils.ts`                   | Shared mock helpers (`to500`, `neverResolve`, etc.)                                   |
+| File                                                  | Why read it                                                                            |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| [`kahraman`](https://github.com/apphane-dev/kahraman) | Base actor and locator DSL (`I.see`, `role`, `text`, `.wait()`, `.all()`, `.within()`) |
+| `src/shared/test/pageActor.ts`                        | Application-specific actor extensions                                                  |
+| `src/shared/test/actor.test.stories.tsx`              | Focused examples of scoping and locator behavior                                       |
+| `src/app/integration/Articles.stories.tsx`            | Canonical master-detail integration patterns (default, error, loading, detail states)  |
+| `src/app/integration/Connections.stories.tsx`         | Advanced master-detail and mobile navigation coverage                                  |
+| `src/app/integration/Dashboard.stories.tsx`           | Simple page with success/error/loading variants                                        |
+| `src/pages/articles/testing.ts`                       | Page actor style for master-detail pages                                               |
+| `src/pages/dashboard/testing.ts`                      | Page actor style for simple pages                                                      |
+| `src/entities/item/mocks/handlers.ts`                 | All handler variants including `retrySucceeds` assert pattern                          |
+| `src/app/mocks/handlers.ts`                           | Central default MSW handler registry                                                   |
+| `src/shared/mocks/utils.ts`                           | Shared mock helpers (`to500`, `neverResolve`, etc.)                                    |
 
 ## Story Conventions
 
@@ -170,12 +170,10 @@ comparison experiment preserved on the `experiment/codecept-comparison` branch):
 
 - On failure, the error message ends with a step trace — every actor call that ran,
   `✔`/`✖`, with locator labels (e.g. `✖ I.see(heading "X")`).
-- Element-not-found output is capped (`.storybook/preview.tsx` `getElementError`)
-  instead of dumping the whole rendered tree.
+- Element-not-found output is capped by `kahraman/preview` instead of dumping the whole rendered tree.
 - For failed role queries, the accessible-roles listing is filtered to the queried
   role, so the near-miss candidate is what you see.
-- The code frame is retargeted to the page-actor or story call site, rather than
-  `src/shared/test/loc.ts`.
+- The code frame is retargeted to the page-actor or story call site, rather than kahraman internals.
 - A failure screenshot is written to `__screenshots__/` next to the story file
   (gitignored).
 - `VITE_TEST_STEPS=true mise run test:run <file>` logs each actor step live, like
@@ -205,24 +203,6 @@ Common valid cases:
 - Targeted interaction assertions where no stable status-exit contract exists yet (for example, short timer/sidebar countdown checks or other local async UI transitions)
 
 If a loaded-state integration story can be stabilized with `play: () => I.waitExit(role('status'))`, prefer that over locator `.wait()` calls.
-
-### Refactoring opportunity: `src/shared/test/loc.ts`
-
-`src/shared/test/loc.ts` is a useful testing DSL, but it currently carries more factory and dispatch complexity than today's integration stories seem to need.
-
-Current audit notes:
-
-- `.within()`, `.all()`, and targeted `.wait()` usage are actively used by integration stories and should remain first-class.
-- `.options()` is valid but lightly used, mostly for accessibility-state assertions such as `current: 'page'` and a few selector escape hatches.
-- `.maybe()` appears to be mostly an actor-internal capability used to implement `I.dontSee(...)` and `I.waitExit(...)`, rather than a commonly needed story author API.
-
-Future cleanup should review whether:
-
-- `.maybe()` can become an internal helper instead of a public fluent transition,
-- role/text dispatch and option merging can be unified to reduce duplicated branches,
-- the public locator API can stay small and biased toward integration-style assertions.
-
-Do not change this API casually: it is shared test infrastructure. Prefer source-backed simplification driven by actual story usage rather than purely aesthetic refactors.
 
 ## MSW Structure
 

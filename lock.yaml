@@ -74,6 +74,9 @@ importers:
       fallow:
         specifier: ^2.103.0
         version: 2.103.0
+      kahraman:
+        specifier: ^0.1.1
+        version: 0.1.1(storybook@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.2.5)(react@19.2.7))
       msw:
         specifier: ^2.14.6
         version: 2.14.6(@types/node@26.0.1)(typescript@6.0.1)
@@ -5963,6 +5966,15 @@ packages:
       {
         integrity: sha512-zwOTdL3rFQ/lRdBnntKVOX6k5cKJwEc1HdilT71BWEu7J41gXIB2MRp+vxduPSwZJPWBxEzv4yH1wYLJGUHX4Q==,
       }
+
+  kahraman@0.1.1:
+    resolution:
+      {
+        integrity: sha512-oYSRQV1hxmXhObE/BxPEQzFuAsxb3mqsONynPnytak7Z4bvr/7MyxEuhK+yU/E4fe4fJrlgFoxKmaCAqk3tbIw==,
+      }
+    engines: { node: '>=20.11.0' }
+    peerDependencies:
+      storybook: '>=9.0.0'
 
   kleur@4.1.5:
     resolution:
@@ -12244,6 +12256,10 @@ snapshots:
       universalify: 2.0.1
     optionalDependencies:
       graceful-fs: 4.2.11
+
+  kahraman@0.1.1(storybook@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.2.5)(react@19.2.7)):
+    dependencies:
+      storybook: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.2.5)(react@19.2.7)
 
   kleur@4.1.5: {}
 
