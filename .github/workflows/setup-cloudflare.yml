@@ -1,4 +1,4 @@
-name: Set up Cloudflare Pages
+name: Finalize Cloudflare Pages DNS
 
 on:
   workflow_dispatch:
@@ -12,8 +12,9 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
-      CLOUDFLARE_PAGES_PROJECT: karkas
+      CLOUDFLARE_ZONE: apphane.dev
       CLOUDFLARE_PAGES_DOMAIN: karkas.apphane.dev
+      CLOUDFLARE_PAGES_HOSTNAME: karkas.pages.dev
 
     steps:
       - name: Verify configuration
@@ -21,22 +22,20 @@ jobs:
           test -n "$CLOUDFLARE_API_TOKEN" || { echo "::error::CLOUDFLARE_API_TOKEN is unavailable"; exit 1; }
           test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "::error::CLOUDFLARE_ACCOUNT_ID is unavailable"; exit 1; }
 
-      - name: Create Pages project
+      - name: Create Pages DNS record
         run: |
-          curl --fail-with-body --silent --show-error \
-            --request POST \
-            --url "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects" \
-            --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-            --header "Content-Type: application/json" \
-            --data "{\"name\":\"$CLOUDFLARE_PAGES_PROJECT\",\"production_branch\":\"main\"}" \
-            | jq -e '.success == true'
+          zone_id="$({
+            curl --fail-with-body --silent --show-error --get \
+              --url "https://api.cloudflare.com/client/v4/zones" \
+              --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              --data-urlencode "name=$CLOUDFLARE_ZONE" \
+              --data-urlencode "account.id=$CLOUDFLARE_ACCOUNT_ID"
+          } | jq -er '.result | if length == 1 then .[0].id else error("expected exactly one zone") end')"
 
-      - name: Attach custom domain
-        run: |
           curl --fail-with-body --silent --show-error \
             --request POST \
-            --url "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/$CLOUDFLARE_PAGES_PROJECT/domains" \
+            --url "https://api.cloudflare.com/client/v4/zones/$zone_id/dns_records" \
             --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
             --header "Content-Type: application/json" \
-            --data "{\"name\":\"$CLOUDFLARE_PAGES_DOMAIN\"}" \
+            --data "{\"type\":\"CNAME\",\"name\":\"$CLOUDFLARE_PAGES_DOMAIN\",\"content\":\"$CLOUDFLARE_PAGES_HOSTNAME\",\"ttl\":1,\"proxied\":true}" \
             | jq -e '.success == true'
