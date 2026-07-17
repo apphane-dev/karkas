@@ -2,7 +2,7 @@
 build_dir = ".var/dist"
 webapp_out_dir = "{{ vars.build_dir }}/webapp"
 storybook_out_dir = "{{ vars.build_dir }}/storybook"
-gh_pages_out_dir = "{{ vars.build_dir }}/gh-pages"
+cf_pages_out_dir = "{{ vars.build_dir }}/cf-pages"
 
 # exposing defaults to terminal so that
 # direct commands can be run consistently with tasks
@@ -13,7 +13,7 @@ WEBAPP_BASE_URL = "/"
 # asserted in .storybook/main.ts
 STORYBOOK_BASE_URL = "/"
 # expected in .github/workflows/deploy.yml
-GH_PAGES_OUT_DIR = "{{ vars.gh_pages_out_dir }}"
+CF_PAGES_OUT_DIR = "{{ vars.cf_pages_out_dir }}"
 
 [tasks."build:webapp:base"]
 hide = true
@@ -47,13 +47,13 @@ outputs = ["{{ vars.storybook_out_dir }}/**/*"]
 description = "Run all build tasks"
 run = [{ task = "build:webapp" }, { task = "build:storybook" }]
 
-[tasks."build:gh-pages"]
-description = "Prepare deployment artifacts (combine builds for GitHub Pages)"
+[tasks."build:cf-pages"]
+description = "Prepare deployment artifacts for Cloudflare Pages (combine builds)"
 env = { VITE_ENABLE_MSW = "true", VITE_CONNECT_LOGGER = "true" }
 run = [
-	"mise run build:webapp:base {{ vars.gh_pages_out_dir }} /modern-stack/",
-	"mise run build:storybook:base {{ vars.gh_pages_out_dir }}/storybook /modern-stack/storybook/",
+	"mise run build:webapp:base {{ vars.cf_pages_out_dir }} /",
+	"mise run build:storybook:base {{ vars.cf_pages_out_dir }}/storybook /storybook/",
 ]
 sources = ["src/**/*.{ts,tsx}", "index.html", "vite.config.ts", ".storybook/**/*"]
-outputs = ["{{ vars.gh_pages_out_dir }}/**/*"]
+outputs = ["{{ vars.cf_pages_out_dir }}/**/*"]
 

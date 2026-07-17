@@ -194,7 +194,7 @@ const GithubButton = reatomComponent(() => {
 			asChild
 			aria-label={m.topbar_github_link_label()}
 		>
-			<a href="https://github.com/guria/modern-stack" target="_blank" rel="noopener noreferrer">
+			<a href="https://github.com/apphane-dev/karkas" target="_blank" rel="noopener noreferrer">
 				<SiGithub />
 			</a>
 		</IconButton>

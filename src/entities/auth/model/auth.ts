@@ -14,7 +14,7 @@ import {
 import { login, logout } from '#entities/auth/api/authApi'
 
 export const authSessionAtom = atom<AuthSession | null>(null, 'authSession').extend(
-	withLocalStorage('modern-stack.authSession'),
+	withLocalStorage('karkas.authSession'),
 )
 
 export const isAuthenticatedAtom = computed(() => authSessionAtom() !== null, 'isAuthenticated')

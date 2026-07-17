@@ -1,7 +1,7 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"error_retry": "Try again",
-	"app_name": "Modern Stack",
+	"app_name": "Karkas",
 	"nav_dashboard": "Dashboard",
 	"nav_articles": "Articles",
 	"nav_connections": "Connections",

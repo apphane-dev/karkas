@@ -1,4 +1,4 @@
-# modern-stack
+# karkas
 
 A modern React application demonstrating an opinionated setup with Nub, React 19, Reatom state management, Panda CSS styling, and Storybook with Vitest integration.
 
@@ -69,8 +69,8 @@ For routine validation, prefer `hk check` / `hk fix`; use `mise run validate` on
 
 ## Live
 
-- [App](https://guria.github.io/modern-stack/)
-- [Storybook](https://guria.github.io/modern-stack/storybook/)
+- [App](https://karkas.apphane.dev/)
+- [Storybook](https://karkas.apphane.dev/storybook/)
 
 ## Git Hooks
 
@@ -112,11 +112,12 @@ Configuration: `.github/workflows/test.yml`
 
 ### Deployment Workflow
 
-Automatically deploys to GitHub Pages on push to `main`:
+Automatically deploys to Cloudflare Pages on push to `main`:
 
-- Builds the React application
-- Builds Storybook documentation
-- Combines both into a single deployment (app at root, Storybook at `/storybook`)
-- Deploys to GitHub Pages with proper permissions and concurrency controls
+- Builds the React application and Storybook
+- Combines both into a single artifact (app at root, Storybook at `/storybook`)
+- Uploads the artifact to the `karkas` Cloudflare Pages project via `wrangler`
 
 Configuration: `.github/workflows/deploy.yml`
+
+One-time setup: create the `karkas` Cloudflare Pages project, add the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets, and point the `karkas.apphane.dev` DNS record at the Pages hostname.
