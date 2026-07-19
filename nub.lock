@@ -25,7 +25,7 @@ importers:
         version: 6.3.0
       kahraman:
         specifier: ^0.2.0
-        version: 0.2.1(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2)
+        version: 0.2.1(@testing-library/dom@10.4.1)(react@19.2.7)(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5))
       lucide-react:
         specifier: ^1.21.0
         version: 1.25.0(react@19.2.7)
@@ -49,17 +49,17 @@ importers:
         specifier: ^1.11.4
         version: 1.11.4(@types/node@26.1.1)(@types/react@19.2.17)(@types/react-dom@19.2.3(@types/react@19.2.17))(idb-keyval@6.3.0)(typescript@6.0.2)
       '@storybook/addon-a11y':
-        specifier: ^10.5.0
-        version: 10.5.2(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2)
+        specifier: ~10.4.6
+        version: 10.4.6(@testing-library/dom@10.4.1)(react@19.2.7)(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5))
       '@storybook/addon-docs':
-        specifier: ^10.5.0
-        version: 10.5.2(@types/react@19.2.17)(@types/react-dom@19.2.3(@types/react@19.2.17))(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2)
+        specifier: ~10.4.6
+        version: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(@types/react-dom@19.2.3(@types/react@19.2.17))(esbuild@0.28.1)(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5))(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))
       '@storybook/addon-vitest':
-        specifier: ^10.5.0
-        version: 10.5.2(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(@vitest/runner@4.1.10)(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2)
+        specifier: ~10.4.6
+        version: 10.4.6(@testing-library/dom@10.4.1)(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(@vitest/runner@4.1.10)(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5))(typescript@6.0.2)
       '@storybook/react-vite':
-        specifier: ^10.5.0
-        version: 10.5.2(@types/react-dom@19.2.3(@types/react@19.2.17))(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(react-dom@19.2.7(react@19.2.7))(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))
+        specifier: ~10.4.6
+        version: 10.4.6(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(react@19.2.7)(react-dom@19.2.7(react@19.2.7))(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5))(typescript@6.0.2)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))
       '@total-typescript/ts-reset':
         specifier: ^0.6.1
         version: 0.6.1
@@ -91,8 +91,8 @@ importers:
         specifier: ^1.61.1
         version: 1.61.1
       storybook:
-        specifier: ^10.5.0
-        version: 10.5.2(@types/react@19.2.17)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(prettier@3.2.5)(react@19.2.7)(typescript@6.0.2)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)))))
+        specifier: ~10.4.6
+        version: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.2.5)(react@19.2.7)
       typescript:
         specifier: npm:@typescript/typescript6@^6.0.2
         version: 6.0.2
@@ -2042,27 +2042,27 @@ packages:
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
-  '@storybook/addon-a11y@10.5.2':
-    resolution: {integrity: sha512-BMze+oj1Jz3QcGl0E6mjuVA32zPD/cTu3Ev4O4qNbKbqLXO4wA1G6aEd8+CGcQtTGEyMCsr0BH6I/WnXcwA1bQ==}
+  '@storybook/addon-a11y@10.4.6':
+    resolution: {integrity: sha512-XCJy+f0DFOiCgUU9knRDlLDxVFI+AAQ3/wE/NF85zB9iDPPS2DwkSN+mas3zDgHt66zhN8Cq3/UiyCDUweV9Zw==}
     peerDependencies:
-      storybook: ^10.5.2
+      storybook: ^10.4.6
 
-  '@storybook/addon-docs@10.5.2':
-    resolution: {integrity: sha512-MoBANDsh5qEA14U+JaBoQcYsKbayJDDMopigFN0NdVAsZTdBfVIsL7cnjTFBL6ubB3ifb5M0tCXbScpml1KqiQ==}
+  '@storybook/addon-docs@10.4.6':
+    resolution: {integrity: sha512-aWAfP5JMiT5a3zBJizwroCRzOCqZwDTJmvsYvwMD3ilIEa/kT1vhf6Xrbk4XIPhDwbh8Hpb/Gfnka1xBYEISWg==}
     peerDependencies:
       '@types/react': ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      storybook: ^10.5.2
+      storybook: ^10.4.6
     peerDependenciesMeta:
       '@types/react':
         optional: true
 
-  '@storybook/addon-vitest@10.5.2':
-    resolution: {integrity: sha512-47QehVg3yRcfIOfOYYWkXreM5nEcsouo9KWUegdIiROWjDyxYC2QNuHxpxm9f1/PGktESKaEcZ35pJEt3LK7tw==}
+  '@storybook/addon-vitest@10.4.6':
+    resolution: {integrity: sha512-VvskHge0GZy86LG6kcY5Ww34z8rDV8JBxqSdUpcJVsWfIvyX6MfAbqI76LlereSyBIJGZJZsqaLwRXsQoVY+0Q==}
     peerDependencies:
       '@vitest/browser': ^3.0.0 || ^4.0.0
       '@vitest/browser-playwright': ^4.0.0
       '@vitest/runner': ^3.0.0 || ^4.0.0
-      storybook: ^10.5.2
+      storybook: ^10.4.6
       vitest: ^3.0.0 || ^4.0.0
     peerDependenciesMeta:
       '@vitest/browser':
@@ -2074,18 +2074,18 @@ packages:
       vitest:
         optional: true
 
-  '@storybook/builder-vite@10.5.2':
-    resolution: {integrity: sha512-XxY/zpMrEOXqdJaEw8s7fJefDCjO1eRkjvZvb50ojiqDJpTdfguhBrwqlHilpWWt5a12VjbbMrUHza4YPs/bBg==}
+  '@storybook/builder-vite@10.4.6':
+    resolution: {integrity: sha512-BHBtD81HiXUiDQz/CaFynLtWmm7AFUQn8VnXuHipZ8KlnUANopa4yqdVuy/Gwz8ub254uFI5NMZsW/KlgWNgNg==}
     peerDependencies:
-      storybook: ^10.5.2
+      storybook: ^10.4.6
       vite: ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
 
-  '@storybook/csf-plugin@10.5.2':
-    resolution: {integrity: sha512-PK/wXiALFf88mt4HmDtiZJ6NRvhExSXEM9uFIN+OIHxGqg7Xbp6MB0SPdhsTbMY9720ahiu/DJx5iIzkidcA3w==}
+  '@storybook/csf-plugin@10.4.6':
+    resolution: {integrity: sha512-NILLxDqpA/JR/AazGWpsz+4fadJwRU4uhHephGtYpVOWnQA/DkJfKT6zpcJVq8+QA8A2zKMLX3GVKsXIrxjuDA==}
     peerDependencies:
       esbuild: '*'
       rollup: '*'
-      storybook: ^10.5.2
+      storybook: ^10.4.6
       vite: '*'
       webpack: '*'
     peerDependenciesMeta:
@@ -2106,40 +2106,36 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@storybook/react-dom-shim@10.5.2':
-    resolution: {integrity: sha512-TbdYVLuD7gwj1CFsDJhCHUiwfVmzFWzalKEUGy9XgXyNpyOV1CYRsdmRdhaOHgmn2ljQZuTAxSnG7NlElghVaw==}
+  '@storybook/react-dom-shim@10.4.6':
+    resolution: {integrity: sha512-iGNmKzrq9vgl2PDrYAnZKI+yvac3Ym+lJXXuQaqlFRS23zA5MNm4EBX+rAG7WulqchoK6NaZ0KQOs2mAgEpTMg==}
     peerDependencies:
       '@types/react': ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       '@types/react-dom': ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      storybook: ^10.5.2
+      storybook: ^10.4.6
     peerDependenciesMeta:
       '@types/react':
         optional: true
       '@types/react-dom':
         optional: true
 
-  '@storybook/react-vite@10.5.2':
-    resolution: {integrity: sha512-YZoSLSMwU1dmxW8VkfJy6KzJELkbM2cHpa0mj7dih+p0JyWkWDEjLStrMB+sy9W7jF/fbojyzf0/oHlvVRUc3w==}
+  '@storybook/react-vite@10.4.6':
+    resolution: {integrity: sha512-0arEQtybqGYXHbXpTot+Wv9YtG+V5Vp43QayXavPKQ20M8mpEzhyCPKd0EhqMGSC1Z1UEt0hm365WUBhI9LfKA==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      storybook: ^10.5.2
-      typescript: '>= 4.9.x'
+      storybook: ^10.4.6
       vite: ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
-    peerDependenciesMeta:
-      typescript:
-        optional: true
 
-  '@storybook/react@10.5.2':
-    resolution: {integrity: sha512-DQkTEvQ3Tn5ndyZnOyNTnYuJWBZdnUsVFuvImtt1H6QyHsZGhl35/3CqRwERa/P10Sw/6vLP5DS+KhDCz1hWbg==}
+  '@storybook/react@10.4.6':
+    resolution: {integrity: sha512-9Y7YecrVFe1/01KYjfOLxVqTg2Aq+IO6TEv6sC2U0PfD0AWCSCmQ91QqgBpN/XW4aFFWoiZNinyXMUlU8zxy2w==}
     peerDependencies:
       '@types/react': ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       '@types/react-dom': ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      storybook: ^10.5.2
+      storybook: ^10.4.6
       typescript: '>= 4.9.x'
     peerDependenciesMeta:
       '@types/react':
@@ -4839,13 +4835,13 @@ packages:
   std-env@4.2.0:
     resolution: {integrity: sha512-oCUKSupKTHX53EyjDtuZQ64pjLJ6yYCtpmEw0goYxtjG9KpbRe8KAsl2tBUGU9DyMcJ0RwJ8GqJAFzMXcXW1Rw==}
 
-  storybook@10.5.2:
-    resolution: {integrity: sha512-zkYxVZoDMj8njzZc3EH5UyY7885wpi9a1mmWVwFiNHSo+i5r2Go84E2OI1cdOctRymLkNvgs1j5jqAKA0ftBqg==}
+  storybook@10.4.6:
+    resolution: {integrity: sha512-6wkA6LxfDSSilloITsrFOJfsnw0mDUP2h8Ls+lRt8oRsudtz2RWFhLv+Toiwg6NW7hUpdTDc2hzR7DztJid6+A==}
     hasBin: true
     peerDependencies:
       '@types/react': ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       prettier: ^2 || ^3
-      vite-plus: ^0.1.15 || ^0.2.0
+      vite-plus: ^0.1.15
     peerDependenciesMeta:
       '@types/react':
         optional: true
@@ -7054,50 +7050,50 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
-  '@storybook/addon-a11y@10.5.2(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2)':
+  '@storybook/addon-a11y@10.4.6(@testing-library/dom@10.4.1)(react@19.2.7)(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5))':
     dependencies:
       '@storybook/global': 5.0.0
       axe-core: 4.12.1
-      storybook: 10.5.2(@types/react@19.2.17)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(prettier@3.2.5)(react@19.2.7)(typescript@6.0.2)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)))))
+      storybook: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.2.5)(react@19.2.7)
 
-  '@storybook/addon-docs@10.5.2(@types/react@19.2.17)(@types/react-dom@19.2.3(@types/react@19.2.17))(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2)':
+  '@storybook/addon-docs@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(@types/react-dom@19.2.3(@types/react@19.2.17))(esbuild@0.28.1)(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5))(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))':
     dependencies:
       '@mdx-js/react': 3.1.1(@types/react@19.2.17)(react@19.2.7)
-      '@storybook/csf-plugin': 10.5.2(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(esbuild@0.28.1)(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))
+      '@storybook/csf-plugin': 10.4.6(@testing-library/dom@10.4.1)(esbuild@0.28.1)(react@19.2.7)(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5))(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))
       '@storybook/icons': 2.1.0(react@19.2.7)
-      '@storybook/react-dom-shim': 10.5.2(@types/react@19.2.17)(@types/react-dom@19.2.3(@types/react@19.2.17))(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(react-dom@19.2.7(react@19.2.7))(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2)
+      '@storybook/react-dom-shim': 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(@types/react-dom@19.2.3(@types/react@19.2.17))(react@19.2.7)(react-dom@19.2.7(react@19.2.7))(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5))
       '@types/react': 19.2.17
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
-      storybook: 10.5.2(@types/react@19.2.17)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(prettier@3.2.5)(react@19.2.7)(typescript@6.0.2)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)))))
+      storybook: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.2.5)(react@19.2.7)
       ts-dedent: 2.3.0
     transitivePeerDependencies:
       - rollup
       - webpack
 
-  '@storybook/addon-vitest@10.5.2(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(@vitest/runner@4.1.10)(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2)':
+  '@storybook/addon-vitest@10.4.6(@testing-library/dom@10.4.1)(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(@vitest/runner@4.1.10)(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5))(typescript@6.0.2)':
     dependencies:
       '@storybook/global': 5.0.0
       '@storybook/icons': 2.1.0(react@19.2.7)
       '@vitest/browser': 4.1.10(msw@2.15.0(typescript@6.0.2))(typescript@6.0.2)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)))
       '@vitest/browser-playwright': 4.1.10(msw@2.15.0(typescript@6.0.2))(playwright@1.61.1)(typescript@6.0.2)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)))
       '@vitest/runner': 4.1.10
-      storybook: 10.5.2(@types/react@19.2.17)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(prettier@3.2.5)(react@19.2.7)(typescript@6.0.2)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)))))
+      storybook: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.2.5)(react@19.2.7)
 
-  '@storybook/builder-vite@10.5.2(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))':
+  '@storybook/builder-vite@10.4.6(@testing-library/dom@10.4.1)(react@19.2.7)(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5))(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))':
     dependencies:
-      '@storybook/csf-plugin': 10.5.2(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(esbuild@0.28.1)(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))
-      storybook: 10.5.2(@types/react@19.2.17)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(prettier@3.2.5)(react@19.2.7)(typescript@6.0.2)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)))))
+      '@storybook/csf-plugin': 10.4.6(@testing-library/dom@10.4.1)(esbuild@0.28.1)(react@19.2.7)(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5))(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))
+      storybook: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.2.5)(react@19.2.7)
       ts-dedent: 2.3.0
       vite: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)
     transitivePeerDependencies:
       - rollup
       - webpack
 
-  '@storybook/csf-plugin@10.5.2(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(esbuild@0.28.1)(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))':
+  '@storybook/csf-plugin@10.4.6(@testing-library/dom@10.4.1)(esbuild@0.28.1)(react@19.2.7)(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5))(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))':
     dependencies:
       esbuild: 0.28.1
-      storybook: 10.5.2(@types/react@19.2.17)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(prettier@3.2.5)(react@19.2.7)(typescript@6.0.2)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)))))
+      storybook: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.2.5)(react@19.2.7)
       unplugin: 2.3.11
       vite: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)
 
@@ -7107,46 +7103,45 @@ snapshots:
     dependencies:
       react: 19.2.7
 
-  '@storybook/react-dom-shim@10.5.2(@types/react@19.2.17)(@types/react-dom@19.2.3(@types/react@19.2.17))(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(react-dom@19.2.7(react@19.2.7))(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2)':
+  '@storybook/react-dom-shim@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(@types/react-dom@19.2.3(@types/react@19.2.17))(react@19.2.7)(react-dom@19.2.7(react@19.2.7))(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5))':
     dependencies:
       '@types/react': 19.2.17
       '@types/react-dom': 19.2.3(@types/react@19.2.17)
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
-      storybook: 10.5.2(@types/react@19.2.17)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(prettier@3.2.5)(react@19.2.7)(typescript@6.0.2)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)))))
+      storybook: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.2.5)(react@19.2.7)
 
-  '@storybook/react-vite@10.5.2(@types/react-dom@19.2.3(@types/react@19.2.17))(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(react-dom@19.2.7(react@19.2.7))(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))':
+  '@storybook/react-vite@10.4.6(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(react@19.2.7)(react-dom@19.2.7(react@19.2.7))(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5))(typescript@6.0.2)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))':
     dependencies:
       '@joshwooding/vite-plugin-react-docgen-typescript': 0.7.0(typescript@6.0.2)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))
       '@rollup/pluginutils': 5.4.0
-      '@storybook/builder-vite': 10.5.2(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))
-      '@storybook/react': 10.5.2(@types/react@19.2.17)(@types/react-dom@19.2.3(@types/react@19.2.17))(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(react-dom@19.2.7(react@19.2.7))(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2)
+      '@storybook/builder-vite': 10.4.6(@testing-library/dom@10.4.1)(react@19.2.7)(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5))(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))
+      '@storybook/react': 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(@types/react-dom@19.2.3(@types/react@19.2.17))(react@19.2.7)(react-dom@19.2.7(react@19.2.7))(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5))(typescript@6.0.2)
       empathic: 2.0.1
       magic-string: 0.30.21
       react: 19.2.7
       react-docgen: 8.0.3
       react-dom: 19.2.7(react@19.2.7)
       resolve: 1.22.12
-      storybook: 10.5.2(@types/react@19.2.17)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(prettier@3.2.5)(react@19.2.7)(typescript@6.0.2)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)))))
+      storybook: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.2.5)(react@19.2.7)
       tsconfig-paths: 4.2.0
-      typescript: 6.0.2
       vite: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)
     transitivePeerDependencies:
       - rollup
       - supports-color
       - webpack
 
-  '@storybook/react@10.5.2(@types/react@19.2.17)(@types/react-dom@19.2.3(@types/react@19.2.17))(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(react-dom@19.2.7(react@19.2.7))(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2)':
+  '@storybook/react@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(@types/react-dom@19.2.3(@types/react@19.2.17))(react@19.2.7)(react-dom@19.2.7(react@19.2.7))(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5))(typescript@6.0.2)':
     dependencies:
       '@storybook/global': 5.0.0
-      '@storybook/react-dom-shim': 10.5.2(@types/react@19.2.17)(@types/react-dom@19.2.3(@types/react@19.2.17))(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(react-dom@19.2.7(react@19.2.7))(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2)
+      '@storybook/react-dom-shim': 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(@types/react-dom@19.2.3(@types/react@19.2.17))(react@19.2.7)(react-dom@19.2.7(react@19.2.7))(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5))
       '@types/react': 19.2.17
       '@types/react-dom': 19.2.3(@types/react@19.2.17)
       react: 19.2.7
       react-docgen: 8.0.3
       react-docgen-typescript: 2.4.0(typescript@6.0.2)
       react-dom: 19.2.7(react@19.2.7)
-      storybook: 10.5.2(@types/react@19.2.17)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(prettier@3.2.5)(react@19.2.7)(typescript@6.0.2)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)))))
+      storybook: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.2.5)(react@19.2.7)
       typescript: 6.0.2
     transitivePeerDependencies:
       - supports-color
@@ -7374,6 +7369,17 @@ snapshots:
       '@rolldown/pluginutils': 1.0.1
       vite: 8.1.5(@types/node@26.1.1)(esbuild@0.28.1)
 
+  '@vitest/browser-playwright@4.1.10(@types/node@26.1.1)(@vitest/browser-preview@4.1.10)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(playwright@1.61.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))(vitest@4.1.10)':
+    dependencies:
+      '@vitest/browser': 4.1.10(@types/node@26.1.1)(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(@vitest/browser-preview@4.1.10)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))(vitest@4.1.10)
+      '@vitest/mocker': 4.1.10(msw@2.15.0(typescript@6.0.2))(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))
+      playwright: 1.61.1
+      tinyrainbow: 3.1.0
+      vitest: 4.1.10(@types/node@26.1.1)(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(@vitest/browser-preview@4.1.10)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
   '@vitest/browser-playwright@4.1.10(msw@2.15.0(typescript@6.0.2))(playwright@1.61.1)(typescript@6.0.2)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)))':
     dependencies:
       '@vitest/browser': 4.1.10(msw@2.15.0(typescript@6.0.2))(typescript@6.0.2)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)))
@@ -7381,17 +7387,6 @@ snapshots:
       playwright: 1.61.1
       tinyrainbow: 3.1.0
       vitest: 0.1.24(@types/node@26.1.1)(typescript@6.0.2)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-
-  '@vitest/browser-playwright@4.1.10(msw@2.15.0(typescript@6.0.2))(playwright@1.61.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))(vitest@4.1.10)':
-    dependencies:
-      '@vitest/browser': 4.1.10(@types/node@26.1.1)(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(@vitest/browser-preview@4.1.10)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))(vitest@4.1.10)
-      '@vitest/mocker': 4.1.10(msw@2.15.0(typescript@6.0.2))(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))
-      playwright: 1.61.1
-      tinyrainbow: 3.1.0
-      vitest: 4.1.10(@types/node@26.1.1)(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(@vitest/browser-preview@4.1.10)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -9212,9 +9207,9 @@ snapshots:
     optionalDependencies:
       graceful-fs: 4.2.11
 
-  kahraman@0.2.1(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(react@19.2.7)(storybook@10.5.2(@types/react@19.2.17)(prettier@3.2.5)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))))(typescript@6.0.2):
+  kahraman@0.2.1(@testing-library/dom@10.4.1)(react@19.2.7)(storybook@10.4.6(@types/react@19.2.17)(prettier@3.2.5)):
     dependencies:
-      storybook: 10.5.2(@types/react@19.2.17)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(prettier@3.2.5)(react@19.2.7)(typescript@6.0.2)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)))))
+      storybook: 10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.2.5)(react@19.2.7)
 
   kleur@4.1.5: {}
 
@@ -9849,7 +9844,7 @@ snapshots:
       '@oxc-resolver/binding-win32-arm64-msvc': 11.24.2
       '@oxc-resolver/binding-win32-x64-msvc': 11.24.2
 
-  oxfmt@0.58.0(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))):
+  oxfmt@0.58.0(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(typescript@6.0.2)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))):
     dependencies:
       tinypool: 2.1.0
       vite-plus: 0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(typescript@6.0.2)
@@ -10474,11 +10469,10 @@ snapshots:
 
   std-env@4.2.0: {}
 
-  storybook@10.5.2(@types/react@19.2.17)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(prettier@3.2.5)(react@19.2.7)(typescript@6.0.2)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))):
+  storybook@10.4.6(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.2.5)(react@19.2.7):
     dependencies:
       '@storybook/global': 5.0.0
       '@storybook/icons': 2.1.0(react@19.2.7)
-      '@testing-library/dom': 10.4.1
       '@testing-library/jest-dom': 6.9.1
       '@testing-library/user-event': 14.6.1(@testing-library/dom@10.4.1)
       '@types/react': 19.2.17
@@ -10486,7 +10480,6 @@ snapshots:
       '@vitest/spy': 3.2.4
       '@webcontainer/env': 1.1.1
       esbuild: 0.28.1
-      jsonc-parser: 3.3.1
       open: 10.2.0
       oxc-parser: 0.127.0
       oxc-resolver: 11.24.2
@@ -10494,7 +10487,6 @@ snapshots:
       recast: 0.23.12
       semver: 7.8.5
       use-sync-external-store: 1.6.0(react@19.2.7)
-      vite-plus: 0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(typescript@6.0.2)
       ws: 8.21.1
     transitivePeerDependencies:
       - bufferutil
@@ -10765,7 +10757,7 @@ snapshots:
       '@oxc-project/types': 0.139.0
       '@oxlint/plugins': 1.73.0
       '@vitest/browser': 4.1.10(@types/node@26.1.1)(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(@vitest/browser-preview@4.1.10)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))(vitest@4.1.10)
-      '@vitest/browser-playwright': 4.1.10(msw@2.15.0(typescript@6.0.2))(playwright@1.61.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))(vitest@4.1.10)
+      '@vitest/browser-playwright': 4.1.10(@types/node@26.1.1)(@vitest/browser-preview@4.1.10)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(playwright@1.61.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))(vitest@4.1.10)
       '@vitest/browser-preview': 4.1.10(vitest@4.1.10)
       '@vitest/expect': 4.1.10
       '@vitest/mocker': 4.1.10(msw@2.15.0(typescript@6.0.2))(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))
@@ -10775,7 +10767,7 @@ snapshots:
       '@vitest/spy': 4.1.10
       '@vitest/utils': 4.1.10
       '@voidzero-dev/vite-plus-core': 0.2.5(@types/node@26.1.1)(esbuild@0.28.1)(typescript@6.0.2)
-      oxfmt: 0.58.0(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)))))
+      oxfmt: 0.58.0(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(typescript@6.0.2)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)))))
       oxlint: 1.73.0(oxlint-tsgolint@0.24.0)(vite-plus@0.2.5(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)))))
       oxlint-tsgolint: 0.24.0
       vitest: 4.1.10(@types/node@26.1.1)(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(@vitest/browser-preview@4.1.10)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))
@@ -10882,7 +10874,7 @@ snapshots:
   vitest@4.1.10(@types/node@26.1.1)(@vitest/browser-playwright@4.1.10(playwright@1.61.1)(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(@vitest/browser-preview@4.1.10)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)):
     dependencies:
       '@types/node': 26.1.1
-      '@vitest/browser-playwright': 4.1.10(msw@2.15.0(typescript@6.0.2))(playwright@1.61.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))(vitest@4.1.10)
+      '@vitest/browser-playwright': 4.1.10(@types/node@26.1.1)(@vitest/browser-preview@4.1.10)(@vitest/coverage-v8@4.1.10(@vitest/browser@4.1.10(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(vitest@0.1.24(@types/node@26.1.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))))(msw@2.15.0(typescript@6.0.2))(playwright@1.61.1)(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1))(vitest@4.1.10)
       '@vitest/browser-preview': 4.1.10(vitest@4.1.10)
       '@vitest/coverage-v8': 4.1.10(@vitest/browser@4.1.10(vitest@4.1.10))(vitest@4.1.10)
       '@vitest/expect': 4.1.10
