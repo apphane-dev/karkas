@@ -35,7 +35,7 @@
 		"@reatom/core": "https://pkg.pr.new/reatom/reatom/@reatom/core@d6ae696",
 		"@reatom/react": "https://pkg.pr.new/reatom/reatom/@reatom/react@d6ae696",
 		"idb-keyval": "^6.2.1",
-		"kahraman": "^0.2.0",
+		"kahraman": "^0.3.0",
 		"lucide-react": "^1.21.0",
 		"msw": "2.15.0",
 		"react": "^19.2.7",
