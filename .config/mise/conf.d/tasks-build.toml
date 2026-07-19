@@ -25,6 +25,7 @@ run = "WEBAPP_OUT_DIR=${usage_dir?} WEBAPP_BASE_URL=${usage_base?} vp build"
 
 [tasks."build:webapp"]
 description = "Build Application"
+depends = ["prepare:codegen"]
 run = "mise run build:webapp:base"
 sources = ["src/**/*.{ts,tsx}", "index.html", "vite.config.ts"]
 outputs = ["{{ vars.webapp_out_dir }}/**/*"]
@@ -39,6 +40,7 @@ run = "STORYBOOK_BASE_URL=${usage_base?} storybook build -o ${usage_dir?}"
 
 [tasks."build:storybook"]
 description = "Build Storybook"
+depends = ["prepare:codegen"]
 run = "mise run build:storybook:base"
 sources = ["src/**/*.{ts,tsx,stories.tsx}", ".storybook/**/*"]
 outputs = ["{{ vars.storybook_out_dir }}/**/*"]
@@ -49,6 +51,7 @@ run = [{ task = "build:webapp" }, { task = "build:storybook" }]
 
 [tasks."build:cf-pages"]
 description = "Prepare deployment artifacts for Cloudflare Pages (combine builds)"
+depends = ["prepare:codegen"]
 env = { VITE_ENABLE_MSW = "true", VITE_CONNECT_LOGGER = "true" }
 run = [
 	"mise run build:webapp:base {{ vars.cf_pages_out_dir }} /",

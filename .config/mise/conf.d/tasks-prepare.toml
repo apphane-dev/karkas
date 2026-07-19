@@ -7,19 +7,19 @@ PANDA_OUTDIR = "{{ vars.panda_outdir }}"
 
 [tasks."prepare:panda"]
 description = "Run Panda code generation"
-run = "panda codegen"
+# --clean: rewrite all outputs so their mtimes advance past the sources,
+# otherwise the sources/outputs freshness check never passes again
+run = "panda codegen --clean"
 
 sources = ["{{ vars.panda_config }}", "theme/**/*.ts", "components.json"]
 outputs = ["{{ vars.panda_outdir }}/**/*"]
 
 [tasks."prepare:msw"]
 description = "Generate and verify Mock Service Worker"
-run = "nub .config/scripts/verify-msw-worker-version.ts --ensure"
-sources = [
-	"package.json",
-	"public/mockServiceWorker.js",
-	".config/scripts/verify-msw-worker-version.ts",
-]
+# touch: --ensure leaves the file untouched when already aligned, but the
+# freshness check needs the output mtime to advance past the sources
+run = "nub .config/scripts/verify-msw-worker-version.ts --ensure && touch public/mockServiceWorker.js"
+sources = ["package.json", ".config/scripts/verify-msw-worker-version.ts"]
 outputs = ["public/mockServiceWorker.js"]
 
 [tasks."prepare:git-hooks"]
@@ -40,6 +40,10 @@ if [ ! -f mise.local.toml ]; then
   sed '/^##/d' .config/mise/conf.d/local.toml.example > mise.local.toml
 fi
 '''
+
+[tasks."prepare:codegen"]
+description = "Generate all build-input artifacts (Panda, Paraglide, MSW)"
+depends = ["prepare:panda", "prepare:paraglide", "prepare:msw"]
 
 [tasks.prepare]
 description = "Prepare project"
