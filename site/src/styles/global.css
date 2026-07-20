@@ -39,7 +39,7 @@
 	--mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
 
 	/* Rhythm */
-	--maxw: 1180px;
+	--maxw: 1300px;
 	--gutter: clamp(1.25rem, 4vw, 3.5rem);
 	--radius: 3px; /* drafting corners are near-square */
 

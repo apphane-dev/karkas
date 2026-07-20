@@ -367,11 +367,12 @@ const explore = [
 	}
 	.member {
 		display: grid;
-		grid-template-columns: 5.5rem 1fr;
-		grid-template-areas:
-			'n head'
-			'n body';
-		gap: 0.2rem 1.5rem;
+		/* Number, head, and body run across the row so the wide desktop wrap is
+		   used instead of leaving the right half empty. */
+		grid-template-columns: 5.5rem minmax(13rem, 21rem) 1fr;
+		grid-template-areas: 'n head body';
+		gap: 0.4rem 2.5rem;
+		align-items: start;
 		padding: 1.9rem 0;
 		border-bottom: 1px solid var(--line-strong);
 		position: relative;
@@ -398,9 +399,9 @@ const explore = [
 	.member-head {
 		grid-area: head;
 		display: flex;
-		align-items: baseline;
-		flex-wrap: wrap;
-		gap: 0.5rem 0.9rem;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.3rem;
 	}
 	.member-role {
 		font-family: var(--mono);
@@ -412,7 +413,7 @@ const explore = [
 		grid-area: body;
 		color: var(--ink-muted);
 		max-width: 62ch;
-		margin-top: 0.5rem;
+		margin-top: 0.35rem;
 	}
 
 	/* TESTING */
@@ -646,6 +647,19 @@ const explore = [
 		}
 		.member {
 			grid-template-columns: 3.5rem 1fr;
+			grid-template-areas:
+				'n head'
+				'n body';
+			gap: 0.2rem 1.5rem;
+		}
+		.member-head {
+			flex-direction: row;
+			flex-wrap: wrap;
+			align-items: baseline;
+			gap: 0.5rem 0.9rem;
+		}
+		.member-body {
+			margin-top: 0.5rem;
 		}
 		.member::before {
 			left: 1.7rem;
