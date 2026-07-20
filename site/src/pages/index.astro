@@ -1,12 +1,9 @@
 ---
-import { getCollection } from 'astro:content'
 import Base from '../layouts/Base.astro'
 import Frame from '../components/Frame.astro'
+import { getUpdates } from '../lib/updates'
 
-const updates = (await getCollection('updates')).sort(
-	(a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-)
-const latest = updates.slice(0, 3)
+const latest = (await getUpdates()).slice(0, 3)
 
 const fmt = (d: Date) =>
 	d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
@@ -276,9 +273,9 @@ const explore = [
 				<a class="btn" href="/updates">All updates <span class="arrow">→</span></a>
 			</div>
 
-			<ul class="feed">
-				{
-					latest.map((u) => (
+			{latest.length > 0 ? (
+				<ul class="feed">
+					{latest.map((u) => (
 						<li class="feed-item">
 							<div class="feed-meta">
 								<time datetime={u.data.date.toISOString()}>{fmt(u.data.date)}</time>
@@ -290,9 +287,14 @@ const explore = [
 							</a>
 							<p class="feed-summary">{u.data.summary}</p>
 						</li>
-					))
-				}
-			</ul>
+					))}
+				</ul>
+			) : (
+				<p class="feed-empty">
+					No updates published yet — formal release notes live in
+					<a class="tlink" href="https://github.com/apphane-dev/karkas/releases">GitHub Releases</a>.
+				</p>
+			)}
 		</div>
 	</section>
 
@@ -553,6 +555,12 @@ const explore = [
 		margin: 0;
 		padding: 0;
 		border-top: 1px solid var(--line-strong);
+	}
+	.feed-empty {
+		border-top: 1px solid var(--line-strong);
+		padding-top: 1.7rem;
+		color: var(--ink-muted);
+		max-width: 60ch;
 	}
 	.feed-item {
 		padding: 1.7rem 0;

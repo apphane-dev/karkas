@@ -1,10 +1,8 @@
 ---
-import { getCollection } from 'astro:content'
 import Base from '../../layouts/Base.astro'
+import { getUpdates } from '../../lib/updates'
 
-const updates = (await getCollection('updates')).sort(
-	(a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-)
+const updates = await getUpdates()
 
 const fmt = (d: Date) =>
 	d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
@@ -26,23 +24,29 @@ const fmt = (d: Date) =>
 				</p>
 			</div>
 
-			<ul class="feed">
-				{
-					updates.map((u) => (
-						<li class="feed-item">
-							<div class="feed-meta">
-								<time datetime={u.data.date.toISOString()}>{fmt(u.data.date)}</time>
-								<span class="feed-tag">{u.data.tag}</span>
-								{u.data.example && <span class="feed-example">example</span>}
-							</div>
-							<a class="feed-title" href={`/updates/${u.id}`}>
-								{u.data.title}
-							</a>
-							<p class="feed-summary">{u.data.summary}</p>
-						</li>
-					))
-				}
-			</ul>
+				{updates.length > 0 ? (
+					<ul class="feed">
+						{updates.map((u) => (
+							<li class="feed-item">
+								<div class="feed-meta">
+									<time datetime={u.data.date.toISOString()}>{fmt(u.data.date)}</time>
+									<span class="feed-tag">{u.data.tag}</span>
+									{u.data.example && <span class="feed-example">example</span>}
+								</div>
+								<a class="feed-title" href={`/updates/${u.id}`}>
+									{u.data.title}
+								</a>
+								<p class="feed-summary">{u.data.summary}</p>
+							</li>
+						))}
+					</ul>
+				) : (
+					<p class="feed-empty">
+						No updates published yet. Formal release notes live in
+						<a class="tlink" href="https://github.com/apphane-dev/karkas/releases">GitHub Releases</a>
+						in the meantime.
+					</p>
+				)}
 		</div>
 	</section>
 </Base>
@@ -60,6 +64,12 @@ const fmt = (d: Date) =>
 		margin: 0;
 		padding: 0;
 		border-top: 1px solid var(--line-strong);
+	}
+	.feed-empty {
+		border-top: 1px solid var(--line-strong);
+		padding-top: 1.7rem;
+		color: var(--ink-muted);
+		max-width: 60ch;
 	}
 	.feed-item {
 		padding: 1.7rem 0;

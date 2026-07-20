@@ -1,9 +1,10 @@
 ---
-import { getCollection, render } from 'astro:content'
+import { render } from 'astro:content'
 import Base from '../../layouts/Base.astro'
+import { getUpdates } from '../../lib/updates'
 
 export async function getStaticPaths() {
-	const updates = await getCollection('updates')
+	const updates = await getUpdates()
 	return updates.map((entry) => ({
 		params: { slug: entry.id },
 		props: { entry },
