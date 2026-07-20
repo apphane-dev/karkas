@@ -38,9 +38,9 @@ const stack = [
 	},
 	{
 		n: 'S-05',
-		title: 'Feature-Sliced Design',
-		role: 'enforced boundaries',
-		body: 'app, pages, widgets, entities, and shared are more than folders. Steiger checks their import and public-API boundaries, so the structure holds as the codebase grows.',
+		title: 'Feature-Sliced Design, adapted',
+		role: 'layer boundaries, with deliberate deviations',
+		body: 'app, pages, widgets, entities, and shared are more than folders. Karkas follows Feature-Sliced Design rather than the letter of its spec — Steiger enforces the layer and import boundaries, with public-API and segment rules relaxed for generated, UI-kit, and test code.',
 	},
 	{
 		n: 'S-06',
@@ -74,7 +74,7 @@ const explore = [
 
 <Base
 	title="Karkas — a modern React reference architecture"
-	description="Karkas is an opinionated React 19 reference application: Reatom, Panda CSS, Park UI, Storybook, Vitest, MSW, and Feature-Sliced Design wired together with enforceable conventions."
+	description="Karkas is an opinionated React 19 reference application: Reatom, Panda CSS, Park UI, Storybook, Vitest, MSW, and an adapted Feature-Sliced Design wired together with enforceable conventions."
 >
 	{/* HERO -------------------------------------------------------------- */}
 	<section class="hero">
@@ -84,8 +84,8 @@ const explore = [
 				<h1>A React stack where the tools agree with each other.</h1>
 				<p class="lede">
 					Karkas is a production-shaped example of React 19, Reatom, Panda CSS, Park UI, Storybook,
-					Vitest, Playwright, MSW, and Feature-Sliced Design — wired together with enforceable
-					conventions instead of a pile of disconnected defaults.
+					Vitest, Playwright, MSW, and an adapted Feature-Sliced Design — wired together with
+					enforceable conventions instead of a pile of disconnected defaults.
 				</p>
 				<div class="hero-actions">
 					<a class="btn btn--steel" href="/demo/">Try the demo <span class="arrow">→</span></a>
