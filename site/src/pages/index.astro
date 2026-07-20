@@ -1,0 +1,654 @@
+---
+import { getCollection } from 'astro:content'
+import Base from '../layouts/Base.astro'
+import Frame from '../components/Frame.astro'
+
+const updates = (await getCollection('updates')).sort(
+	(a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+)
+const latest = updates.slice(0, 3)
+
+const fmt = (d: Date) =>
+	d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+
+const stack = [
+	{
+		n: 'S-01',
+		title: 'Reatom',
+		role: 'state, routing, forms, async',
+		body: 'Atoms, actions, computed values, forms, persistence, localization, and routes share one reactive model. Karkas deliberately avoids rebuilding that model out of scattered React hooks — React renders, Reatom decides.',
+	},
+	{
+		n: 'S-02',
+		title: 'Panda CSS + Park UI',
+		role: 'typed styling, accessible primitives',
+		body: 'Build-time, type-safe styling meets accessible Ark UI primitives. Tokens, recipes, and semantic light/dark themes are owned by the repository, not inherited from a framework default.',
+	},
+	{
+		n: 'S-03',
+		title: 'Storybook 10',
+		role: 'the behavior catalog',
+		body: 'Every meaningful state can be opened by a person and exercised by Vitest in Chromium. Stories model success, errors, retries, loading, direct URLs, mobile layouts, and request cancellation.',
+	},
+	{
+		n: 'S-04',
+		title: 'MSW 2',
+		role: 'the network boundary',
+		body: 'Demo and tests use the same request-level mocks. Server states — success, error, retry, 404, abort — are modelled at the boundary, so the published demo needs no backend to behave realistically.',
+	},
+	{
+		n: 'S-05',
+		title: 'Feature-Sliced Design',
+		role: 'enforced boundaries',
+		body: 'app, pages, widgets, entities, and shared are more than folders. Steiger checks their import and public-API boundaries, so the structure holds as the codebase grows.',
+	},
+	{
+		n: 'S-06',
+		title: 'Vite+ · mise · hk · Fallow',
+		role: 'one layered toolchain',
+		body: 'Vite+ runs the frontend tools. mise defines project workflows. hk gives fast changed-file checks and Git hooks. Fallow turns coverage and source analysis into maintainability signals.',
+	},
+]
+
+const explore = [
+	{
+		kind: 'Demo',
+		href: '/demo/',
+		cta: 'Open the demo',
+		body: 'A product-shaped SPA with mocked APIs, responsive navigation, persisted preferences, localization, and real loading and error states.',
+	},
+	{
+		kind: 'Storybook',
+		href: '/storybook/',
+		cta: 'Explore Storybook',
+		body: 'Jump straight to a screen, state, viewport, or user journey — and read the assertions that define its behavior.',
+	},
+	{
+		kind: 'Source',
+		href: 'https://github.com/apphane-dev/karkas',
+		cta: 'View on GitHub',
+		body: 'Follow the FSD layers, entity-local mocks, Reatom models, theme recipes, and the source-first technical notes in docs.',
+	},
+]
+---
+
+<Base
+	title="Karkas — a modern React reference architecture"
+	description="Karkas is an opinionated React 19 reference application: Reatom, Panda CSS, Park UI, Storybook, Vitest, MSW, and Feature-Sliced Design wired together with enforceable conventions."
+>
+	{/* HERO -------------------------------------------------------------- */}
+	<section class="hero">
+		<div class="wrap hero-grid">
+			<div class="hero-copy">
+				<span class="tag tag--steel">An opinionated React reference application</span>
+				<h1>A React stack where the tools agree with each other.</h1>
+				<p class="lede">
+					Karkas is a production-shaped example of React 19, Reatom, Panda CSS, Park UI, Storybook,
+					Vitest, Playwright, MSW, and Feature-Sliced Design — wired together with enforceable
+					conventions instead of a pile of disconnected defaults.
+				</p>
+				<div class="hero-actions">
+					<a class="btn btn--steel" href="/demo/">Try the demo <span class="arrow">→</span></a>
+					<a class="btn" href="https://github.com/apphane-dev/karkas">Read the source</a>
+					<a class="tlink hero-tlink" href="/storybook/">Browse executable stories →</a>
+				</div>
+				<p class="hero-foot">
+					State, routes, server scenarios, accessible tests, localization, architecture checks, and
+					deployment are all part of the same example.
+				</p>
+			</div>
+
+			<div class="hero-figure">
+				<Frame />
+			</div>
+		</div>
+	</section>
+
+	<hr class="rule" />
+
+	{/* WHY --------------------------------------------------------------- */}
+	<section id="why" class="section-pad">
+		<div class="wrap">
+			<div class="section-head">
+				<span class="tag">Why it exists</span>
+				<h2>More than a starter. Less than a framework.</h2>
+				<p>
+					Most templates show how to boot an app. Karkas shows how to keep one coherent as it grows —
+					concrete choices about state, routing, styling, testing, localization, file boundaries,
+					quality gates, and deployment, demonstrated across realistic screens and failure states.
+				</p>
+			</div>
+
+			<div class="grid grid--3">
+				<div class="cell">
+					<span class="idx">01</span>
+					<h3>See the decisions in context</h3>
+					<p>
+						The demo includes authenticated navigation, master–detail screens, forms, loading
+						states, failures, retries, responsive behavior, and persisted preferences.
+					</p>
+				</div>
+				<div class="cell">
+					<span class="idx">02</span>
+					<h3>Read behavior as documentation</h3>
+					<p>
+						Storybook stories are reproducible user journeys, not screenshots. The same scenarios run
+						as browser integration tests.
+					</p>
+				</div>
+				<div class="cell">
+					<span class="idx">03</span>
+					<h3>Let tooling protect the architecture</h3>
+					<p>
+						Formatting, linting, types, FSD boundaries, dead code, duplication, complexity, coverage,
+						and translation tree-shaking are all checked automatically.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<hr class="rule" />
+
+	{/* STACK ------------------------------------------------------------- */}
+	<section id="stack" class="section-pad stack-sec">
+		<div class="wrap">
+			<div class="section-head">
+				<span class="tag tag--steel">The choices</span>
+				<h2>Deliberate choices, not interchangeable badges.</h2>
+				<p>Each tool has a job, and the boundaries between them are explicit.</p>
+			</div>
+
+			<div class="stack-list">
+				{
+					stack.map((s) => (
+						<article class="member">
+							<span class="member-n">{s.n}</span>
+							<div class="member-head">
+								<h3>{s.title}</h3>
+								<span class="member-role">{s.role}</span>
+							</div>
+							<p class="member-body">{s.body}</p>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<hr class="rule" />
+
+	{/* TESTING ----------------------------------------------------------- */}
+	<section id="testing" class="section-pad">
+		<div class="wrap testing-grid">
+			<div>
+				<span class="tag">Testing philosophy</span>
+				<h2>Test what a user can perceive and do.</h2>
+				<p class="testing-body">
+					Karkas queries the interface by role, accessible name, heading, link, button, and visible
+					text. It waits for lifecycle signals instead of sleeping. It proves that pending route
+					requests are cancelled when navigation makes them irrelevant. When accessibility is
+					unclear, the preferred fix is to improve the interface — not add a test ID.
+				</p>
+				<a class="tlink" href="/storybook/">Open integration stories →</a>
+			</div>
+			<aside class="callout">
+				<span class="callout-mark" aria-hidden="true">“</span>
+				<p>The Storybook you browse is the test suite the project runs.</p>
+				<div class="callout-meta">Kahraman actors · Vitest browser mode · Playwright · MSW</div>
+			</aside>
+		</div>
+	</section>
+
+	<hr class="rule" />
+
+	{/* WORKFLOW ---------------------------------------------------------- */}
+	<section id="workflow" class="section-pad">
+		<div class="wrap">
+			<div class="section-head">
+				<span class="tag tag--steel">From clone to confidence</span>
+				<h2>A short local loop and a strict full gate.</h2>
+			</div>
+			<ol class="steps">
+				<li>
+					<span class="step-k">Install</span>
+					<code>nub install</code>
+					<p>Generates Panda output, compiles messages, verifies the MSW worker, installs hooks.</p>
+				</li>
+				<li>
+					<span class="step-k">Run</span>
+					<code>nub run dev</code>
+					<p>Starts the application through the repository's mise workflow.</p>
+				</li>
+				<li>
+					<span class="step-k">Check</span>
+					<code>hk check</code>
+					<p>Validates changed files; <code>hk fix</code> applies safe formatting and lint fixes.</p>
+				</li>
+				<li>
+					<span class="step-k">Prove</span>
+					<code>mise run validate</code>
+					<p>Coverage, types, architecture checks, Fallow analysis, production builds, and tree-shaking.</p>
+				</li>
+			</ol>
+		</div>
+	</section>
+
+	<hr class="rule" />
+
+	{/* EXPLORE ----------------------------------------------------------- */}
+	<section id="explore" class="section-pad">
+		<div class="wrap">
+			<div class="section-head">
+				<span class="tag">Explore the project</span>
+				<h2>Three ways to inspect the same architecture.</h2>
+			</div>
+			<div class="grid grid--3">
+				{
+					explore.map((e) => (
+						<div class="cell explore-cell">
+							<span class="idx">{e.kind}</span>
+							<p>{e.body}</p>
+							<a class="tlink explore-link" href={e.href}>
+								{e.cta} →
+							</a>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<hr class="rule" />
+
+	{/* UPDATES ----------------------------------------------------------- */}
+	<section id="updates" class="section-pad updates-sec">
+		<div class="wrap">
+			<div class="updates-head">
+				<div class="section-head" style="margin-bottom:0">
+					<span class="tag tag--steel">Updates</span>
+					<h2>What is changing, and why.</h2>
+					<p>
+						Karkas tracks a fast-moving frontend toolchain. Updates focus on decisions: what changed,
+						what problem it solves, what tradeoff it introduces, and where to inspect it.
+					</p>
+				</div>
+				<a class="btn" href="/updates">All updates <span class="arrow">→</span></a>
+			</div>
+
+			<ul class="feed">
+				{
+					latest.map((u) => (
+						<li class="feed-item">
+							<div class="feed-meta">
+								<time datetime={u.data.date.toISOString()}>{fmt(u.data.date)}</time>
+								<span class="feed-tag">{u.data.tag}</span>
+								{u.data.example && <span class="feed-example">example</span>}
+							</div>
+							<a class="feed-title" href={`/updates/${u.id}`}>
+								{u.data.title}
+							</a>
+							<p class="feed-summary">{u.data.summary}</p>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+
+	<hr class="rule" />
+
+	{/* CLOSE ------------------------------------------------------------- */}
+	<section class="section-pad close">
+		<div class="wrap close-inner">
+			<span class="tag tag--steel">Who it is for</span>
+			<h2>See the architecture behaving, not just described.</h2>
+			<p>
+				Karkas is for teams and developers who want to study a coherent modern React setup, copy
+				selected patterns, or start from strong defaults. The value is not that every choice is
+				universal — it is that every choice is explicit, demonstrated, and checked.
+			</p>
+			<div class="hero-actions">
+				<a class="btn btn--steel" href="/demo/">Try the demo <span class="arrow">→</span></a>
+				<a class="btn" href="/storybook/">Explore Storybook</a>
+				<a class="btn" href="https://github.com/apphane-dev/karkas">View the repository</a>
+			</div>
+		</div>
+	</section>
+</Base>
+
+<style>
+	/* HERO */
+	.hero {
+		padding-block: clamp(2.5rem, 6vw, 5rem);
+	}
+	.hero-grid {
+		display: grid;
+		grid-template-columns: 1.05fr 0.95fr;
+		gap: clamp(2rem, 5vw, 4rem);
+		align-items: center;
+	}
+	.hero-copy h1 {
+		font-size: clamp(2.5rem, 6vw, 4.4rem);
+		margin: 1.1rem 0 1.3rem;
+	}
+	.lede {
+		font-size: clamp(1.05rem, 1.8vw, 1.28rem);
+		color: var(--ink-muted);
+		max-width: 40ch;
+	}
+	.hero-actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.8rem 1.1rem;
+		margin-top: 2rem;
+	}
+	.hero-tlink {
+		margin-left: 0.2rem;
+	}
+	.hero-foot {
+		margin-top: 2.2rem;
+		padding-top: 1.3rem;
+		border-top: 1px solid var(--line-strong);
+		max-width: 44ch;
+		font-family: var(--mono);
+		font-size: 0.82rem;
+		line-height: 1.6;
+		color: var(--ink-muted);
+	}
+	.hero-figure {
+		position: relative;
+	}
+
+	/* STACK — structural members */
+	.stack-list {
+		border-top: 1px solid var(--line-strong);
+	}
+	.member {
+		display: grid;
+		grid-template-columns: 5.5rem 1fr;
+		grid-template-areas:
+			'n head'
+			'n body';
+		gap: 0.2rem 1.5rem;
+		padding: 1.9rem 0;
+		border-bottom: 1px solid var(--line-strong);
+		position: relative;
+	}
+	.member::before {
+		/* the vertical steel member running down the left rail */
+		content: '';
+		position: absolute;
+		left: 2.55rem;
+		top: 0;
+		bottom: 0;
+		width: 2px;
+		background: var(--steel-wash);
+	}
+	.member-n {
+		grid-area: n;
+		font-family: var(--mono);
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: var(--steel);
+		padding-top: 0.35rem;
+		z-index: 1;
+	}
+	.member-head {
+		grid-area: head;
+		display: flex;
+		align-items: baseline;
+		flex-wrap: wrap;
+		gap: 0.5rem 0.9rem;
+	}
+	.member-role {
+		font-family: var(--mono);
+		font-size: 0.76rem;
+		color: var(--blueprint);
+		letter-spacing: 0.02em;
+	}
+	.member-body {
+		grid-area: body;
+		color: var(--ink-muted);
+		max-width: 62ch;
+		margin-top: 0.5rem;
+	}
+
+	/* TESTING */
+	.testing-grid {
+		display: grid;
+		grid-template-columns: 1.3fr 1fr;
+		gap: clamp(2rem, 5vw, 4rem);
+		align-items: center;
+	}
+	.testing-grid h2 {
+		margin: 1rem 0 1.2rem;
+	}
+	.testing-body {
+		color: var(--ink-muted);
+		max-width: 52ch;
+		margin-bottom: 1.5rem;
+	}
+	.callout {
+		background: var(--ink);
+		color: var(--paper);
+		border-radius: var(--radius);
+		padding: 2rem 2rem 1.5rem;
+		position: relative;
+		box-shadow: 6px 6px 0 var(--steel);
+	}
+	.callout-mark {
+		font-family: var(--display);
+		font-size: 4rem;
+		line-height: 0.4;
+		color: var(--steel);
+		display: block;
+		height: 1.4rem;
+	}
+	.callout p {
+		font-family: var(--display);
+		font-weight: 700;
+		font-stretch: 112%;
+		font-size: 1.5rem;
+		line-height: 1.15;
+		color: var(--white);
+	}
+	.callout-meta {
+		margin-top: 1.4rem;
+		padding-top: 1rem;
+		border-top: 1px solid #ffffff26;
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.04em;
+		color: #ffffffb0;
+	}
+
+	/* WORKFLOW */
+	.steps {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 1px;
+		background: var(--line-strong);
+		border: 1px solid var(--line-strong);
+		border-radius: var(--radius);
+		overflow: hidden;
+		counter-reset: step;
+	}
+	.steps li {
+		background: var(--panel);
+		padding: 1.6rem 1.4rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.6rem;
+		counter-increment: step;
+		position: relative;
+	}
+	.steps li::before {
+		content: counter(step, decimal-leading-zero);
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		color: var(--steel);
+		font-weight: 600;
+	}
+	.step-k {
+		font-family: var(--display);
+		font-weight: 700;
+		font-stretch: 112%;
+		font-size: 1.05rem;
+	}
+	.steps code {
+		font-family: var(--mono);
+		font-size: 0.82rem;
+		background: var(--panel-2);
+		border: 1px solid var(--line-strong);
+		border-radius: 2px;
+		padding: 0.35rem 0.5rem;
+		width: fit-content;
+		color: var(--ink);
+	}
+	.steps p {
+		font-size: 0.88rem;
+		color: var(--ink-muted);
+		line-height: 1.5;
+	}
+	.steps p code {
+		display: inline;
+		padding: 0.05rem 0.3rem;
+		border: 0;
+		background: var(--panel-2);
+	}
+
+	/* EXPLORE */
+	.explore-cell {
+		gap: 1rem;
+		min-height: 200px;
+	}
+	.explore-cell .idx {
+		font-family: var(--display);
+		font-weight: 800;
+		font-stretch: 125%;
+		font-size: 1.4rem;
+		color: var(--ink);
+		letter-spacing: -0.01em;
+	}
+	.explore-link {
+		margin-top: auto;
+	}
+
+	/* UPDATES */
+	.updates-head {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-end;
+		gap: 2rem;
+		margin-bottom: 2.5rem;
+	}
+	.feed {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		border-top: 1px solid var(--line-strong);
+	}
+	.feed-item {
+		padding: 1.7rem 0;
+		border-bottom: 1px solid var(--line-strong);
+		display: grid;
+		grid-template-columns: 15rem 1fr;
+		gap: 0.4rem 2rem;
+	}
+	.feed-meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.7rem;
+		font-family: var(--mono);
+		font-size: 0.74rem;
+		color: var(--ink-muted);
+		padding-top: 0.35rem;
+	}
+	.feed-tag {
+		color: var(--blueprint);
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+	}
+	.feed-example {
+		color: var(--steel-deep);
+		border: 1px solid var(--steel);
+		border-radius: 2px;
+		padding: 0.05rem 0.35rem;
+		font-size: 0.66rem;
+		letter-spacing: 0.06em;
+	}
+	.feed-title {
+		grid-column: 2;
+		font-family: var(--display);
+		font-weight: 700;
+		font-stretch: 112%;
+		font-size: 1.35rem;
+		color: var(--ink);
+		text-decoration: none;
+		width: fit-content;
+		border-bottom: 2px solid transparent;
+		transition: border-color 0.15s;
+	}
+	.feed-title:hover {
+		border-color: var(--steel);
+	}
+	.feed-summary {
+		grid-column: 2;
+		color: var(--ink-muted);
+		max-width: 68ch;
+		font-size: 0.96rem;
+	}
+
+	/* CLOSE */
+	.close-inner {
+		max-width: 44ch;
+	}
+	.close-inner h2 {
+		margin: 1rem 0 1.2rem;
+	}
+	.close-inner > p {
+		color: var(--ink-muted);
+	}
+
+	@media (max-width: 940px) {
+		.hero-grid,
+		.testing-grid {
+			grid-template-columns: 1fr;
+		}
+		.hero-figure {
+			order: -1;
+			max-width: 420px;
+		}
+		.steps {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+	@media (max-width: 680px) {
+		.updates-head {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+		.feed-item {
+			grid-template-columns: 1fr;
+		}
+		.feed-title,
+		.feed-summary {
+			grid-column: 1;
+		}
+		.steps {
+			grid-template-columns: 1fr;
+		}
+		.member {
+			grid-template-columns: 3.5rem 1fr;
+		}
+		.member::before {
+			left: 1.7rem;
+		}
+	}
+</style>

@@ -1,0 +1,124 @@
+---
+import { getCollection } from 'astro:content'
+import Base from '../../layouts/Base.astro'
+
+const updates = (await getCollection('updates')).sort(
+	(a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+)
+
+const fmt = (d: Date) =>
+	d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+---
+
+<Base
+	title="Updates — Karkas"
+	description="Narrative updates on the Karkas reference architecture: what changed, the problem it solves, and where to inspect the implementation."
+>
+	<section class="section-pad">
+		<div class="wrap">
+			<a class="tlink back" href="/">← Back to Karkas</a>
+			<div class="section-head arc-head">
+				<span class="tag tag--steel">Updates</span>
+				<h2>What is changing, and why.</h2>
+				<p>
+					Formal versioned notes live in GitHub Releases. This feed explains decisions — the change,
+					the problem it solves, the tradeoff it introduces, and where to inspect the implementation.
+				</p>
+			</div>
+
+			<ul class="feed">
+				{
+					updates.map((u) => (
+						<li class="feed-item">
+							<div class="feed-meta">
+								<time datetime={u.data.date.toISOString()}>{fmt(u.data.date)}</time>
+								<span class="feed-tag">{u.data.tag}</span>
+								{u.data.example && <span class="feed-example">example</span>}
+							</div>
+							<a class="feed-title" href={`/updates/${u.id}`}>
+								{u.data.title}
+							</a>
+							<p class="feed-summary">{u.data.summary}</p>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.back {
+		display: inline-block;
+		margin-bottom: 2rem;
+	}
+	.arc-head {
+		max-width: 52ch;
+	}
+	.feed {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		border-top: 1px solid var(--line-strong);
+	}
+	.feed-item {
+		padding: 1.7rem 0;
+		border-bottom: 1px solid var(--line-strong);
+		display: grid;
+		grid-template-columns: 15rem 1fr;
+		gap: 0.4rem 2rem;
+	}
+	.feed-meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.7rem;
+		font-family: var(--mono);
+		font-size: 0.74rem;
+		color: var(--ink-muted);
+		padding-top: 0.35rem;
+	}
+	.feed-tag {
+		color: var(--blueprint);
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+	}
+	.feed-example {
+		color: var(--steel-deep);
+		border: 1px solid var(--steel);
+		border-radius: 2px;
+		padding: 0.05rem 0.35rem;
+		font-size: 0.66rem;
+		letter-spacing: 0.06em;
+	}
+	.feed-title {
+		grid-column: 2;
+		font-family: var(--display);
+		font-weight: 700;
+		font-stretch: 112%;
+		font-size: 1.35rem;
+		color: var(--ink);
+		text-decoration: none;
+		width: fit-content;
+		border-bottom: 2px solid transparent;
+		transition: border-color 0.15s;
+	}
+	.feed-title:hover {
+		border-color: var(--steel);
+	}
+	.feed-summary {
+		grid-column: 2;
+		color: var(--ink-muted);
+		max-width: 68ch;
+		font-size: 0.96rem;
+	}
+	@media (max-width: 680px) {
+		.feed-item {
+			grid-template-columns: 1fr;
+		}
+		.feed-title,
+		.feed-summary {
+			grid-column: 1;
+		}
+	}
+</style>

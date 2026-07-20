@@ -1,0 +1,242 @@
+---
+/*
+  Signature element: the Karkas frame.
+  Karkas = the load-bearing skeleton of a building, so the architecture is drawn
+  as an axonometric steel frame. Each Feature-Sliced Design layer is a floor
+  plate; the layers are erected on a load-bearing spine (Reatom, in primed
+  steel) and grounded on the network boundary (MSW). It reads as an engineer's
+  erection drawing, not decoration — the stacking order is the real dependency
+  order, top (app) down to foundation (shared).
+*/
+
+const cx = 250
+const w = 165 // plate half-width
+const h = 82 // plate half-height (2:1 dimetric)
+const ext = 15 // slab thickness
+const top = 132
+const gap = 95
+
+// top -> bottom follows the FSD dependency direction
+const layers = [
+	{ id: 'app', note: 'composition · providers · routes' },
+	{ id: 'pages', note: 'route-level screens' },
+	{ id: 'widgets', note: 'composed feature blocks' },
+	{ id: 'entities', note: 'domain models · MSW handlers' },
+	{ id: 'shared', note: 'ui kit · router · lib' },
+]
+
+const plates = layers.map((layer, i) => {
+	const cy = top + i * gap
+	return {
+		...layer,
+		cy,
+		L: [cx - w, cy],
+		T: [cx, cy - h],
+		R: [cx + w, cy],
+		B: [cx, cy + h],
+	}
+})
+
+const first = plates[0]
+const last = plates[plates.length - 1]
+const groundY = last.cy + h + 58
+
+// helper for diamond top-face path
+const diamond = (p: (typeof plates)[number]) =>
+	`M${p.L} L${p.T} L${p.R} L${p.B} Z`
+// front-facing extruded slab (L -> B -> R, dropped by ext)
+const slab = (p: (typeof plates)[number]) =>
+	`M${p.L} L${p.L[0]},${p.L[1] + ext} L${p.B[0]},${p.B[1] + ext} L${p.R[0]},${p.R[1] + ext} L${p.R} L${p.B} Z`
+---
+
+<figure class="frame" aria-label="Diagram: the Karkas architecture drawn as a stacked structural frame">
+	<svg viewBox="0 0 500 720" role="img" preserveAspectRatio="xMidYMid meet">
+		<title>Feature-Sliced layers erected on a Reatom spine over the MSW network boundary</title>
+
+		<!-- foundation / network boundary -->
+		<g class="ground">
+			<path d={`M${cx - w - 10},${groundY} L${cx},${groundY + (h + 10) / 2} L${cx + w + 10},${groundY} L${cx},${groundY - (h + 10) / 2} Z`} class="ground-face"></path>
+			<text x={cx} y={groundY + 4} class="ground-label">MSW · network boundary</text>
+		</g>
+
+		<!-- corner columns: erected structural members -->
+		<g class="columns">
+			<line x1={first.L[0]} y1={first.L[1]} x2={last.L[0]} y2={last.L[1] + ext} class="col"></line>
+			<line x1={first.R[0]} y1={first.R[1]} x2={last.R[0]} y2={last.R[1] + ext} class="col"></line>
+			<line x1={first.B[0]} y1={first.B[1]} x2={last.B[0]} y2={last.B[1] + ext} class="col col-front"></line>
+			<line x1={first.T[0]} y1={first.T[1]} x2={last.T[0]} y2={last.T[1]} class="col col-back"></line>
+		</g>
+
+		<!-- load-bearing spine: Reatom -->
+		<g class="spine">
+			<line x1={cx} y1={first.cy - h - 26} x2={cx} y2={groundY} class="spine-line"></line>
+			<circle cx={cx} cy={first.cy - h - 26} r="4.5" class="spine-cap"></circle>
+		</g>
+
+		<!-- floor plates (drawn bottom-up so upper plates overlap lower) -->
+		<g class="plates">
+			{
+				plates
+					.slice()
+					.reverse()
+					.map((p, ri) => {
+						const idx = plates.length - 1 - ri
+						return (
+							<g class="plate" style={`--i:${idx}`}>
+								<path d={slab(p)} class="plate-side" />
+								<path d={diamond(p)} class="plate-top" />
+								<circle cx={cx} cy={p.cy} r="3.5" class="plate-node" />
+								{/* leader callout to the right */}
+								<line x1={p.R[0]} y1={p.R[1]} x2={p.R[0] + 42} y2={p.R[1]} class="leader" />
+								<text x={p.R[0] + 50} y={p.R[1] - 3} class="plate-id">
+									{p.id}
+								</text>
+								<text x={p.R[0] + 50} y={p.R[1] + 13} class="plate-note">
+									{p.note}
+								</text>
+							</g>
+						)
+					})
+			}
+		</g>
+
+		<!-- spine label -->
+		<text x={cx - 8} y={first.cy - h - 34} text-anchor="end" class="spine-label">Reatom · load-bearing state</text>
+	</svg>
+</figure>
+
+<style>
+	.frame {
+		margin: 0;
+		width: 100%;
+	}
+	.frame svg {
+		width: 100%;
+		height: auto;
+		overflow: visible;
+	}
+
+	/* Ground */
+	.ground-face {
+		fill: var(--blueprint-soft);
+		stroke: var(--blueprint);
+		stroke-width: 1;
+	}
+	.ground-label {
+		fill: var(--blueprint);
+		font-family: var(--mono);
+		font-size: 12px;
+		letter-spacing: 0.08em;
+		text-anchor: middle;
+		text-transform: uppercase;
+	}
+
+	/* Columns */
+	.col {
+		stroke: var(--ink);
+		stroke-width: 1.25;
+		opacity: 0.5;
+	}
+	.col-front {
+		opacity: 0.7;
+	}
+	.col-back {
+		stroke-dasharray: 3 4;
+		opacity: 0.35;
+	}
+
+	/* Spine — the one place the steel accent lives */
+	.spine-line {
+		stroke: var(--steel);
+		stroke-width: 2.5;
+	}
+	.spine-cap {
+		fill: var(--steel);
+	}
+	.spine-label {
+		fill: var(--steel-deep);
+		font-family: var(--mono);
+		font-size: 11.5px;
+		font-weight: 600;
+		letter-spacing: 0.04em;
+	}
+
+	/* Plates */
+	.plate-top {
+		fill: var(--panel);
+		stroke: var(--ink);
+		stroke-width: 1.4;
+	}
+	.plate-side {
+		fill: var(--panel-2);
+		stroke: var(--ink);
+		stroke-width: 1;
+		opacity: 0.9;
+	}
+	.plate-node {
+		fill: var(--steel);
+	}
+	.leader {
+		stroke: var(--line-strong);
+		stroke-width: 1;
+	}
+	.plate-id {
+		fill: var(--ink);
+		font-family: var(--mono);
+		font-size: 15px;
+		font-weight: 600;
+	}
+	.plate-note {
+		fill: var(--ink-muted);
+		font-family: var(--mono);
+		font-size: 10.5px;
+		letter-spacing: 0.01em;
+	}
+
+	/* Erection sequence: foundation first, then floors rise into place. */
+	.plate {
+		opacity: 0;
+		transform: translateY(14px);
+		animation: rise 0.6s var(--ease) forwards;
+		/* higher plates (smaller --i) settle later */
+		animation-delay: calc((4 - var(--i)) * 0.13s + 0.2s);
+	}
+	.spine,
+	.columns,
+	.ground {
+		opacity: 0;
+		animation: fade 0.7s var(--ease) forwards;
+	}
+	.ground {
+		animation-delay: 0.05s;
+	}
+	.columns {
+		animation-delay: 0.9s;
+	}
+	.spine {
+		animation-delay: 1.05s;
+	}
+
+	@keyframes rise {
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+	@keyframes fade {
+		to {
+			opacity: 1;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.plate,
+		.spine,
+		.columns,
+		.ground {
+			opacity: 1;
+			transform: none;
+			animation: none;
+		}
+	}
+</style>

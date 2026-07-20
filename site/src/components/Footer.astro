@@ -1,0 +1,139 @@
+---
+const cols = [
+	{
+		head: 'Explore',
+		links: [
+			{ label: 'Demo app', href: '/demo/' },
+			{ label: 'Storybook', href: '/storybook/' },
+			{ label: 'Updates', href: '/updates' },
+		],
+	},
+	{
+		head: 'Source',
+		links: [
+			{ label: 'GitHub', href: 'https://github.com/apphane-dev/karkas' },
+			{ label: 'Documentation', href: 'https://github.com/apphane-dev/karkas/tree/main/docs' },
+			{ label: 'MIT License', href: 'https://github.com/apphane-dev/karkas/blob/main/LICENSE' },
+		],
+	},
+]
+const year = new Date().getFullYear()
+---
+
+<footer class="site-foot">
+	<div class="wrap foot-inner">
+		<div class="foot-brand">
+			<div class="wordmark">
+				<svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+					<rect x="2.5" y="2.5" width="19" height="19" stroke="currentColor" stroke-width="1.5"></rect>
+					<path d="M2.5 2.5 21.5 21.5M21.5 2.5 2.5 21.5" stroke="currentColor" stroke-width="1"></path>
+					<rect x="8" y="8" width="8" height="8" fill="var(--steel)"></rect>
+				</svg>
+				<span>Karkas</span>
+			</div>
+			<p>An open-source React reference application from <a href="https://apphane.dev">apphane.dev</a>.</p>
+		</div>
+
+		{
+			cols.map((col) => (
+				<nav class="foot-col" aria-label={col.head}>
+					<span class="foot-head">{col.head}</span>
+					{col.links.map((l) => (
+						<a href={l.href}>{l.label}</a>
+					))}
+				</nav>
+			))
+		}
+	</div>
+	<div class="wrap foot-base">
+		<span>© {year} apphane.dev</span>
+		<span class="foot-note">karkas · Turkish for the load-bearing frame</span>
+	</div>
+</footer>
+
+<style>
+	.site-foot {
+		border-top: 1px solid var(--line-strong);
+		background: var(--panel);
+		margin-top: 2rem;
+	}
+	.foot-inner {
+		display: grid;
+		grid-template-columns: 2fr 1fr 1fr;
+		gap: 2rem;
+		padding-block: 3rem 2.5rem;
+	}
+	.foot-brand .wordmark {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: var(--blueprint);
+		font-family: var(--display);
+		font-weight: 800;
+		font-stretch: 125%;
+		font-size: 1.15rem;
+	}
+	.foot-brand .wordmark span {
+		color: var(--ink);
+	}
+	.foot-brand p {
+		margin-top: 0.9rem;
+		max-width: 34ch;
+		color: var(--ink-muted);
+		font-size: 0.92rem;
+	}
+	.foot-brand a {
+		color: var(--steel-deep);
+	}
+
+	.foot-col {
+		display: flex;
+		flex-direction: column;
+		gap: 0.55rem;
+	}
+	.foot-head {
+		font-family: var(--mono);
+		font-size: 0.7rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--blueprint);
+		margin-bottom: 0.3rem;
+	}
+	.foot-col a {
+		text-decoration: none;
+		color: var(--ink-muted);
+		font-size: 0.92rem;
+		width: fit-content;
+		border-bottom: 1px solid transparent;
+		transition:
+			color 0.15s,
+			border-color 0.15s;
+	}
+	.foot-col a:hover {
+		color: var(--ink);
+		border-color: var(--steel);
+	}
+
+	.foot-base {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		padding-block: 1.1rem;
+		border-top: 1px solid var(--line);
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		color: var(--ink-muted);
+	}
+
+	@media (max-width: 720px) {
+		.foot-inner {
+			grid-template-columns: 1fr 1fr;
+		}
+		.foot-brand {
+			grid-column: 1 / -1;
+		}
+		.foot-base {
+			flex-direction: column;
+		}
+	}
+</style>

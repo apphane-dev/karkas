@@ -1,0 +1,165 @@
+---
+import { getCollection, render } from 'astro:content'
+import Base from '../../layouts/Base.astro'
+
+export async function getStaticPaths() {
+	const updates = await getCollection('updates')
+	return updates.map((entry) => ({
+		params: { slug: entry.id },
+		props: { entry },
+	}))
+}
+
+const { entry } = Astro.props
+const { Content } = await render(entry)
+
+const fmt = (d: Date) =>
+	d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+---
+
+<Base title={`${entry.data.title} — Karkas updates`} description={entry.data.summary}>
+	<article class="section-pad">
+		<div class="wrap post">
+			<a class="tlink back" href="/updates">← All updates</a>
+
+			<div class="post-meta">
+				<time datetime={entry.data.date.toISOString()}>{fmt(entry.data.date)}</time>
+				<span class="feed-tag">{entry.data.tag}</span>
+				{entry.data.example && <span class="feed-example">example entry</span>}
+			</div>
+
+			<h1>{entry.data.title}</h1>
+			<p class="post-summary">{entry.data.summary}</p>
+
+			<hr class="rule" />
+
+			<div class="prose">
+				<Content />
+			</div>
+
+			{
+				entry.data.link && (
+					<a class="btn btn--steel post-cta" href={entry.data.link}>
+						{entry.data.linkLabel ?? 'Inspect the source'} <span class="arrow">→</span>
+					</a>
+				)
+			}
+		</div>
+	</article>
+</Base>
+
+<style>
+	.post {
+		max-width: 720px;
+	}
+	.back {
+		display: inline-block;
+		margin-bottom: 2.2rem;
+	}
+	.post-meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.8rem;
+		font-family: var(--mono);
+		font-size: 0.76rem;
+		color: var(--ink-muted);
+		margin-bottom: 1.1rem;
+	}
+	.feed-tag {
+		color: var(--blueprint);
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+	}
+	.feed-example {
+		color: var(--steel-deep);
+		border: 1px solid var(--steel);
+		border-radius: 2px;
+		padding: 0.05rem 0.35rem;
+		font-size: 0.66rem;
+		letter-spacing: 0.06em;
+	}
+	.post h1 {
+		font-family: var(--display);
+		font-weight: 800;
+		font-stretch: 125%;
+		font-size: clamp(2rem, 5vw, 3rem);
+		line-height: 1.03;
+		letter-spacing: -0.01em;
+		margin: 0 0 1rem;
+	}
+	.post-summary {
+		font-size: 1.15rem;
+		color: var(--ink-muted);
+		margin-bottom: 1.8rem;
+	}
+	.prose {
+		margin-top: 2rem;
+		font-size: 1.04rem;
+		line-height: 1.72;
+	}
+	.prose :global(p) {
+		margin: 0 0 1.3rem;
+	}
+	.prose :global(h2) {
+		font-family: var(--display);
+		font-weight: 700;
+		font-stretch: 112%;
+		font-size: 1.5rem;
+		letter-spacing: -0.01em;
+		margin: 2.2rem 0 0.9rem;
+	}
+	.prose :global(h3) {
+		font-family: var(--display);
+		font-weight: 700;
+		font-size: 1.15rem;
+		margin: 1.8rem 0 0.7rem;
+	}
+	.prose :global(ul),
+	.prose :global(ol) {
+		margin: 0 0 1.3rem;
+		padding-left: 1.3rem;
+	}
+	.prose :global(li) {
+		margin: 0 0 0.45rem;
+	}
+	.prose :global(li::marker) {
+		color: var(--steel);
+	}
+	.prose :global(strong) {
+		font-weight: 600;
+		color: var(--ink);
+	}
+	.prose :global(hr) {
+		border: 0;
+		border-top: 1px solid var(--line-strong);
+		margin: 2rem 0;
+	}
+	.prose :global(blockquote) {
+		margin: 0 0 1.6rem;
+		padding: 0.9rem 1.2rem;
+		border-left: 3px solid var(--steel);
+		background: var(--steel-wash);
+		color: var(--ink-muted);
+		font-size: 0.95rem;
+	}
+	.prose :global(blockquote p) {
+		margin: 0;
+	}
+	.prose :global(code) {
+		font-family: var(--mono);
+		font-size: 0.88em;
+		background: var(--panel-2);
+		border: 1px solid var(--line-strong);
+		border-radius: 2px;
+		padding: 0.08rem 0.34rem;
+	}
+	.prose :global(a) {
+		color: var(--steel-deep);
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+	.post-cta {
+		margin-top: 2.5rem;
+	}
+</style>
