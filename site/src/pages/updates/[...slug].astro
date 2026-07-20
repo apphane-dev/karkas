@@ -22,6 +22,7 @@ const fmt = (d: Date) =>
 		<div class="wrap post">
 			<a class="tlink back" href="/updates">← All updates</a>
 
+			<div class="post-sheet">
 			<div class="post-meta">
 				<time datetime={entry.data.date.toISOString()}>{fmt(entry.data.date)}</time>
 				<span class="feed-tag">{entry.data.tag}</span>
@@ -44,6 +45,7 @@ const fmt = (d: Date) =>
 					</a>
 				)
 			}
+			</div>
 		</div>
 	</article>
 </Base>
@@ -51,6 +53,16 @@ const fmt = (d: Date) =>
 <style>
 	.post {
 		max-width: 720px;
+	}
+	/* The article is a drafting sheet laid on the board: a solid reading surface
+	   so long-form prose never sits over the construction grid. */
+	.post-sheet {
+		background: var(--panel);
+		border: 1px solid var(--line-strong);
+		border-radius: var(--radius);
+		box-shadow: 4px 4px 0 var(--blueprint-soft);
+		padding: clamp(1.75rem, 4vw, 3.25rem);
+		margin-top: 1.75rem;
 	}
 	.back {
 		display: inline-block;

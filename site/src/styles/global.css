@@ -18,8 +18,11 @@
 	--ink-faint: #7285956e; /* construction linework over paper */
 
 	/* Structural marks */
-	--line: #c4d0db; /* hairline grid */
+	--line: #c4d0db; /* hairline grid — borders, rules, card seams */
 	--line-strong: #a7b7c4;
+	/* Construction grid printed on the board: a faint blueprint whisper that
+	   never competes with type sitting over it. */
+	--grid: #1d5b8612;
 	--blueprint: #1d5b86; /* frame linework, annotations */
 	--blueprint-soft: #1d5b8622;
 
@@ -57,10 +60,11 @@ html {
 body {
 	margin: 0;
 	background-color: var(--paper);
-	/* Faint construction grid printed on the drafting sheet. */
+	/* Faint construction grid printed on the drafting sheet — kept low-contrast
+	   so it reads as pale linework behind, not through, the type. */
 	background-image:
-		linear-gradient(var(--line) 1px, transparent 1px),
-		linear-gradient(90deg, var(--line) 1px, transparent 1px);
+		linear-gradient(var(--grid) 1px, transparent 1px),
+		linear-gradient(90deg, var(--grid) 1px, transparent 1px);
 	background-size: 30px 30px;
 	background-position: -1px -1px;
 	color: var(--ink);
