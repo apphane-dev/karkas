@@ -46,7 +46,7 @@ const year = new Date().getFullYear()
 		}
 	</div>
 	<div class="wrap foot-base">
-		<span>© {year} apphane.dev</span>
+		<span>© {year} <a href="https://apphane.dev">apphane.dev</a></span>
 		<span class="foot-note">karkas · Turkish for the load-bearing frame</span>
 	</div>
 </footer>
@@ -123,6 +123,16 @@ const year = new Date().getFullYear()
 		font-family: var(--mono);
 		font-size: 0.72rem;
 		color: var(--ink-muted);
+	}
+	.foot-base a {
+		color: var(--ink-muted);
+		text-decoration: none;
+		border-bottom: 1px solid transparent;
+		transition: color 0.15s, border-color 0.15s;
+	}
+	.foot-base a:hover {
+		color: var(--ink);
+		border-color: var(--steel);
 	}
 
 	@media (max-width: 720px) {
