@@ -25,7 +25,7 @@
 
 	/* Load-bearing accent — primed structural steel */
 	--steel: #e2551d;
-	--steel-deep: #c1470f;
+	--steel-deep: #a83d0c;
 	--steel-wash: #e2551d14;
 
 	--white: #ffffff;
@@ -102,6 +102,7 @@ h3 {
 	text-wrap: balance;
 }
 
+h1,
 h2 {
 	font-size: clamp(1.9rem, 4vw, 3rem);
 }
@@ -179,7 +180,7 @@ a {
 }
 
 .btn--steel {
-	background: var(--steel);
+	background: var(--steel-deep);
 	border-color: var(--steel-deep);
 	color: var(--white);
 }
@@ -287,6 +288,21 @@ section {
 	clip: rect(0, 0, 0, 0);
 	white-space: nowrap;
 	border: 0;
+}
+
+.skip {
+	position: absolute;
+	top: -40px;
+	left: 0;
+	background: var(--steel);
+	color: var(--white);
+	padding: 0.5rem 1rem;
+	text-decoration: none;
+	z-index: 100;
+	border-radius: var(--radius);
+}
+.skip:focus {
+	top: 0;
 }
 
 :focus-visible {
