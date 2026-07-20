@@ -302,19 +302,36 @@ const explore = [
 
 	{/* CLOSE ------------------------------------------------------------- */}
 	<section class="section-pad close">
-		<div class="wrap close-inner">
-			<span class="tag tag--steel">Who it is for</span>
-			<h2>See the architecture behaving, not just described.</h2>
-			<p>
-				Karkas is for teams and developers who want to study a coherent modern React setup, copy
-				selected patterns, or start from strong defaults. The value is not that every choice is
-				universal — it is that every choice is explicit, demonstrated, and checked.
-			</p>
-			<div class="hero-actions">
-				<a class="btn btn--steel" href="/demo/">Try the demo <span class="arrow">→</span></a>
-				<a class="btn" href="/storybook/">Explore Storybook</a>
-				<a class="btn" href="https://github.com/apphane-dev/karkas">View the repository</a>
+		<div class="wrap close-grid">
+			<div class="close-copy">
+				<span class="tag tag--steel">Who it is for</span>
+				<h2>See the architecture behaving, not just described.</h2>
+				<p class="close-lede">
+					Karkas is for teams and developers who want to study a coherent modern React setup, copy
+					selected patterns, or start from strong defaults. The value is not that every choice is
+					universal — it is that every choice is explicit, demonstrated, and checked.
+				</p>
+				<div class="hero-actions">
+					<a class="btn btn--steel" href="/demo/">Try the demo <span class="arrow">→</span></a>
+					<a class="btn" href="/storybook/">Explore Storybook</a>
+					<a class="btn" href="https://github.com/apphane-dev/karkas">View the repository</a>
+				</div>
 			</div>
+
+			<ul class="audience">
+				<li>
+					<span class="aud-k">Teams</span>
+					<p>Study a coherent, modern React setup end to end — state, styling, tests, and boundaries.</p>
+				</li>
+				<li>
+					<span class="aud-k">Adopters</span>
+					<p>Copy selected patterns — Reatom models, theme recipes, entity-local mocks — into an existing codebase.</p>
+				</li>
+				<li>
+					<span class="aud-k">New projects</span>
+					<p>Start from strong, explicit defaults instead of a pile of disconnected framework choices.</p>
+				</li>
+			</ul>
 		</div>
 	</section>
 </Base>
@@ -615,20 +632,67 @@ const explore = [
 	}
 
 	/* CLOSE */
-	.close-inner {
-		max-width: 44ch;
+	.close-grid {
+		display: grid;
+		grid-template-columns: 1.15fr 0.85fr;
+		gap: clamp(2rem, 5vw, 4.5rem);
+		align-items: center;
 	}
-	.close-inner h2 {
+	.close-copy h2 {
 		margin: 1rem 0 1.2rem;
 	}
-	.close-inner > p {
+	.close-lede {
 		color: var(--ink-muted);
+		/* Prose measure kept for readability; the section no longer floats alone
+		   because the audience rail fills the right half of the wrap. */
+		max-width: 46ch;
+	}
+	.audience {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		border-top: 1px solid var(--line-strong);
+	}
+	.audience li {
+		display: grid;
+		grid-template-columns: 8.5rem 1fr;
+		gap: 0.4rem 1.6rem;
+		align-items: baseline;
+		padding: 1.15rem 0 1.15rem 1.4rem;
+		border-bottom: 1px solid var(--line-strong);
+		position: relative;
+	}
+	.audience li::before {
+		/* steel tick — a drafting dimension mark on the left rail */
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 1.35rem;
+		width: 0.55rem;
+		height: 2px;
+		background: var(--steel);
+	}
+	.aud-k {
+		font-family: var(--display);
+		font-weight: 700;
+		font-stretch: 112%;
+		font-size: 1.05rem;
+		color: var(--ink);
+	}
+	.audience p {
+		color: var(--ink-muted);
+		font-size: 0.95rem;
+		line-height: 1.5;
 	}
 
 	@media (max-width: 940px) {
 		.hero-grid,
-		.testing-grid {
+		.testing-grid,
+		.close-grid {
 			grid-template-columns: 1fr;
+		}
+		.audience {
+			margin-top: 0.5rem;
 		}
 		.hero-figure {
 			order: -1;
@@ -671,6 +735,10 @@ const explore = [
 		}
 		.member::before {
 			left: 1.7rem;
+		}
+		.audience li {
+			grid-template-columns: 1fr;
+			gap: 0.3rem;
 		}
 	}
 </style>
