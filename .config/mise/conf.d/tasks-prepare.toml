@@ -22,6 +22,16 @@ run = "nub .config/scripts/verify-msw-worker-version.ts --ensure && touch public
 sources = ["package.json", ".config/scripts/verify-msw-worker-version.ts"]
 outputs = ["public/mockServiceWorker.js"]
 
+[tasks."prepare:astro"]
+description = "Sync Astro content collection types for the landing site"
+# Generates site/.astro/*.d.ts (the astro:content virtual module types).
+# These are gitignored, so a clean checkout has none; type-aware lint and
+# typecheck over site/ fail without them. `astro build` syncs implicitly, but
+# lint runs before build in CI, so sync explicitly during prepare.
+run = "astro sync --root site --config astro.config.mjs"
+sources = ["site/src/content.config.ts", "site/src/content/**/*", "site/astro.config.mjs"]
+outputs = ["site/.astro/**/*"]
+
 [tasks."prepare:git-hooks"]
 description = "Install hk Git hooks"
 run = "hk install --mise"
@@ -51,6 +61,7 @@ run = [
 	{ task = "prepare:panda" },
 	{ task = "prepare:paraglide" },
 	{ task = "prepare:msw" },
+	{ task = "prepare:astro" },
 	{ task = "prepare:git-hooks" },
 	{ task = "prepare:local-overrides" },
 ]
