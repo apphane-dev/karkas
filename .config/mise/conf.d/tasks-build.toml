@@ -2,6 +2,7 @@
 build_dir = ".var/dist"
 webapp_out_dir = "{{ vars.build_dir }}/webapp"
 storybook_out_dir = "{{ vars.build_dir }}/storybook"
+site_out_dir = "{{ vars.build_dir }}/site"
 cf_pages_out_dir = "{{ vars.build_dir }}/cf-pages"
 
 # exposing defaults to terminal so that
@@ -45,18 +46,44 @@ run = "mise run build:storybook:base"
 sources = ["src/**/*.{ts,tsx,stories.tsx}", ".storybook/**/*"]
 outputs = ["{{ vars.storybook_out_dir }}/**/*"]
 
+[tasks."build:site:base"]
+hide = true
+usage = '''
+arg "<dir>" env="SITE_OUT_DIR" default="{{ vars.site_out_dir }}" help="Output directory for the landing site build"
+'''
+# astro resolves a relative --outDir against --root (site/), so make it
+# absolute against the repo root (the task's CWD) to target the real path.
+run = "astro build --root site --config astro.config.mjs --outDir $(pwd)/${usage_dir?}"
+
+[tasks."build:site"]
+description = "Build landing site (Astro)"
+run = "mise run build:site:base"
+sources = ["site/**/*.{astro,ts,css,md}", "site/astro.config.mjs"]
+outputs = ["{{ vars.site_out_dir }}/**/*"]
+
 [tasks."build"]
 description = "Run all build tasks"
-run = [{ task = "build:webapp" }, { task = "build:storybook" }]
+run = [{ task = "build:webapp" }, { task = "build:storybook" }, { task = "build:site" }]
 
 [tasks."build:cf-pages"]
 description = "Prepare deployment artifacts for Cloudflare Pages (combine builds)"
 depends = ["prepare:codegen"]
 env = { VITE_ENABLE_MSW = "true", VITE_CONNECT_LOGGER = "true" }
+# Order matters: the landing site is built first into the artifact root, then
+# the demo SPA fills /demo/ and Storybook /storybook/. Astro cleans its own
+# outDir on build, so it must run before the sub-path builds that share it.
 run = [
-	"mise run build:webapp:base {{ vars.cf_pages_out_dir }} /",
+	"mise run build:site:base {{ vars.cf_pages_out_dir }}",
+	"mise run build:webapp:base {{ vars.cf_pages_out_dir }}/demo /demo/",
 	"mise run build:storybook:base {{ vars.cf_pages_out_dir }}/storybook /storybook/",
 ]
-sources = ["src/**/*.{ts,tsx}", "index.html", "vite.config.ts", ".storybook/**/*"]
+sources = [
+	"src/**/*.{ts,tsx}",
+	"index.html",
+	"vite.config.ts",
+	".storybook/**/*",
+	"site/**/*.{astro,ts,css,md}",
+	"site/astro.config.mjs",
+]
 outputs = ["{{ vars.cf_pages_out_dir }}/**/*"]
 
