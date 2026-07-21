@@ -4,7 +4,10 @@ entry = ["scripts/**/*.ts"]
 # preview (IndexedDB persistence). The app doesn't use it directly, but the
 # Storybook/Vite optimizer eagerly analyzes reatom's dynamic import, so the
 # package must be resolvable. Drop once #1294 ships to stable npm.
-ignoreDependencies = ["@typescript/native", "idb-keyval"]
+# `storybook`: imported only by the test-actor factory in `src/shared/test`
+# (a Storybook/kahraman actor harness), which Fallow classifies as production
+# because it isn't named `*.test.ts`. It never runs outside Storybook/tests.
+ignoreDependencies = ["@typescript/native", "idb-keyval", "storybook"]
 
 # Park UI and generated assets are committed vendor/generated code; keep them out of findings.
 ignorePatterns = [
@@ -14,6 +17,7 @@ ignorePatterns = [
 	"src/shared/components/ui/**",
 	"src/shared/styled-system/**",
 	"theme/recipes/**",
+	"site/**",
 ]
 
 [duplicates]

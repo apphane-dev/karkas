@@ -1,5 +1,5 @@
-import { defineCollection, z } from 'astro:content'
 import { glob } from 'astro/loaders'
+import { defineCollection, z } from 'astro:content'
 
 // Narrative project updates — the editorial feed described in the brief.
 // Formal versioned notes live in GitHub Releases; these entries explain

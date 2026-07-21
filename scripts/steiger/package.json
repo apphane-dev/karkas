@@ -1,7 +1,8 @@
 {
 	"devDependencies": {
 		"@feature-sliced/steiger-plugin": "^0.7.0",
-		"steiger": "^0.6.0"
+		"steiger": "^0.6.0",
+		"typescript": "npm:@typescript/typescript6@^6.0.2"
 	},
 	"devEngines": {
 		"packageManager": {

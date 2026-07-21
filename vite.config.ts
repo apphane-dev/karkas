@@ -136,5 +136,6 @@ export default defineConfig({
 		react(),
 		paraglideVitePlugin({ project: './project.inlang', outdir: './src/paraglide' }),
 	],
+	server: { allowedHosts: true },
 	base,
 } as never)
