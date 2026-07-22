@@ -18,6 +18,9 @@ HK_MISE = 1
 
 [deps.nub]
 auto = true
+sources = ["nub.lock", "package.json"]
+outputs = ["node_modules/.modules.yaml"]
+run = "nub install"
 
 [shell_alias]
 mr = "mise run"
