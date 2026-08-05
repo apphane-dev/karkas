@@ -58,7 +58,7 @@
 		"@vitest/coverage-v8": "^4.1.10",
 		"astro": "^5.6.1",
 		"fallow": "^3.5.1",
-		"msw-storybook-addon": "^2.0.7",
+		"msw-storybook-addon": "^3.0.0",
 		"playwright": "^1.61.1",
 		"storybook": "~10.4.6",
 		"typescript": "npm:@typescript/typescript6@^6.0.2",
