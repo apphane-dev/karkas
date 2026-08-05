@@ -84,11 +84,10 @@ export const DefaultMobile = meta.story({
 
 export const AbortsPendingConnectionsRequestOnNavigation = meta.story({
 	name: 'Aborts Pending Connections Request On Navigation',
-	beforeEach: routeFetchAbortLifecycle(connectionsFetchAbortProbe),
-	parameters: {
-		msw: {
-			handlers: { connectionList: connectionList.loading },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(connectionList.loading)
+		return routeFetchAbortLifecycle(connectionsFetchAbortProbe)()
 	},
 })
 

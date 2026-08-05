@@ -16,13 +16,15 @@ const meta = preview.meta({
 
 export default meta
 
+const articleListRetryHandler = articleList.retrySucceeds()
+
 export const HandlesArticlesLoadServerError = meta.story({
 	name: 'Articles Load Server Error',
-	parameters: {
-		msw: {
-			handlers: { articleList: articleList.error },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(articleList.error)
 	},
+
 	play: () => I.waitExit(role('status')),
 })
 
@@ -41,10 +43,9 @@ HandlesArticlesLoadServerError.test('keeps error state when retry also fails', a
 export const RecoversAfterArticlesLoadRetry = meta.story({
 	name: 'Articles Load Retry Success',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: {
-			handlers: { articleList: articleList.retrySucceeds() },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(articleListRetryHandler)
 	},
 })
 
@@ -59,7 +60,7 @@ RecoversAfterArticlesLoadRetry.test('loads article list after retry succeeds', a
 export const HandlesArticlesLoadServerErrorMobile = meta.story({
 	name: 'Articles Load Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: HandlesArticlesLoadServerError.input.parameters,
+	beforeEach: HandlesArticlesLoadServerError.input.beforeEach,
 	play: () => I.waitExit(role('status')),
 })
 
@@ -73,10 +74,9 @@ HandlesArticlesLoadServerErrorMobile.test(
 
 export const KeepsLoadingWhenArticlesRequestNeverResolves = meta.story({
 	name: 'Articles Request Loading State',
-	parameters: {
-		msw: {
-			handlers: { articleList: articleList.loading },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(articleList.loading)
 	},
 })
 
@@ -90,7 +90,7 @@ KeepsLoadingWhenArticlesRequestNeverResolves.test(
 export const KeepsLoadingWhenArticlesRequestNeverResolvesMobile = meta.story({
 	name: 'Articles Request Loading State (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: KeepsLoadingWhenArticlesRequestNeverResolves.input.parameters,
+	beforeEach: KeepsLoadingWhenArticlesRequestNeverResolves.input.beforeEach,
 })
 
 KeepsLoadingWhenArticlesRequestNeverResolvesMobile.test(

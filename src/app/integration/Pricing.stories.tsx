@@ -24,10 +24,15 @@ const meta = preview.meta({
 
 export default meta
 
+const pricingPlansRetryHandler = pricingPlans.retrySucceeds()
+
 export const Default = meta.story({
 	name: 'Default',
 	play: () => I.waitExit(role('status')),
-	parameters: { msw: { handlers: { pricingPlans: pricingPlans.reset } } },
+
+	beforeEach({ msw }) {
+		msw.use(pricingPlans.reset)
+	},
 })
 
 Default.test('renders pricing heading', async () => {
@@ -58,9 +63,10 @@ UpgradeToPro.test('clicking Upgrade to Pro switches the current plan', async () 
 
 export const AbortsPendingPricingRequestOnNavigation = meta.story({
 	name: 'Aborts Pending Pricing Request On Navigation',
-	beforeEach: routeFetchAbortLifecycle(pricingFetchAbortProbe),
-	parameters: {
-		msw: { handlers: { pricingPlans: pricingPlans.loading } },
+
+	beforeEach({ msw }) {
+		msw.use(pricingPlans.loading)
+		return routeFetchAbortLifecycle(pricingFetchAbortProbe)()
 	},
 })
 
@@ -76,8 +82,9 @@ AbortsPendingPricingRequestOnNavigation.test(
 export const HandlesServerError = meta.story({
 	name: 'Server Error',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: { handlers: { pricingPlans: pricingPlans.error } },
+
+	beforeEach({ msw }) {
+		msw.use(pricingPlans.error)
 	},
 })
 
@@ -88,8 +95,9 @@ HandlesServerError.test('shows error state when pricing request fails', async ()
 export const RecoversAfterRetry = meta.story({
 	name: 'Retry Success',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: { handlers: { pricingPlans: pricingPlans.retrySucceeds() } },
+
+	beforeEach({ msw }) {
+		msw.use(pricingPlansRetryHandler)
 	},
 })
 
@@ -102,8 +110,9 @@ RecoversAfterRetry.test('loads pricing after retry succeeds', async () => {
 
 export const KeepsLoading = meta.story({
 	name: 'Loading State',
-	parameters: {
-		msw: { handlers: { pricingPlans: pricingPlans.loading } },
+
+	beforeEach({ msw }) {
+		msw.use(pricingPlans.loading)
 	},
 })
 
@@ -116,7 +125,10 @@ export const DefaultMobile = meta.story({
 	name: 'Default (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
 	play: () => I.waitExit(role('status')),
-	parameters: { msw: { handlers: { pricingPlans: pricingPlans.reset } } },
+
+	beforeEach({ msw }) {
+		msw.use(pricingPlans.reset)
+	},
 })
 
 DefaultMobile.test('[mobile] renders all plan cards', async () => {

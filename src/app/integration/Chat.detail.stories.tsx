@@ -27,13 +27,14 @@ const meta = preview.meta({
 
 export default meta
 
+const conversationDetailRetryHandler = conversationDetail.retrySucceeds()
+
 export const AbortsPendingConversationDetailRequestOnNavigation = meta.story({
 	name: 'Aborts Pending Conversation Detail Request On Navigation',
-	beforeEach: routeFetchAbortLifecycle(conversationDetailFetchAbortProbe),
-	parameters: {
-		msw: {
-			handlers: { conversationDetail: conversationDetail.loading },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(conversationDetail.loading)
+		return routeFetchAbortLifecycle(conversationDetailFetchAbortProbe)()
 	},
 })
 
@@ -51,10 +52,9 @@ AbortsPendingConversationDetailRequestOnNavigation.test(
 export const HandlesConversationDetailServerError = meta.story({
 	name: 'Conversation Detail Server Error',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: {
-			handlers: { conversationDetail: conversationDetail.error },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(conversationDetail.error)
 	},
 })
 
@@ -82,10 +82,9 @@ HandlesConversationDetailServerError.test(
 export const RecoversAfterConversationDetailRetry = meta.story({
 	name: 'Conversation Detail Retry Success',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: {
-			handlers: { conversationDetail: conversationDetail.retrySucceeds() },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(conversationDetailRetryHandler)
 	},
 })
 
@@ -104,7 +103,7 @@ RecoversAfterConversationDetailRetry.test(
 export const HandlesConversationDetailServerErrorMobile = meta.story({
 	name: 'Conversation Detail Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: HandlesConversationDetailServerError.input.parameters,
+	beforeEach: HandlesConversationDetailServerError.input.beforeEach,
 	play: () => I.waitExit(role('status')),
 })
 
@@ -119,10 +118,9 @@ HandlesConversationDetailServerErrorMobile.test(
 
 export const KeepsLoadingWhenConversationDetailNeverResolves = meta.story({
 	name: 'Conversation Detail Loading State',
-	parameters: {
-		msw: {
-			handlers: { conversationDetail: conversationDetail.loading },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(conversationDetail.loading)
 	},
 })
 
@@ -137,7 +135,7 @@ KeepsLoadingWhenConversationDetailNeverResolves.test(
 export const KeepsLoadingWhenConversationDetailNeverResolvesMobile = meta.story({
 	name: 'Conversation Detail Loading State (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: KeepsLoadingWhenConversationDetailNeverResolves.input.parameters,
+	beforeEach: KeepsLoadingWhenConversationDetailNeverResolves.input.beforeEach,
 })
 
 KeepsLoadingWhenConversationDetailNeverResolvesMobile.test(
@@ -184,8 +182,9 @@ EmptySendIsIgnored.test('submitting an empty message does not add a bubble', asy
 export const SendServerError = meta.story({
 	name: 'Send Server Error',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: { handlers: { conversationSendMessage: conversationSendMessage.error } },
+
+	beforeEach({ msw }) {
+		msw.use(conversationSendMessage.error)
 	},
 })
 

@@ -24,6 +24,8 @@ const meta = preview.meta({
 
 export default meta
 
+const settingsFetchRetryHandler = settingsFetch.retrySucceeds()
+
 // Wait for the initial GET /settings loading skeleton (role="status" in the
 // canvas) to clear before asserting. Safe to use on every story whose first
 // paint is the loading state.
@@ -184,9 +186,10 @@ DefaultMobile.test('[mobile] renders profile form fields', async () => {
 
 export const AbortsPendingSettingsRequestOnNavigation = meta.story({
 	name: 'Aborts Pending Settings Request On Navigation',
-	beforeEach: routeFetchAbortLifecycle(settingsFetchAbortProbe),
-	parameters: {
-		msw: { handlers: { settingsFetch: settingsFetch.loading } },
+
+	beforeEach({ msw }) {
+		msw.use(settingsFetch.loading)
+		return routeFetchAbortLifecycle(settingsFetchAbortProbe)()
 	},
 })
 
@@ -201,8 +204,9 @@ AbortsPendingSettingsRequestOnNavigation.test(
 
 export const LoadingState = meta.story({
 	name: 'Loading State',
-	parameters: {
-		msw: { handlers: { settingsFetch: settingsFetch.loading } },
+
+	beforeEach({ msw }) {
+		msw.use(settingsFetch.loading)
 	},
 })
 
@@ -214,8 +218,9 @@ LoadingState.test('shows loading state while settings are pending', async () => 
 export const ServerError = meta.story({
 	name: 'Server Error',
 	play: waitForLoad,
-	parameters: {
-		msw: { handlers: { settingsFetch: settingsFetch.error } },
+
+	beforeEach({ msw }) {
+		msw.use(settingsFetch.error)
 	},
 })
 
@@ -226,8 +231,9 @@ ServerError.test('shows error state when settings request fails', async () => {
 export const RetrySuccess = meta.story({
 	name: 'Retry Success',
 	play: waitForLoad,
-	parameters: {
-		msw: { handlers: { settingsFetch: settingsFetch.retrySucceeds() } },
+
+	beforeEach({ msw }) {
+		msw.use(settingsFetchRetryHandler)
 	},
 })
 
@@ -268,8 +274,9 @@ SaveNotificationsSuccess.test(
 export const SaveProfileError = meta.story({
 	name: 'Save Profile Error',
 	play: waitForLoad,
-	parameters: {
-		msw: { handlers: { settingsProfile: settingsProfile.error } },
+
+	beforeEach({ msw }) {
+		msw.use(settingsProfile.error)
 	},
 })
 

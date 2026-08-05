@@ -27,6 +27,9 @@ const meta = preview.meta({
 
 export default meta
 
+const itemListRetryHandler = itemList.retrySucceeds()
+const itemDetailRetryHandler = itemDetail.retrySucceeds()
+
 export const Default = meta.story({
 	name: 'Default',
 	play: () => I.waitExit(role('status')),
@@ -78,11 +81,10 @@ export const DefaultMobile = meta.story({
 
 export const AbortsPendingItemsRequestOnNavigation = meta.story({
 	name: 'Aborts Pending Items Request On Navigation',
-	beforeEach: routeFetchAbortLifecycle(itemsFetchAbortProbe),
-	parameters: {
-		msw: {
-			handlers: { itemList: itemList.loading },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(itemList.loading)
+		return routeFetchAbortLifecycle(itemsFetchAbortProbe)()
 	},
 })
 
@@ -105,12 +107,12 @@ DefaultMobile.test('[mobile] shows category badges', async () => {
 
 export const AbortsPendingItemDetailRequestOnNavigation = meta.story({
 	name: 'Aborts Pending Item Detail Request On Navigation',
-	beforeEach: routeFetchAbortLifecycle(itemDetailFetchAbortProbe),
+	beforeEach({ msw }) {
+		msw.use(itemDetail.loading)
+		return routeFetchAbortLifecycle(itemDetailFetchAbortProbe)()
+	},
 	parameters: {
 		initialPath: 'items/1',
-		msw: {
-			handlers: { itemDetail: itemDetail.loading },
-		},
 	},
 })
 
@@ -133,10 +135,9 @@ AbortsPendingItemDetailRequestOnNavigation.test(
 export const HandlesItemsLoadServerError = meta.story({
 	name: 'Items Load Server Error',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: {
-			handlers: { itemList: itemList.error },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(itemList.error)
 	},
 })
 
@@ -148,10 +149,9 @@ HandlesItemsLoadServerError.test('shows error state when items request fails', a
 export const RecoversAfterItemsLoadRetry = meta.story({
 	name: 'Items Load Retry Success',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: {
-			handlers: { itemList: itemList.retrySucceeds() },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(itemListRetryHandler)
 	},
 })
 
@@ -173,7 +173,7 @@ HandlesItemsLoadServerError.test('keeps error state when retry also fails', asyn
 export const HandlesItemsLoadServerErrorMobile = meta.story({
 	name: 'Items Load Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: HandlesItemsLoadServerError.input.parameters,
+	beforeEach: HandlesItemsLoadServerError.input.beforeEach,
 	play: () => I.waitExit(role('status')),
 })
 
@@ -187,12 +187,15 @@ HandlesItemsLoadServerErrorMobile.test(
 
 export const HandlesItemDetailServerError = meta.story({
 	name: 'Item Detail Server Error',
+
+	beforeEach({ msw }) {
+		msw.use(itemDetail.error)
+	},
+
 	parameters: {
 		initialPath: 'items/1',
-		msw: {
-			handlers: { itemDetail: itemDetail.error },
-		},
 	},
+
 	play: () => I.waitExit(role('status')),
 })
 
@@ -209,12 +212,15 @@ HandlesItemDetailServerError.test('keeps detail error state when retry also fail
 
 export const RecoversAfterItemDetailRetry = meta.story({
 	name: 'Item Detail Retry Success',
+
+	beforeEach({ msw }) {
+		msw.use(itemDetailRetryHandler)
+	},
+
 	parameters: {
 		initialPath: 'items/1',
-		msw: {
-			handlers: { itemDetail: itemDetail.retrySucceeds() },
-		},
 	},
+
 	play: () => I.waitExit(role('status')),
 })
 
@@ -228,11 +234,13 @@ RecoversAfterItemDetailRetry.test('loads item detail after retry succeeds', asyn
 
 export const KeepsLoadingWhenItemDetailNeverResolves = meta.story({
 	name: 'Item Detail Loading State',
+
+	beforeEach({ msw }) {
+		msw.use(itemDetail.loading)
+	},
+
 	parameters: {
 		initialPath: 'items/1',
-		msw: {
-			handlers: { itemDetail: itemDetail.loading },
-		},
 	},
 })
 
@@ -247,10 +255,9 @@ KeepsLoadingWhenItemDetailNeverResolves.test(
 
 export const KeepsLoadingWhenItemsRequestNeverResolves = meta.story({
 	name: 'Items Request Loading State',
-	parameters: {
-		msw: {
-			handlers: { itemList: itemList.loading },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(itemList.loading)
 	},
 })
 
@@ -264,7 +271,7 @@ KeepsLoadingWhenItemsRequestNeverResolves.test(
 export const KeepsLoadingWhenItemsRequestNeverResolvesMobile = meta.story({
 	name: 'Items Request Loading State (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: KeepsLoadingWhenItemsRequestNeverResolves.input.parameters,
+	beforeEach: KeepsLoadingWhenItemsRequestNeverResolves.input.beforeEach,
 })
 
 KeepsLoadingWhenItemsRequestNeverResolvesMobile.test(
