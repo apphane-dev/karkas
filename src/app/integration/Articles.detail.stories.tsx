@@ -28,13 +28,14 @@ const meta = preview.meta({
 
 export default meta
 
+const articleDetailRetryHandler = articleDetail.retrySucceeds()
+
 export const AbortsPendingArticleDetailRequestOnNavigation = meta.story({
 	name: 'Aborts Pending Article Detail Request On Navigation',
-	beforeEach: routeFetchAbortLifecycle(articleDetailFetchAbortProbe),
-	parameters: {
-		msw: {
-			handlers: { articleDetail: articleDetail.loading },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(articleDetail.loading)
+		return routeFetchAbortLifecycle(articleDetailFetchAbortProbe)()
 	},
 })
 
@@ -52,10 +53,9 @@ AbortsPendingArticleDetailRequestOnNavigation.test(
 export const HandlesArticleDetailServerError = meta.story({
 	name: 'Article Detail Server Error',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: {
-			handlers: { articleDetail: articleDetail.error },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(articleDetail.error)
 	},
 })
 
@@ -80,10 +80,9 @@ HandlesArticleDetailServerError.test('keeps detail error state when retry also f
 export const RecoversAfterArticleDetailRetry = meta.story({
 	name: 'Article Detail Retry Success',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: {
-			handlers: { articleDetail: articleDetail.retrySucceeds() },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(articleDetailRetryHandler)
 	},
 })
 
@@ -100,7 +99,7 @@ RecoversAfterArticleDetailRetry.test('loads article detail after retry succeeds'
 export const HandlesArticleDetailServerErrorMobile = meta.story({
 	name: 'Article Detail Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: HandlesArticleDetailServerError.input.parameters,
+	beforeEach: HandlesArticleDetailServerError.input.beforeEach,
 	play: () => I.waitExit(role('status')),
 })
 
@@ -115,10 +114,9 @@ HandlesArticleDetailServerErrorMobile.test(
 
 export const KeepsLoadingWhenArticleDetailNeverResolves = meta.story({
 	name: 'Article Detail Loading State',
-	parameters: {
-		msw: {
-			handlers: { articleDetail: articleDetail.loading },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(articleDetail.loading)
 	},
 })
 
@@ -133,7 +131,7 @@ KeepsLoadingWhenArticleDetailNeverResolves.test(
 export const KeepsLoadingWhenArticleDetailNeverResolvesMobile = meta.story({
 	name: 'Article Detail Loading State (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: KeepsLoadingWhenArticleDetailNeverResolves.input.parameters,
+	beforeEach: KeepsLoadingWhenArticleDetailNeverResolves.input.beforeEach,
 })
 
 KeepsLoadingWhenArticleDetailNeverResolvesMobile.test(
@@ -199,7 +197,10 @@ EditArticle.test('changing status persists and reflects on return', async () => 
 export const EditArticleServerError = meta.story({
 	name: 'Edit Article Server Error',
 	play: () => I.waitExit(role('status')),
-	parameters: { msw: { handlers: { articleUpdate: articleUpdate.error } } },
+
+	beforeEach({ msw }) {
+		msw.use(articleUpdate.error)
+	},
 })
 
 EditArticleServerError.test(

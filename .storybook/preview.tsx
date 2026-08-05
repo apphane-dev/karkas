@@ -1,3 +1,4 @@
+/// <reference types="msw-storybook-addon/types" />
 import '../src/setup'
 
 import '../src/index.css'
@@ -6,13 +7,14 @@ import { reatomContext } from '@reatom/react'
 import addonA11y from '@storybook/addon-a11y'
 import { definePreview } from '@storybook/react-vite'
 import { configureDiagnostics } from 'kahraman/preview'
-import { initialize, mswLoader } from 'msw-storybook-addon'
+import addonMsw from 'msw-storybook-addon'
+import { setupWorker } from 'msw/browser'
 
 import { clearAbortErrors, drainAbortErrors, formatAbortErrors } from './abortErrorGuard'
 // oxlint-disable-next-line no-restricted-imports
 import { useEffect, useMemo, type PropsWithChildren } from 'react'
 
-import { handlers } from '#app/mocks/handlers'
+import { handlersArray } from '#app/mocks/handlers'
 import { authSessionAtom } from '#entities/auth'
 import { authMockSession } from '#entities/auth/mocks/data'
 import { css } from '#styled-system/css'
@@ -29,13 +31,21 @@ const nativeHTMLElementFocus = globalThis.HTMLElement
 	? Object.getOwnPropertyDescriptor(globalThis.HTMLElement.prototype, 'focus')?.value
 	: undefined
 
-initialize({
-	onUnhandledRequest: 'bypass',
-	quiet: true,
-	serviceWorker: {
-		url: `${import.meta.env['BASE_URL']}mockServiceWorker.js`,
-	},
-})
+// MSW worker setup. The default request handlers (`handlersArray`) are passed
+// as initial handlers so they survive the addon's per-story `resetHandlers()`
+// — every story gets the full route set mocked by default, with individual
+// routes overridable via `msw.use(...)` in a story's `beforeEach`.
+async function setupMswWorker() {
+	const worker = setupWorker(...handlersArray)
+	await worker.start({
+		onUnhandledRequest: 'bypass',
+		quiet: true,
+		serviceWorker: {
+			url: `${import.meta.env['BASE_URL']}mockServiceWorker.js`,
+		},
+	})
+	return worker
+}
 
 function ReatomDecorator({
 	children,
@@ -66,8 +76,7 @@ function ReatomDecorator({
 }
 
 const preview = definePreview({
-	addons: [addonA11y()],
-	loaders: [mswLoader],
+	addons: [addonA11y(), addonMsw(setupMswWorker)],
 	decorators: [
 		(Story, { parameters }) => (
 			<ReatomDecorator
@@ -85,7 +94,6 @@ const preview = definePreview({
 	],
 	parameters: {
 		a11y: { test: 'todo' },
-		msw: { handlers },
 	},
 	// fallow-ignore-next-line complexity
 	beforeEach: async ({ globals, parameters }) => {

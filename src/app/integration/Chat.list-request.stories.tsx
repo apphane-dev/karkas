@@ -16,13 +16,14 @@ const meta = preview.meta({
 
 export default meta
 
+const conversationListRetryHandler = conversationList.retrySucceeds()
+
 export const HandlesChatLoadServerError = meta.story({
 	name: 'Conversations Load Server Error',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: {
-			handlers: { conversationList: conversationList.error },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(conversationList.error)
 	},
 })
 
@@ -40,10 +41,9 @@ HandlesChatLoadServerError.test('keeps error state when retry also fails', async
 export const RecoversAfterChatLoadRetry = meta.story({
 	name: 'Conversations Load Retry Success',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: {
-			handlers: { conversationList: conversationList.retrySucceeds() },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(conversationListRetryHandler)
 	},
 })
 
@@ -58,7 +58,7 @@ RecoversAfterChatLoadRetry.test('loads conversations after retry succeeds', asyn
 export const HandlesChatLoadServerErrorMobile = meta.story({
 	name: 'Conversations Load Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: HandlesChatLoadServerError.input.parameters,
+	beforeEach: HandlesChatLoadServerError.input.beforeEach,
 	play: () => I.waitExit(role('status')),
 })
 
@@ -71,10 +71,9 @@ HandlesChatLoadServerErrorMobile.test(
 
 export const KeepsLoadingWhenChatRequestNeverResolves = meta.story({
 	name: 'Conversations Request Loading State',
-	parameters: {
-		msw: {
-			handlers: { conversationList: conversationList.loading },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(conversationList.loading)
 	},
 })
 
@@ -88,7 +87,7 @@ KeepsLoadingWhenChatRequestNeverResolves.test(
 export const KeepsLoadingWhenChatRequestNeverResolvesMobile = meta.story({
 	name: 'Conversations Request Loading State (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: KeepsLoadingWhenChatRequestNeverResolves.input.parameters,
+	beforeEach: KeepsLoadingWhenChatRequestNeverResolves.input.beforeEach,
 })
 
 KeepsLoadingWhenChatRequestNeverResolvesMobile.test(

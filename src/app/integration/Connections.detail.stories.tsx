@@ -27,13 +27,14 @@ const meta = preview.meta({
 
 export default meta
 
+const connectionDetailRetryHandler = connectionDetail.retrySucceeds()
+
 export const AbortsPendingConnectionDetailRequestOnNavigation = meta.story({
 	name: 'Aborts Pending Connection Detail Request On Navigation',
-	beforeEach: routeFetchAbortLifecycle(connectionDetailFetchAbortProbe),
-	parameters: {
-		msw: {
-			handlers: { connectionDetail: connectionDetail.loading },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(connectionDetail.loading)
+		return routeFetchAbortLifecycle(connectionDetailFetchAbortProbe)()
 	},
 })
 
@@ -51,10 +52,9 @@ AbortsPendingConnectionDetailRequestOnNavigation.test(
 export const HandlesConnectionDetailServerError = meta.story({
 	name: 'Connection Detail Server Error',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: {
-			handlers: { connectionDetail: connectionDetail.error },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(connectionDetail.error)
 	},
 })
 
@@ -82,10 +82,9 @@ HandlesConnectionDetailServerError.test(
 export const RecoversAfterConnectionDetailRetry = meta.story({
 	name: 'Connection Detail Retry Success',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: {
-			handlers: { connectionDetail: connectionDetail.retrySucceeds() },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(connectionDetailRetryHandler)
 	},
 })
 
@@ -104,7 +103,7 @@ RecoversAfterConnectionDetailRetry.test(
 export const HandlesConnectionDetailServerErrorMobile = meta.story({
 	name: 'Connection Detail Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: HandlesConnectionDetailServerError.input.parameters,
+	beforeEach: HandlesConnectionDetailServerError.input.beforeEach,
 	play: () => I.waitExit(role('status')),
 })
 
@@ -119,10 +118,9 @@ HandlesConnectionDetailServerErrorMobile.test(
 
 export const KeepsLoadingWhenConnectionDetailNeverResolves = meta.story({
 	name: 'Connection Detail Loading State',
-	parameters: {
-		msw: {
-			handlers: { connectionDetail: connectionDetail.loading },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(connectionDetail.loading)
 	},
 })
 
@@ -139,7 +137,7 @@ KeepsLoadingWhenConnectionDetailNeverResolves.test(
 export const KeepsLoadingWhenConnectionDetailNeverResolvesMobile = meta.story({
 	name: 'Connection Detail Loading State (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: KeepsLoadingWhenConnectionDetailNeverResolves.input.parameters,
+	beforeEach: KeepsLoadingWhenConnectionDetailNeverResolves.input.beforeEach,
 })
 
 KeepsLoadingWhenConnectionDetailNeverResolvesMobile.test(

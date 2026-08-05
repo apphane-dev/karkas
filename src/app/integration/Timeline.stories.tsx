@@ -24,6 +24,8 @@ const meta = preview.meta({
 
 export default meta
 
+const timelineEventListRetryHandler = timelineEventList.retrySucceeds()
+
 export const Default = meta.story({
 	name: 'Default',
 	play: () => I.waitExit(role('status')),
@@ -53,11 +55,10 @@ DefaultMobile.test('[mobile] shows date groups', async () => {
 
 export const AbortsPendingTimelineRequestOnNavigation = meta.story({
 	name: 'Aborts Pending Timeline Request On Navigation',
-	beforeEach: routeFetchAbortLifecycle(timelineFetchAbortProbe),
-	parameters: {
-		msw: {
-			handlers: { timelineEventList: timelineEventList.loading },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(timelineEventList.loading)
+		return routeFetchAbortLifecycle(timelineFetchAbortProbe)()
 	},
 })
 
@@ -73,10 +74,9 @@ AbortsPendingTimelineRequestOnNavigation.test(
 export const HandlesTimelineLoadServerError = meta.story({
 	name: 'Timeline Load Server Error',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: {
-			handlers: { timelineEventList: timelineEventList.error },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(timelineEventList.error)
 	},
 })
 
@@ -95,10 +95,9 @@ HandlesTimelineLoadServerError.test('keeps error state when retry also fails', a
 export const RecoversAfterTimelineLoadRetry = meta.story({
 	name: 'Timeline Load Retry Success',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: {
-			handlers: { timelineEventList: timelineEventList.retrySucceeds() },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(timelineEventListRetryHandler)
 	},
 })
 
@@ -113,7 +112,7 @@ RecoversAfterTimelineLoadRetry.test('loads timeline after retry succeeds', async
 export const HandlesTimelineLoadServerErrorMobile = meta.story({
 	name: 'Timeline Load Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: HandlesTimelineLoadServerError.input.parameters,
+	beforeEach: HandlesTimelineLoadServerError.input.beforeEach,
 	play: () => I.waitExit(role('status')),
 })
 
@@ -127,10 +126,9 @@ HandlesTimelineLoadServerErrorMobile.test(
 
 export const KeepsLoadingWhenTimelineRequestNeverResolves = meta.story({
 	name: 'Timeline Request Loading State',
-	parameters: {
-		msw: {
-			handlers: { timelineEventList: timelineEventList.loading },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(timelineEventList.loading)
 	},
 })
 
@@ -144,7 +142,7 @@ KeepsLoadingWhenTimelineRequestNeverResolves.test(
 export const KeepsLoadingWhenTimelineRequestNeverResolvesMobile = meta.story({
 	name: 'Timeline Request Loading State (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: KeepsLoadingWhenTimelineRequestNeverResolves.input.parameters,
+	beforeEach: KeepsLoadingWhenTimelineRequestNeverResolves.input.beforeEach,
 })
 
 KeepsLoadingWhenTimelineRequestNeverResolvesMobile.test(

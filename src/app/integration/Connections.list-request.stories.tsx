@@ -16,13 +16,14 @@ const meta = preview.meta({
 
 export default meta
 
+const connectionListRetryHandler = connectionList.retrySucceeds()
+
 export const HandlesConnectionsLoadServerError = meta.story({
 	name: 'Connections Load Server Error',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: {
-			handlers: { connectionList: connectionList.error },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(connectionList.error)
 	},
 })
 
@@ -44,10 +45,9 @@ HandlesConnectionsLoadServerError.test('keeps error state when retry also fails'
 export const RecoversAfterConnectionsLoadRetry = meta.story({
 	name: 'Connections Load Retry Success',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: {
-			handlers: { connectionList: connectionList.retrySucceeds() },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(connectionListRetryHandler)
 	},
 })
 
@@ -62,7 +62,7 @@ RecoversAfterConnectionsLoadRetry.test('loads connection list after retry succee
 export const HandlesConnectionsLoadServerErrorMobile = meta.story({
 	name: 'Connections Load Server Error (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: HandlesConnectionsLoadServerError.input.parameters,
+	beforeEach: HandlesConnectionsLoadServerError.input.beforeEach,
 	play: () => I.waitExit(role('status')),
 })
 
@@ -76,10 +76,9 @@ HandlesConnectionsLoadServerErrorMobile.test(
 
 export const KeepsLoadingWhenConnectionsRequestNeverResolves = meta.story({
 	name: 'Connections Request Loading State',
-	parameters: {
-		msw: {
-			handlers: { connectionList: connectionList.loading },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(connectionList.loading)
 	},
 })
 
@@ -93,7 +92,7 @@ KeepsLoadingWhenConnectionsRequestNeverResolves.test(
 export const KeepsLoadingWhenConnectionsRequestNeverResolvesMobile = meta.story({
 	name: 'Connections Request Loading State (Mobile)',
 	globals: { viewport: { value: 'sm', isRotated: false } },
-	parameters: KeepsLoadingWhenConnectionsRequestNeverResolves.input.parameters,
+	beforeEach: KeepsLoadingWhenConnectionsRequestNeverResolves.input.beforeEach,
 })
 
 KeepsLoadingWhenConnectionsRequestNeverResolvesMobile.test(

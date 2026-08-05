@@ -18,6 +18,15 @@ const unreadCountUrl = composeApiUrl(CONVERSATIONS_UNREAD_COUNT_API_PATH)
 const detailUrl = composeApiUrl(`${CONVERSATIONS_API_PATH}/:conversationId`)
 const sendMessageUrl = composeApiUrl(`${CONVERSATIONS_API_PATH}/:conversationId/messages`)
 
+const conversationDetailRetryPath = ({ request }: { request: Request }) => {
+	const prefix = `${composeApiUrl(CONVERSATIONS_API_PATH)}/`
+	const path = new URL(request.url).pathname
+	const conversationId = path.startsWith(prefix) ? path.slice(prefix.length) : ''
+	const matches =
+		conversationId !== '' && !conversationId.includes('/') && conversationId !== 'unread-count'
+	return matches ? { matches: true, params: { conversationId } } : { matches: false, params: {} }
+}
+
 const nowTime = () => new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
 
 // Per-story mutable conversation state (keyed by request origin), so a sent
@@ -109,7 +118,8 @@ export const conversationUnreadCount = {
 export const conversationDetail = {
 	default: http.get(detailUrl, conversationDetailResolver),
 	error: http.get(detailUrl, () => to500()),
-	retrySucceeds: () => http.get(detailUrl, withRetrySuccess(conversationDetailResolver)),
+	retrySucceeds: () =>
+		http.get(conversationDetailRetryPath, withRetrySuccess(conversationDetailResolver)),
 	loading: http.get(detailUrl, neverResolve),
 }
 

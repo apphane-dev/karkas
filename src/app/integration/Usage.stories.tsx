@@ -24,6 +24,8 @@ const meta = preview.meta({
 
 export default meta
 
+const usageStatsRetryHandler = usageStats.retrySucceeds()
+
 export const Default = meta.story({
 	name: 'Default',
 	play: () => I.waitExit(role('status')),
@@ -62,11 +64,10 @@ DefaultMobile.test('[mobile] renders usage content', async () => {
 
 export const AbortsPendingUsageRequestOnNavigation = meta.story({
 	name: 'Aborts Pending Usage Request On Navigation',
-	beforeEach: routeFetchAbortLifecycle(usageFetchAbortProbe),
-	parameters: {
-		msw: {
-			handlers: { usageStats: usageStats.loading },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(usageStats.loading)
+		return routeFetchAbortLifecycle(usageFetchAbortProbe)()
 	},
 })
 
@@ -82,10 +83,9 @@ AbortsPendingUsageRequestOnNavigation.test(
 export const HandlesUsageLoadServerError = meta.story({
 	name: 'Usage Load Server Error',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: {
-			handlers: { usageStats: usageStats.error },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(usageStats.error)
 	},
 })
 
@@ -104,10 +104,9 @@ HandlesUsageLoadServerError.test('keeps error state when retry also fails', asyn
 export const RecoversAfterUsageLoadRetry = meta.story({
 	name: 'Usage Load Retry Success',
 	play: () => I.waitExit(role('status')),
-	parameters: {
-		msw: {
-			handlers: { usageStats: usageStats.retrySucceeds() },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(usageStatsRetryHandler)
 	},
 })
 
@@ -121,10 +120,9 @@ RecoversAfterUsageLoadRetry.test('loads usage data after retry succeeds', async 
 
 export const KeepsLoadingWhenUsageRequestNeverResolves = meta.story({
 	name: 'Usage Request Loading State',
-	parameters: {
-		msw: {
-			handlers: { usageStats: usageStats.loading },
-		},
+
+	beforeEach({ msw }) {
+		msw.use(usageStats.loading)
 	},
 })
 
