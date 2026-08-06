@@ -18,13 +18,15 @@ const unreadCountUrl = composeApiUrl(CONVERSATIONS_UNREAD_COUNT_API_PATH)
 const detailUrl = composeApiUrl(`${CONVERSATIONS_API_PATH}/:conversationId`)
 const sendMessageUrl = composeApiUrl(`${CONVERSATIONS_API_PATH}/:conversationId/messages`)
 
+const conversationDetailRetryPattern = new RegExp(
+	`^${composeApiUrl(CONVERSATIONS_API_PATH)}/(?!unread-count$)([^/]+)$`,
+)
+
 const conversationDetailRetryPath = ({ request }: { request: Request }) => {
-	const prefix = `${composeApiUrl(CONVERSATIONS_API_PATH)}/`
-	const path = new URL(request.url).pathname
-	const conversationId = path.startsWith(prefix) ? path.slice(prefix.length) : ''
-	const matches =
-		conversationId !== '' && !conversationId.includes('/') && conversationId !== 'unread-count'
-	return matches ? { matches: true, params: { conversationId } } : { matches: false, params: {} }
+	const conversationId = conversationDetailRetryPattern.exec(new URL(request.url).pathname)?.[1]
+	return conversationId
+		? { matches: true, params: { conversationId } }
+		: { matches: false, params: {} }
 }
 
 const nowTime = () => new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
