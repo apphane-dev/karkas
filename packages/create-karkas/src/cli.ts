@@ -13,6 +13,8 @@ type CliOptions = {
 	target?: string
 	force: boolean
 	git?: boolean
+	help?: boolean
+	version?: boolean
 }
 
 const help = `create-karkas [directory] [options]
@@ -26,17 +28,52 @@ Options:
 
 async function main() {
 	const options = parseArgs(process.argv.slice(2))
-	if (process.argv.includes('--help')) {
+	if (options.help) {
 		console.log(help)
 		return
 	}
-	if (process.argv.includes('--version')) {
+	if (options.version) {
 		console.log(await readPackageVersion())
 		return
 	}
 
 	p.intro('Create Karkas')
 
+	const context = await prepareScaffoldContext(options)
+	const result = await runScaffold(context)
+
+	displayNextSteps(result, context.initializeGit)
+}
+
+function parseArgs(args: string[]): CliOptions {
+	const options: CliOptions = { force: false }
+	for (const arg of args) {
+		switch (arg) {
+			case '--help':
+				options.help = true
+				break
+			case '--version':
+				options.version = true
+				break
+			case '--force':
+				options.force = true
+				break
+			case '--git':
+				options.git = true
+				break
+			case '--no-git':
+				options.git = false
+				break
+			default:
+				if (arg.startsWith('-')) throw new Error(`Unknown option: ${arg}`)
+				if (options.target) throw new Error(`Unexpected argument: ${arg}`)
+				options.target = arg
+		}
+	}
+	return options
+}
+
+async function prepareScaffoldContext(options: CliOptions) {
 	const targetInput = options.target ?? (await promptForTarget())
 	const targetDirectory = resolve(targetInput)
 	const packageName = normalizePackageName(packageNameFromTarget(targetDirectory))
@@ -53,18 +90,26 @@ async function main() {
 	}
 
 	const initializeGit = options.git ?? (process.stdin.isTTY ? await promptForGit() : false)
+	return { targetDirectory, packageName, force, initializeGit }
+}
+
+async function runScaffold(context: {
+	targetDirectory: string
+	packageName: string
+	force: boolean
+	initializeGit: boolean
+}) {
 	const progress = p.spinner()
 	progress.start('Scaffolding project')
-	const result = await scaffoldProject({
-		targetDirectory,
-		packageName,
-		force,
-		initializeGit,
-	})
+	const result = await scaffoldProject(context)
 	progress.stop('Project ready')
+	return result
+}
 
-	// A relative path that climbs out of the current directory (e.g. ../../tmp/app)
-	// reads worse in the next-steps box than the absolute path it resolves to.
+function displayNextSteps(
+	result: { targetDirectory: string; gitInitialized: boolean },
+	initializeGit: boolean,
+) {
 	const relativePath = relative(process.cwd(), result.targetDirectory)
 	const displayPath =
 		relativePath && !relativePath.startsWith('..') ? relativePath : result.targetDirectory
@@ -73,29 +118,6 @@ async function main() {
 		p.log.warn('Git is unavailable, so the project was created without a repository.')
 	}
 	p.outro('Built on the Karkas stack — https://karkas.apphane.dev')
-}
-
-function parseArgs(args: string[]): CliOptions {
-	const options: CliOptions = { force: false }
-	for (const arg of args) {
-		if (arg === '--help' || arg === '--version') continue
-		if (arg === '--force') {
-			options.force = true
-			continue
-		}
-		if (arg === '--git') {
-			options.git = true
-			continue
-		}
-		if (arg === '--no-git') {
-			options.git = false
-			continue
-		}
-		if (arg.startsWith('-')) throw new Error(`Unknown option: ${arg}`)
-		if (options.target) throw new Error(`Unexpected argument: ${arg}`)
-		options.target = arg
-	}
-	return options
 }
 
 async function promptForTarget(): Promise<string> {
