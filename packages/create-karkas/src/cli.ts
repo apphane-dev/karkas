@@ -47,7 +47,16 @@ async function main() {
 
 function parseArgs(args: string[]): CliOptions {
 	const options: CliOptions = { force: false }
-	const handlers: Record<string, (o: CliOptions) => void> = {
+	const handlers = createHandlers()
+
+	for (const arg of args) {
+		processArg(arg, options, handlers)
+	}
+	return options
+}
+
+function createHandlers(): Record<string, (o: CliOptions) => void> {
+	return {
 		'--help': (o) => {
 			o.help = true
 		},
@@ -64,11 +73,6 @@ function parseArgs(args: string[]): CliOptions {
 			o.git = false
 		},
 	}
-
-	for (const arg of args) {
-		processArg(arg, options, handlers)
-	}
-	return options
 }
 
 function processArg(
