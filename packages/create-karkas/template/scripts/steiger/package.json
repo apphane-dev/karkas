@@ -1,0 +1,15 @@
+{
+	"devDependencies": {
+		"@feature-sliced/steiger-plugin": "^0.7.0",
+		"steiger": "^0.6.0",
+		"typescript": "npm:@typescript/typescript6@^6.0.2"
+	},
+	"devEngines": {
+		"packageManager": {
+			"name": "nub",
+			"version": "^0.4.12",
+			"onFail": "warn"
+		}
+	},
+	"packageManager": "nub@0.4.12"
+}

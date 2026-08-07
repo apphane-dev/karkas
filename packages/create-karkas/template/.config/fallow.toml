@@ -1,0 +1,20 @@
+entry = ["scripts/**/*.ts"]
+# `@typescript/native`: TypeScript 7 compiler, not imported by source.
+# `idb-keyval`: optional dependency of @reatom/core. The Storybook/Vite optimizer
+# eagerly analyzes its dynamic import, so the package must remain resolvable.
+# `storybook`: imported by the kahraman actor harness but never runs in production.
+ignoreDependencies = ["@typescript/native", "idb-keyval", "storybook"]
+
+# Park UI and generated assets are committed vendor/generated code.
+ignorePatterns = [
+	"public/mockServiceWorker.js",
+	"scripts/steiger/**",
+	"src/paraglide/**",
+	"src/shared/components/ui/**",
+	"src/shared/styled-system/**",
+	"theme/recipes/**",
+]
+
+[duplicates]
+ignore = ["messages/**", "src/**/*.stories.tsx"]
+ignoreImports = true

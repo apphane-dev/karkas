@@ -1,0 +1,52 @@
+[task_config]
+dir = "{{ config_root }}"
+
+[vars]
+repo_root = "{{ config_root }}/.."
+site_out_dir = "{{ vars.repo_root }}/.var/dist/site"
+
+[env]
+'_'.path = { path = "{{ vars.repo_root }}/node_modules/.bin" }
+
+[tasks.prepare]
+description = "Sync Astro content collection types"
+run = "nub exec astro sync --config astro.config.mjs"
+sources = ["src/content.config.ts", "src/content/**/*", "astro.config.mjs"]
+outputs = [".astro/**/*"]
+
+[tasks."build:base"]
+hide = true
+usage = '''
+arg "<dir>" env="SITE_OUT_DIR" default="{{ vars.site_out_dir }}" help="Output directory for the landing site build"
+'''
+run = "nub exec astro build --config astro.config.mjs --outDir ${usage_dir?}"
+
+[tasks.build]
+description = "Build landing site"
+depends = ["prepare"]
+run = "mise run build:base"
+sources = ["src/**/*.{astro,ts,css,md}", "astro.config.mjs"]
+outputs = ["{{ vars.site_out_dir }}/**/*"]
+
+[tasks.dev]
+description = "Start Astro development server"
+depends = ["prepare"]
+run = "nub exec astro dev --config astro.config.mjs"
+
+[tasks.format]
+description = "Format landing-site code"
+run = "nub exec vp fmt"
+
+[tasks."format:check"]
+description = "Check landing-site formatting"
+run = "nub exec vp fmt --check"
+
+[tasks.lint]
+description = "Lint landing-site code"
+depends = ["prepare"]
+run = "nub exec vp lint --tsconfig tsconfig.json"
+
+[tasks."lint:fix"]
+description = "Lint landing-site code and apply fixes"
+depends = ["prepare"]
+run = "nub exec vp lint --fix --tsconfig tsconfig.json"

@@ -1,0 +1,39 @@
+[task_config]
+dir = "{{ config_root }}"
+
+[vars]
+repo_root = "{{ config_root }}/../.."
+
+[env]
+'_'.path = { path = "{{ vars.repo_root }}/node_modules/.bin" }
+
+[tasks.build]
+description = "Build the create-karkas CLI"
+run = "nub exec tsup"
+sources = ["src/**/*.ts", "tsup.config.ts", "vite.config.ts"]
+outputs = ["dist/cli.js", "dist/cli.js.map"]
+
+[tasks.test]
+description = "Run create-karkas tests"
+depends = ["build"]
+run = "nub exec vp test run"
+
+[tasks.format]
+description = "Format create-karkas source"
+run = "nub exec vp fmt src tsup.config.ts vite.config.ts tsconfig.json package.json README.md"
+
+[tasks."format:check"]
+description = "Check create-karkas formatting"
+run = "nub exec vp fmt --check src tsup.config.ts vite.config.ts tsconfig.json package.json README.md"
+
+[tasks.lint]
+description = "Lint create-karkas source"
+run = "nub exec vp lint src tsup.config.ts vite.config.ts --type-aware --tsconfig tsconfig.json"
+
+[tasks."lint:fix"]
+description = "Lint and fix create-karkas source"
+run = "nub exec vp lint src tsup.config.ts vite.config.ts --fix --type-aware --tsconfig tsconfig.json"
+
+[tasks.typecheck]
+description = "Type check create-karkas"
+run = "nub exec tsc --noEmit"

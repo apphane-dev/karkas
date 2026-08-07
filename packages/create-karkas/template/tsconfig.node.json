@@ -1,0 +1,11 @@
+{
+	"extends": "./tsconfig.base.json",
+	"compilerOptions": {
+		"lib": ["ESNext"],
+		"types": ["node", "vite-plus/test/globals"],
+		"allowImportingTsExtensions": true,
+		"composite": true,
+		"tsBuildInfoFile": ".var/local/ts/node.tsbuildinfo"
+	},
+	"include": ["*.config.ts", ".storybook/main.ts", "theme"]
+}

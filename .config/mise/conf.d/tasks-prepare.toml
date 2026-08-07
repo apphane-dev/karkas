@@ -1,67 +1,21 @@
-[vars]
-panda_outdir = "src/shared/styled-system"
-panda_config = "panda.config.ts"
-
-[env]
-PANDA_OUTDIR = "{{ vars.panda_outdir }}"
-
-[tasks."prepare:panda"]
-description = "Run Panda code generation"
-# --clean: rewrite all outputs so their mtimes advance past the sources,
-# otherwise the sources/outputs freshness check never passes again
-run = "panda codegen --clean"
-
-sources = ["{{ vars.panda_config }}", "theme/**/*.ts", "components.json"]
-outputs = ["{{ vars.panda_outdir }}/**/*"]
-
-[tasks."prepare:msw"]
-description = "Generate and verify Mock Service Worker"
-# touch: --ensure leaves the file untouched when already aligned, but the
-# freshness check needs the output mtime to advance past the sources
-run = "nub .config/scripts/verify-msw-worker-version.ts --ensure && touch public/mockServiceWorker.js"
-sources = ["package.json", ".config/scripts/verify-msw-worker-version.ts"]
-outputs = ["public/mockServiceWorker.js"]
-
-[tasks."prepare:astro"]
-description = "Sync Astro content collection types for the landing site"
-# Generates site/.astro/*.d.ts (the astro:content virtual module types).
-# These are gitignored, so a clean checkout has none; type-aware lint and
-# typecheck over site/ fail without them. `astro build` syncs implicitly, but
-# lint runs before build in CI, so sync explicitly during prepare.
-run = "astro sync --root site --config astro.config.mjs"
-sources = ["site/src/content.config.ts", "site/src/content/**/*", "site/astro.config.mjs"]
-outputs = ["site/.astro/**/*"]
-
 [tasks."prepare:git-hooks"]
 description = "Install hk Git hooks"
 run = "hk install --mise"
 sources = [".config/hk.pkl"]
 
-[tasks."prepare:paraglide"]
-description = "Compile ParaglideJS message catalogs"
-run = "paraglide-js compile --project ./project.inlang --outdir ./src/paraglide"
-sources = ["messages/**/*.json", "project.inlang/settings.json"]
-outputs = ["src/paraglide/**/*"]
-
 [tasks."prepare:local-overrides"]
-description = "Setup local overrides file if not exists"
+description = "Set up local overrides file if missing"
 run = '''
 if [ ! -f mise.local.toml ]; then
   sed '/^##/d' .config/mise/conf.d/local.toml.example > mise.local.toml
 fi
 '''
 
-[tasks."prepare:codegen"]
-description = "Generate all build-input artifacts (Panda, Paraglide, MSW)"
-depends = ["prepare:panda", "prepare:paraglide", "prepare:msw"]
-
 [tasks.prepare]
-description = "Prepare project"
+description = "Prepare all monorepo projects"
 run = [
-	{ task = "prepare:panda" },
-	{ task = "prepare:paraglide" },
-	{ task = "prepare:msw" },
-	{ task = "prepare:astro" },
-	{ task = "prepare:git-hooks" },
-	{ task = "prepare:local-overrides" },
+	"mise run --no-deps //apps/demo:prepare",
+	"mise run --no-deps //site:prepare",
+	"mise run --no-deps prepare:git-hooks",
+	"mise run --no-deps prepare:local-overrides",
 ]

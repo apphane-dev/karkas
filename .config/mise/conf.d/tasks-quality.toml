@@ -1,103 +1,108 @@
-# Source of truth:
-# - mise owns named project maintenance workflows and low-level tool commands.
-# - hk owns file-scoped quality orchestration for git hooks and fast local check/fix.
-# - Prefer `hk check` / `hk fix` for ordinary format+lint+typecheck validation.
+# mise owns project workflows; hk orchestrates the fast local check/fix loop.
 
 [tasks.check]
-description = "Run hk quality checks (format, lint, typecheck)"
+description = "Run hk quality checks"
 run = "hk check"
 
 [tasks.fix]
-description = "Run hk auto-fixes, then validation (format, lint, typecheck)"
+description = "Run hk auto-fixes and validation"
 run = "hk fix"
 
 [tasks.format]
-description = "Format code with oxfmt"
+description = "Format all monorepo projects"
 alias = "fmt"
-run = "vp fmt"
+run = [
+	"mise run //apps/demo:format",
+	"mise run //packages/create-karkas:format",
+	"mise run //site:format",
+]
 
 [tasks."format:check"]
-description = "Check code formatting"
+description = "Check formatting in all monorepo projects"
 alias = "fmt:check"
-run = "vp fmt --check"
+run = [
+	"mise run //apps/demo:format:check",
+	"mise run //packages/create-karkas:format:check",
+	"mise run //site:format:check",
+]
 
 [tasks.lint]
-description = "Lint code with oxlint"
-run = "vp lint"
+description = "Lint all monorepo projects"
+run = [
+	"mise run //apps/demo:lint",
+	"mise run //packages/create-karkas:lint",
+	"mise run //site:lint",
+]
 
 [tasks."lint:fix"]
-description = "Lint code and apply fixes with oxlint"
-run = "vp lint --fix"
+description = "Lint and fix all monorepo projects"
+run = [
+	"mise run //apps/demo:lint:fix",
+	"mise run //packages/create-karkas:lint:fix",
+	"mise run //site:lint:fix",
+]
 
 [tasks.typecheck]
-description = "Type check with TypeScript 7"
+description = "Type check all TypeScript projects"
 alias = "tc"
-run = "tsc -b"
+run = ["mise run //apps/demo:typecheck", "mise run //packages/create-karkas:typecheck"]
 
 [tasks."lint:steiger"]
-description = "Check FSD architecture with steiger"
-run = "nub scripts/steiger.ts"
+description = "Check demo FSD architecture with steiger"
+run = "mise run //apps/demo:lint:steiger"
 
 [tasks."lint:fallow"]
-description = "Check dead code, duplication, and coverage-aware complexity with Fallow"
+description = "Check dead code, duplication, and coverage-aware complexity"
 run = [{ tasks = ["lint:fallow:dead-code", "lint:fallow:dupes", "lint:fallow:health"] }]
 
 [tasks."lint:fallow:dead-code"]
-description = "Check for dead-code findings against the Fallow baseline"
-run = "fallow dead-code --config .config/fallow.toml --fail-on-issues"
+description = "Check dead-code findings against the Fallow baseline"
+run = "nub exec fallow dead-code --config .config/fallow.toml --fail-on-issues"
 
 [tasks."lint:fallow:dupes"]
-description = "Check for duplicate-code findings against the Fallow baseline"
-run = "fallow dupes --config .config/fallow.toml --fail-on-issues"
+description = "Check duplicate-code findings against the Fallow baseline"
+run = "nub exec fallow dupes --config .config/fallow.toml --fail-on-issues"
 
 [tasks."lint:fallow:health"]
-description = "Check coverage-aware complexity/CRAP findings with Fallow"
-depends = ["test:coverage"]
-run = "fallow health --config .config/fallow.toml --complexity --coverage .var/coverage --fail-on-issues"
+description = "Check coverage-aware complexity/CRAP findings"
+run = [
+	"mise run //apps/demo:test:coverage",
+	"nub exec fallow health --config .config/fallow.toml --complexity --coverage .var/coverage --fail-on-issues",
+]
 
 [tasks."lint:fallow:fix:preview"]
-description = "Preview Fallow's unused-export and dependency autofixes"
-run = "fallow fix --config .config/fallow.toml --dry-run"
+description = "Preview Fallow unused-export and dependency fixes"
+run = "nub exec fallow fix --config .config/fallow.toml --dry-run"
 
 [tasks."lint:fallow:fix"]
-description = "Apply Fallow's unused-export and dependency autofixes"
-run = "fallow fix --config .config/fallow.toml --yes"
+description = "Apply Fallow unused-export and dependency fixes"
+run = "nub exec fallow fix --config .config/fallow.toml --yes"
 
 [tasks."lint:paraglide-tree-shaking"]
-description = "Verify unused translations are tree-shaken from the production bundle"
-depends = ["build:webapp"]
-run = "nub scripts/check-tree-shaking.ts"
+description = "Verify unused translations are tree-shaken"
+run = "mise run //apps/demo:lint:paraglide-tree-shaking"
 
 [tasks.validate]
-description = "Run all quality checks (format, lint, typecheck, test). Default validation task for LLMs"
+description = "Run the full local quality pipeline with auto-fixes"
 env = { VITE_CONNECT_LOGGER = "false" }
-run = [ #
+run = [
 	{ task = "prepare" },
 	{ task = "format" },
 	{ task = "lint:fix" },
-	{ task = "test:coverage" },
+	{ task = "test:ci" },
 	{ tasks = ["typecheck", "lint:steiger", "lint:fallow"] },
 	{ task = "lint:paraglide-tree-shaking" },
 ]
 
 [tasks.ci]
-description = "Run all CI checks. No auto-fixes"
+description = "Run all CI checks without auto-fixes"
 env = { VITE_CONNECT_LOGGER = "false" }
 run = [
-	{ tasks = [
-		"prepare:panda",
-		"prepare:paraglide",
-		"prepare:msw",
-		"prepare:astro",
-	] },
+	{ task = "prepare" },
 	{ task = "format:check" },
 	{ task = "lint" },
-	{ task = "test:coverage" },
-	{ tasks = [
-		"typecheck",
-		"lint:steiger",
-		"lint:fallow",
-	] },
+	{ task = "test:ci" },
+	{ tasks = ["typecheck", "lint:steiger", "lint:fallow"] },
 	{ task = "build" },
 	{ task = "lint:paraglide-tree-shaking" },
 ]

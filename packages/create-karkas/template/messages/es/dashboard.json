@@ -1,0 +1,15 @@
+{
+	"dashboard_title": "Panel",
+	"dashboard_error_title": "No se pudo cargar el panel",
+	"dashboard_error_description": "No pudimos cargar los datos del panel. Intenta de nuevo en un momento.",
+	"dashboard_loading_page": "Cargando página del panel",
+	"dashboard_stat_vs_last_week": "vs semana pasada",
+	"dashboard_top_pages": "Páginas principales",
+	"dashboard_col_page": "Página",
+	"dashboard_col_views": "Visitas",
+	"dashboard_col_traffic_share": "Cuota de tráfico",
+	"dashboard_weekly_traffic": "Tráfico semanal",
+	"dashboard_recent_activity": "Actividad reciente",
+	"dashboard_col_activity": "Actividad",
+	"dashboard_col_time": "Tiempo"
+}

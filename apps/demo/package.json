@@ -1,0 +1,82 @@
+{
+	"name": "@karkas/demo",
+	"version": "0.0.0",
+	"private": true,
+	"license": "MIT",
+	"type": "module",
+	"module": "index.ts",
+	"imports": {
+		"#.storybook/*": "./.storybook/*",
+		"#styled-system/*": "./src/shared/styled-system/*",
+		"#theme/*": "./theme/*",
+		"#*": "./src/*"
+	},
+	"scripts": {
+		"build": "mise run build:webapp",
+		"check": "mise run check",
+		"dev": "mise run dev",
+		"fix": "mise run fix",
+		"format": "mise run format",
+		"lint": "mise run lint",
+		"lint:fallow": "mise run //:lint:fallow",
+		"lint:fallow:fix": "mise run //:lint:fallow:fix",
+		"lint:fallow:fix:preview": "mise run //:lint:fallow:fix:preview",
+		"prepare": "mise run --no-deps prepare",
+		"preview": "mise run preview",
+		"storybook": "mise run storybook",
+		"test": "mise run test",
+		"test:coverage": "mise run test:coverage",
+		"test:run": "mise run test:run",
+		"typecheck": "mise run typecheck",
+		"validate": "mise run validate"
+	},
+	"dependencies": {
+		"@ark-ui/react": "^5.37.2",
+		"@icons-pack/react-simple-icons": "^13.13.0",
+		"@reatom/core": "^1001.3.0",
+		"@reatom/react": "^1001.0.1",
+		"idb-keyval": "^6.2.1",
+		"kahraman": "^0.3.0",
+		"lucide-react": "^1.21.0",
+		"msw": "2.15.0",
+		"react": "^19.2.7",
+		"react-dom": "^19.2.7"
+	},
+	"devDependencies": {
+		"@inlang/paraglide-js": "^2.20.2",
+		"@pandacss/dev": "^1.11.4",
+		"@pandacss/studio": "^1.11.4",
+		"@storybook/addon-a11y": "~10.4.6",
+		"@storybook/addon-docs": "~10.4.6",
+		"@storybook/addon-vitest": "~10.4.6",
+		"@storybook/react-vite": "~10.4.6",
+		"@total-typescript/ts-reset": "^0.6.1",
+		"@types/react": "^19.2.17",
+		"@types/react-dom": "^19.2.3",
+		"@typescript/native": "npm:typescript@^7.0.2",
+		"@vitejs/plugin-react": "^6.0.3",
+		"@vitest/browser-playwright": "4.1.10",
+		"@vitest/coverage-v8": "^4.1.10",
+		"fallow": "^3.5.1",
+		"msw-storybook-addon": "^2.0.7",
+		"playwright": "^1.61.1",
+		"storybook": "~10.4.6",
+		"typescript": "npm:@typescript/typescript6@^6.0.2",
+		"vite": "^8.1.0",
+		"vite-plus": "^0.2.5",
+		"vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.24"
+	},
+	"devEngines": {
+		"packageManager": {
+			"name": "nub",
+			"version": "^0.4.12",
+			"onFail": "warn"
+		}
+	},
+	"packageManager": "nub@0.4.12",
+	"msw": {
+		"workerDirectory": [
+			"public"
+		]
+	}
+}

@@ -10,13 +10,13 @@ Project Reatom code favors direct reads, explicit names, and inline event wiring
 
 | File                                         | Why read it                                                     |
 | -------------------------------------------- | --------------------------------------------------------------- |
-| `src/pages/calculator/ui/CalculatorPage.tsx` | Clear examples of atom/action naming and inline `wrap` handlers |
-| `src/pages/items/model/filters.ts`           | URL-bound filters kept in the page model layer                  |
-| `src/pages/items/ui/ItemsPage.tsx`           | Practical `reatomLoc` + UI binding patterns                     |
-| `src/pages/settings/model/settingsForm.ts`   | Route-loader factory for page-scoped forms                      |
-| `src/pages/settings/ui/SettingsPage.tsx`     | Binding route-scoped form fields to inputs and selects          |
-| `src/pages/timer/model/atoms.ts`             | Async action patterns (`sleep`, `withAbort`, change hooks)      |
-| `src/shared/model/locale.ts`                 | Extended atom pattern with helpers (`label`, `reatomLoc`)       |
+| `apps/demo/src/pages/calculator/ui/CalculatorPage.tsx` | Clear examples of atom/action naming and inline `wrap` handlers |
+| `apps/demo/src/pages/items/model/filters.ts`           | URL-bound filters kept in the page model layer                  |
+| `apps/demo/src/pages/items/ui/ItemsPage.tsx`           | Practical `reatomLoc` + UI binding patterns                     |
+| `apps/demo/src/pages/settings/model/settingsForm.ts`   | Route-loader factory for page-scoped forms                      |
+| `apps/demo/src/pages/settings/ui/SettingsPage.tsx`     | Binding route-scoped form fields to inputs and selects          |
+| `apps/demo/src/pages/timer/model/atoms.ts`             | Async action patterns (`sleep`, `withAbort`, change hooks)      |
+| `apps/demo/src/shared/model/locale.ts`                 | Extended atom pattern with helpers (`label`, `reatomLoc`)       |
 
 ## Rules
 
@@ -55,6 +55,6 @@ Project Reatom code favors direct reads, explicit names, and inline event wiring
 ## Edge Cases
 
 - Local snapshots are valid when value consistency across mutations matters in one action.
-- Plain API helpers such as `src/shared/api/index.ts` stay framework-agnostic and do not import Reatom helpers; use `wrap` at Reatom event/action/computed boundaries instead.
+- Plain API helpers such as `apps/demo/src/shared/api/index.ts` stay framework-agnostic and do not import Reatom helpers; use `wrap` at Reatom event/action/computed boundaries instead.
 - If an inline handler becomes hard to read, extract it, but keep naming domain-specific.
 - If this doc drifts from source, source wins; update the doc to match current code.

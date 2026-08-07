@@ -1,30 +1,27 @@
-[vars]
-vite_port = "5173"
-storybook_port = "6006"
-
 [tasks.dev]
-description = "Start Vite dev server"
-depends = ["prepare:codegen"]
+description = "Start demo Vite dev server"
 usage = '''
-flag "-p --port <port>" env="VITE_PORT" default="{{ vars.vite_port }}" help="Port for the Vite dev server"
+flag "-p --port <port>" help="Port for the Vite dev server"
 arg "[rest]" help="Additional arguments to pass to Vite"
 '''
-run = "vp dev --port ${usage_port?} ${usage_rest}"
+run = "mise run //apps/demo:dev -- ${usage_port:+--port ${usage_port}} ${usage_rest}"
 
 [tasks.storybook]
-description = "Start Storybook dev server"
+description = "Start demo Storybook"
 alias = "sb"
-depends = ["prepare:codegen"]
 usage = '''
-flag "-p --port <port>" env="STORYBOOK_PORT" default="{{ vars.storybook_port }}" help="Port for the Storybook dev server"
+flag "-p --port <port>" help="Port for Storybook"
 '''
-run = "storybook dev -p ${usage_port?}"
+run = "mise run //apps/demo:storybook -- ${usage_port:+--port ${usage_port}}"
+
+[tasks."dev:site"]
+description = "Start landing-site development server"
+run = "mise run //site:dev"
 
 [tasks.preview]
-description = "Preview production build"
-depends = ["build:webapp"]
-run = "vp preview"
+description = "Preview demo production build"
+run = "mise run //apps/demo:preview"
 
 [tasks.clean]
-description = "Clean build artifacts and caches"
-run = ["rm -rf .var", "rm -rf node_modules/.vite"]
+description = "Clean monorepo build artifacts and caches"
+run = ["rm -rf .var", "rm -rf apps/demo/node_modules/.vite site/node_modules/.vite"]

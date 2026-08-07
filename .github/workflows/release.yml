@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: release-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Nub
+        uses: nubjs/setup-nub@47e5e7393d50f4e9544ddaf756aa277972afba2d # v0
+        with:
+          cache-dependency-path: '**/nub.lock'
+
+      - name: Setup mise
+        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+        with:
+          install: true
+          cache: true
+
+      - name: Config mise
+        run: mise settings experimental=true
+
+      - name: Update npm for OIDC trusted publishing
+        run: npm install --global npm@latest
+
+      - name: Install dependencies
+        run: nub ci
+
+      - name: Build package
+        run: mise run //packages/create-karkas:build
+
+      - name: Create release PR or publish to npm
+        uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1
+        with:
+          version: nub exec changeset version
+          publish: nub run release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true

@@ -1,0 +1,18 @@
+{
+	"$schema": "https://inlang.com/schema/inlang-message-format",
+	"error_retry": "Intentar de nuevo",
+	"app_name": "{{project-title}}",
+	"nav_dashboard": "Panel",
+	"language_en": "Inglés",
+	"language_es": "Español",
+	"topbar_language_switcher_label": "Cambiar idioma",
+	"topbar_github_link_label": "Ver código fuente en GitHub",
+	"topbar_toggle_sidebar": "Alternar barra lateral",
+	"topbar_open_menu": "Abrir menú",
+	"list_filters": "Filtros",
+	"topbar_search_placeholder": "Buscar...",
+	"topbar_toggle_theme_label": "Cambiar tema",
+	"not_found_title": "Página no encontrada",
+	"not_found_description": "La página que buscas no existe.",
+	"reatomloc_tree_shake_canary": "reatomLoc árbol canario — no debe aparecer en el bundle"
+}

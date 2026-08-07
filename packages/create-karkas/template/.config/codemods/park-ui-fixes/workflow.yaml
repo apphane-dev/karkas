@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/codemod/codemod/refs/heads/main/schemas/workflow.json
+
+version: '1'
+
+nodes:
+  - id: apply-transforms
+    name: Apply AST Transformations
+    type: automatic
+    steps:
+      - name: 'Apply cleanup rules'
+        ast-grep:
+          config_file: 'rules/styled-imports.yml'
+          include:
+            - '**/*.ts'
+            - '**/*.tsx'
+      - name: 'Apply legacy react/19/remove-forward-ref'
+        run: 'nubx codemod@legacy react/19/remove-forward-ref -t ./src/shared/components/ --allow-dirty --no-interactive'
+      - name: 'Cleanup ref types'
+        ast-grep:
+          config_file: 'rules/remove-ref-types.yml'
+          include:
+            - '**/*.ts'
+            - '**/*.tsx'

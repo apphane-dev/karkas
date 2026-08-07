@@ -1,0 +1,17 @@
+{
+	"extends": "./tsconfig.base.json",
+	"compilerOptions": {
+		"lib": ["ESNext", "DOM", "DOM.Iterable"],
+		"jsx": "react-jsx",
+		"allowJs": true,
+		"allowImportingTsExtensions": true,
+		"composite": true,
+		"paths": {
+			"#.storybook/*": ["./.storybook/*"],
+			"#styled-system/*": ["./src/shared/styled-system/*"],
+			"#*": ["./src/*"]
+		},
+		"tsBuildInfoFile": ".var/local/ts/app.tsbuildinfo"
+	},
+	"include": ["src", ".storybook/**/*"]
+}

@@ -1,0 +1,12 @@
+# Remove ref: React.RefObject<T> from intersection types
+id: remove-ref-from-intersection-types
+language: tsx
+rule:
+  any:
+    - pattern:
+        context: 'type __T = $PROPS & { ref: React.RefObject<$REF_TYPE> }'
+        selector: intersection_type
+    - pattern:
+        context: 'type __T = $PROPS & { ref?: React.RefObject<$REF_TYPE> }'
+        selector: intersection_type
+fix: $PROPS

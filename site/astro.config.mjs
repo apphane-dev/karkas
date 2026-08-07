@@ -1,4 +1,4 @@
-import { defineConfig } from 'astro/config'
+import { defineConfig } from "astro/config";
 
 // The landing site is served at the domain root. The demo SPA lives under
 // /demo/ and Storybook under /storybook/ in the assembled deployment; those
@@ -8,11 +8,11 @@ import { defineConfig } from 'astro/config'
 // absolute path) by the mise build tasks, not here, so the composite CF Pages
 // build can place this site at the artifact root.
 export default defineConfig({
-	site: 'https://karkas.apphane.dev',
-	base: '/',
-	trailingSlash: 'ignore',
+	site: "https://karkas.apphane.dev",
+	base: "/",
+	trailingSlash: "ignore",
 	build: {
-		format: 'directory',
+		format: "directory",
 	},
 	server: { allowedHosts: true },
-})
+});

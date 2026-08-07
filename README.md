@@ -1,123 +1,115 @@
 # karkas
 
-A modern React application demonstrating an opinionated setup with Nub, React 19, Reatom state management, Panda CSS styling, and Storybook with Vitest integration.
+[![npm](https://img.shields.io/npm/v/create-karkas?label=create-karkas)](https://www.npmjs.com/package/create-karkas)
+
+Karkas is an opinionated React application stack and a working reference implementation.
+This repository contains the demo application, its documentation site, and the
+`create-karkas` initializer.
+
+## Scaffold a project
+
+```bash
+npm create karkas@latest my-app
+cd my-app
+nub install
+mise run dev
+```
+
+The generated single-app project includes React 19, Reatom state and routing, Feature-Sliced
+Design, Panda CSS with Park UI, ParaglideJS localization, MSW, Storybook, Vitest browser
+coverage, Kahraman actors, Vite+, Nub, mise, hk, Fallow, and Steiger.
+
+## Repository layout
+
+```text
+apps/demo/                 Reference React application
+packages/create-karkas/    npm initializer and curated project template
+site/                      Astro documentation and landing site
+.config/                   Monorepo-wide mise, hk, and Fallow configuration
+docs/                      Source-first stack documentation
+```
+
+mise exposes child-project tasks with names such as `//apps/demo:build` and
+`//packages/create-karkas:test`. Root tasks orchestrate the complete repository.
 
 ## Stack
 
-- Package Manager: Nub (using Aube's install engine)
 - Framework: React 19
-- State Management: Reatom
-- Styling: Panda CSS (with Park UI components)
-- Routing: Reatom routing (`reatomRoute`)
+- State and routing: Reatom
+- Architecture: Feature-Sliced Design
+- Styling: Panda CSS with Park UI
 - Internationalization: ParaglideJS
-- UI Development: Storybook with Vitest integration
-- Testing: Vitest with Playwright, written as Storybook integration stories
-- Code Quality: oxfmt (formatter), oxlint (linter), Fallow (dead code / complexity), TypeScript 7 RC
-- Mocking: MSW (Mock Service Worker)
-- Build Tooling: Vite+ (`vite-plus`), wrapping Vite/Vitest
-- Git Hooks & Quality Orchestration: `hk`
-- Task Workflows: `mise`
+- UI development: Storybook
+- Testing: Vitest browser mode with Playwright and Kahraman
+- Mocking: MSW
+- Build tooling: Vite+
+- Package manager: Nub
+- Task workflows: mise
+- Quality: oxfmt, oxlint, TypeScript, hk, Fallow, and Steiger
 
-## Architecture
+## Demo architecture
 
-The app follows a Feature-Sliced Design (FSD) layout under `src/`:
+The reference app follows Feature-Sliced Design under `apps/demo/src/`:
 
 | Layer        | Responsibility                                                                |
 | ------------ | ----------------------------------------------------------------------------- |
 | `app/`       | Application shell, global composition, integration stories, MSW browser setup |
-| `pages/`     | Route-level compositions and per-page UI, navigation, loading/error states    |
-| `widgets/`   | Compositional blocks combining entities and shared UI (e.g. `AppShell`)       |
-| `entities/`  | Domain models: API client calls, types, mocks, and Reatom atoms               |
-| `shared/`    | Cross-cutting infra: API client, router, kahraman test extensions, components |
-| `paraglide/` | Generated ParaglideJS output (do not edit)                                    |
+| `pages/`     | Route-level composition, navigation, loading, and error states                |
+| `widgets/`   | Compositional blocks combining entities and shared UI                         |
+| `entities/`  | Domain models, API calls, types, mocks, and Reatom atoms                       |
+| `shared/`    | API, router, models, Kahraman extensions, mocks, and UI components             |
+| `paraglide/` | Generated ParaglideJS output                                                   |
 
-Each `entity` is self-contained with `api/`, `model/`, `mocks/`, and an `index.ts` barrel. Tests live in `src/app/integration/*.stories.tsx` as user-observable Storybook stories — see [docs/testing.md](docs/testing.md).
+Entities are self-contained with `api/`, `model/`, `mocks/`, and `index.ts` boundaries.
+User-observable integration tests live in `apps/demo/src/app/integration/*.stories.tsx`.
 
-## Setup
+## Development
 
-Install dependencies:
+Install the workspace and run its preparation lifecycle:
 
 ```bash
 nub install
 ```
 
-This runs the `prepare` script, which:
+Common commands:
 
-- Generates the Panda CSS styled-system
-- Compiles ParaglideJS message catalogs
-- Generates and verifies the MSW worker
-- Installs `hk` Git hooks
+| Goal                         | Command                                  |
+| ---------------------------- | ---------------------------------------- |
+| Run the demo                 | `mise run dev`                           |
+| Run Storybook                | `mise run storybook`                     |
+| Run the site                 | `mise run dev:site`                      |
+| Build every project          | `mise run build`                         |
+| Fast quality check           | `hk check`                               |
+| Auto-fix format and lint     | `hk fix`                                 |
+| Full local validation        | `mise run validate`                      |
+| Build the initializer        | `mise run //packages/create-karkas:build` |
+| Test the initializer         | `mise run //packages/create-karkas:test`  |
 
-## Development
+The prepare lifecycle generates Panda's styled system, compiles ParaglideJS messages,
+generates and verifies the MSW worker, synchronizes Astro types, and installs hk hooks.
 
-Run the development server:
+## Live projects
 
-```bash
-nub run dev
-```
-
-## Validation loop
-
-| Goal                                                                               | Command             |
-| ---------------------------------------------------------------------------------- | ------------------- |
-| Fast quality check (changed)                                                       | `hk check`          |
-| Fast quality check (all)                                                           | `hk check --all`    |
-| Auto-fix format/lint                                                               | `hk fix`            |
-| Full pipeline (prepare, tests, coverage, architecture, Fallow, build/tree-shaking) | `mise run validate` |
-
-For routine validation, prefer `hk check` / `hk fix`; use `mise run validate` only for the complete pipeline.
-
-## Live
-
-- [App](https://karkas.apphane.dev/)
+- [Landing site](https://karkas.apphane.dev/)
+- [Demo application](https://karkas.apphane.dev/demo/)
 - [Storybook](https://karkas.apphane.dev/storybook/)
-
-## Git Hooks
-
-Quality orchestration is handled by `hk` (configuration in `.config/hk.pkl`), not a generic git-hooks runner.
-
-| Hook         | Steps        | Notes                                                        |
-| ------------ | ------------ | ------------------------------------------------------------ |
-| `pre-commit` | `fastSteps`  | Runs with auto-fix; format, lint, typecheck on staged files. |
-| `pre-push`   | `checkSteps` | Adds the Fallow step; same gate as `hk check`.               |
-
-`hk install --mise` is wired into the `prepare` task, so hooks are installed automatically after `nub install`.
 
 ## Documentation
 
-In-depth, source-first documentation lives in [`docs/`](docs/):
+- [Tooling](docs/tooling.md) — Vite+, mise, Nub, and hk responsibilities
+- [Testing](docs/testing.md) — Storybook integration stories, Kahraman, and coverage
+- [Localization](docs/localization.md) — ParaglideJS and message catalogs
+- [Reatom patterns](docs/reatom-patterns.md) — application state conventions
+- [Reatom extensions](docs/reatom-extensions.md) — reusable Reatom helpers
 
-- [Tooling](docs/tooling.md) — the Vite+ / `mise` / `hk` responsibility split and known alias notes
-- [Testing](docs/testing.md) — the Storybook integration-story approach, kahraman actor/locator DSL, and coverage policy
-- [Localization](docs/localization.md) — ParaglideJS setup and message catalogs
-- [Reatom patterns](docs/reatom-patterns.md) — conventions for Reatom state management
-- [Reatom extensions](docs/reatom-extensions.md) — reusable Reatom extension helpers
+## CI, deployment, and releases
 
-## CI/CD
+`.github/workflows/test.yml` validates the workspace on pushes and pull requests.
+`.github/workflows/deploy.yml` assembles the landing site, demo, and Storybook into one
+Cloudflare Pages artifact. `.github/workflows/release.yml` uses Changesets and npm trusted
+publishing through GitHub OIDC; it does not require an `NPM_TOKEN`.
 
-The project uses GitHub Actions for continuous integration and deployment.
-
-### Test Workflow
-
-Runs on every push and pull request to `main`:
-
-- Type checking with TypeScript
-- Code formatting validation with oxfmt
-- Linting with oxlint
-- Storybook component tests with Vitest and Playwright
-- Coverage report generation and upload
-- Coverage summary in GitHub Actions output
-
-Configuration: `.github/workflows/test.yml`
-
-### Deployment Workflow
-
-Automatically deploys to Cloudflare Pages on push to `main`:
-
-- Builds the React application and Storybook
-- Combines both into a single artifact (app at root, Storybook at `/storybook`)
-- Uploads the artifact to the `karkas` Cloudflare Pages project via `wrangler`
-
-Configuration: `.github/workflows/deploy.yml`
-
-One-time setup: create the `karkas` Cloudflare Pages project, add the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets, and point the `karkas.apphane.dev` DNS record at the Pages hostname.
+npm only allows trusted-publisher configuration after a package exists. Bootstrap the free
+`create-karkas` name with one authenticated manual publish of the generated `0.1.0` release,
+then configure its trusted publisher for repository `apphane-dev/karkas` and workflow
+`.github/workflows/release.yml`. Every subsequent release is tokenless through GitHub OIDC.

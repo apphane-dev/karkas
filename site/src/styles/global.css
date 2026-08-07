@@ -34,9 +34,9 @@
 	--white: #ffffff;
 
 	/* Type */
-	--display: 'Archivo', 'Archivo Placeholder', system-ui, sans-serif;
-	--body: 'Public Sans', system-ui, -apple-system, sans-serif;
-	--mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+	--display: "Archivo", "Archivo Placeholder", system-ui, sans-serif;
+	--body: "Public Sans", system-ui, -apple-system, sans-serif;
+	--mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
 
 	/* Rhythm */
 	--maxw: 1300px;
@@ -141,7 +141,7 @@ a {
 }
 
 .tag::before {
-	content: '';
+	content: "";
 	width: 1.4rem;
 	height: 1px;
 	background: var(--blueprint);
