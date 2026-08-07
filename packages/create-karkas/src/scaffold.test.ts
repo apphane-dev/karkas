@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { afterEach, expect, test } from 'vite-plus/test'
+import { afterEach, expect, test } from 'vitest'
 
 import { scaffoldProject } from './scaffold'
 

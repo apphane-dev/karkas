@@ -3,8 +3,7 @@ import { App } from '#app/App'
 import { DASHBOARD_API_PATH } from '#entities/dashboard/api/dashboardApi'
 import { dashboardStats } from '#entities/dashboard/mocks/handlers'
 import { dashboardActor as I, dashboardLoc as loc } from '#pages/dashboard/testing'
-import { m } from '#paraglide/messages.js'
-import { button, link, role, text } from '#shared/test'
+import { button, role, text } from '#shared/test'
 import {
 	createRouteFetchAbortProbe,
 	expectRouteFetchAbortOnNavigation,
@@ -90,10 +89,10 @@ AbortsPendingDashboardRequestOnNavigation.test(
 	async () => {
 		await expectRouteFetchAbortOnNavigation(
 			dashboardFetchAbortProbe,
-			// Navigating to the root brand link leaves the dashboard route; the
-			// root redirect returns to it, but the in-flight loader is aborted
-			// first by the route unmatch.
-			() => I.click(link(m.app_name())),
+			async () => {
+				await I.click(button(/Alex Morgan/))
+				await I.click(role('menuitem', /Sign out/).wait())
+			},
 			{ assertLoading: () => I.seeLoading() },
 		)
 	},

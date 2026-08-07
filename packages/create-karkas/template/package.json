@@ -42,6 +42,7 @@
 		"react-dom": "^19.2.7"
 	},
 	"devDependencies": {
+		"@feature-sliced/steiger-plugin": "^0.7.0",
 		"@inlang/paraglide-js": "^2.20.2",
 		"@pandacss/dev": "^1.11.4",
 		"@pandacss/studio": "^1.11.4",
@@ -59,11 +60,12 @@
 		"fallow": "^3.5.1",
 		"msw-storybook-addon": "^2.0.7",
 		"playwright": "^1.61.1",
+		"steiger": "^0.6.0",
 		"storybook": "~10.4.6",
 		"typescript": "npm:@typescript/typescript6@^6.0.2",
 		"vite": "^8.1.0",
 		"vite-plus": "^0.2.5",
-		"vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.24"
+		"vitest": "4.1.10"
 	},
 	"devEngines": {
 		"packageManager": {

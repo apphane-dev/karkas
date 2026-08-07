@@ -46,7 +46,8 @@
 		"@types/node": "^24.0.0",
 		"tsup": "^8.5.0",
 		"typescript": "npm:@typescript/typescript6@^6.0.2",
-		"vite-plus": "^0.2.5"
+		"vite-plus": "^0.2.5",
+		"vitest": "4.1.10"
 	},
 	"devEngines": {
 		"packageManager": {

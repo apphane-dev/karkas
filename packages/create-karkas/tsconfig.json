@@ -4,7 +4,7 @@
 		"module": "ESNext",
 		"moduleResolution": "bundler",
 		"moduleDetection": "force",
-		"types": ["node", "vite-plus/test/globals"],
+		"types": ["node"],
 		"verbatimModuleSyntax": true,
 		"isolatedModules": true,
 		"strict": true,

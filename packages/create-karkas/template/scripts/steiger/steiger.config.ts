@@ -33,6 +33,13 @@ export default defineConfig([
 		},
 	},
 	{
+		// Panda generates #styled-system/* entry points rather than one FSD public API.
+		files: ['../../src/pages/**/ui/**', '../../src/widgets/**/ui/**'],
+		rules: {
+			'fsd/no-public-api-sidestep': 'off',
+		},
+	},
+	{
 		files: ['../../src/app/**'],
 		rules: {
 			'fsd/no-public-api-sidestep': 'off',

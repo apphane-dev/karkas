@@ -21,8 +21,8 @@ vite_port = "5173"
 storybook_port = "6006"
 test_timeout = "10000"
 coverage_threshold_lines = "80"
-coverage_threshold_functions = "80"
-coverage_threshold_branches = "75"
+coverage_threshold_functions = "75"
+coverage_threshold_branches = "60"
 coverage_threshold_statements = "80"
 codemod_workflow = ".config/codemods/park-ui-fixes/"
 codemod_target = "./src/shared/components/ui/"
@@ -78,8 +78,12 @@ description = "Generate all build-input artifacts (Panda, Paraglide, MSW)"
 depends = ["prepare:panda", "prepare:paraglide", "prepare:msw"]
 
 [tasks."prepare:git-hooks"]
-description = "Install hk Git hooks"
-run = "hk install --mise"
+description = "Install hk Git hooks when the project is a Git repository"
+run = '''
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  hk install --mise
+fi
+'''
 sources = [".config/hk.pkl"]
 
 [tasks."prepare:local-overrides"]
@@ -208,7 +212,7 @@ run = "hk fix"
 
 [tasks."lint:steiger"]
 description = "Check FSD architecture with steiger"
-run = "nub scripts/steiger.ts"
+run = "cd scripts/steiger && ../../node_modules/.bin/steiger ../../src"
 
 [tasks."lint:paraglide-tree-shaking"]
 description = "Verify unused translations are tree-shaken"

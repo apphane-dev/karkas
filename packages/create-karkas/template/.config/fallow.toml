@@ -3,12 +3,62 @@ entry = ["scripts/**/*.ts"]
 # `idb-keyval`: optional dependency of @reatom/core. The Storybook/Vite optimizer
 # eagerly analyzes its dynamic import, so the package must remain resolvable.
 # `storybook`: imported by the kahraman actor harness but never runs in production.
-ignoreDependencies = ["@typescript/native", "idb-keyval", "storybook"]
+# `@ark-ui/react`: consumed by the excluded generated Park UI component sources.
+# Steiger and its FSD plugin are loaded by the excluded tooling config and mise task.
+ignoreDependencies = [
+	"@ark-ui/react",
+	"@feature-sliced/steiger-plugin",
+	"@typescript/native",
+	"idb-keyval",
+	"steiger",
+	"storybook",
+]
+
+# The skeleton keeps these shared extension points even when its starter screens do not
+# consume them yet.
+ignoreExports = [
+	{ file = "src/shared/api/index.ts", exports = [
+		"isApiError",
+	] },
+	{ file = "src/shared/components/CollectionSelect.tsx", exports = [
+		"CollectionSelect",
+	] },
+	{ file = "src/shared/components/index.ts", exports = [
+		"CollectionSelect",
+	] },
+	{ file = "src/shared/model/index.ts", exports = [
+		"reatomLoc",
+		"withMatchMobileHeaderOverride",
+	] },
+	{ file = "src/shared/model/locale.ts", exports = [
+		"reatomLoc",
+	] },
+	{ file = "src/shared/router.ts", exports = [
+		"createSearchParamsPath",
+	] },
+	{ file = "src/shared/test/index.ts", exports = [
+		"link",
+		"withDetailError",
+	] },
+	{ file = "src/shared/test/pageActor.ts", exports = [
+		"withDetailError",
+	] },
+	{ file = "src/widgets/data-page/index.ts", exports = [
+		"ListToolbar",
+		"NoSelectionState",
+	] },
+	{ file = "src/widgets/data-page/ui/ListToolbar.tsx", exports = [
+		"ListToolbar",
+	] },
+	{ file = "src/widgets/data-page/ui/NoSelectionState.tsx", exports = [
+		"NoSelectionState",
+	] },
+]
 
 # Park UI and generated assets are committed vendor/generated code.
 ignorePatterns = [
 	"public/mockServiceWorker.js",
-	"scripts/steiger/**",
+	"scripts/steiger/steiger.config.ts",
 	"src/paraglide/**",
 	"src/shared/components/ui/**",
 	"src/shared/styled-system/**",
