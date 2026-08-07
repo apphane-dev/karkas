@@ -63,7 +63,11 @@ async function main() {
 	})
 	progress.stop('Project ready')
 
-	const displayPath = relative(process.cwd(), result.targetDirectory) || '.'
+	// A relative path that climbs out of the current directory (e.g. ../../tmp/app)
+	// reads worse in the next-steps box than the absolute path it resolves to.
+	const relativePath = relative(process.cwd(), result.targetDirectory)
+	const displayPath =
+		relativePath && !relativePath.startsWith('..') ? relativePath : result.targetDirectory
 	p.note(`cd ${displayPath}\nnub install\nmise run dev`, 'Next steps')
 	if (initializeGit && !result.gitInitialized) {
 		p.log.warn('Git is unavailable, so the project was created without a repository.')
