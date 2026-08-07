@@ -66,16 +66,24 @@ function parseArgs(args: string[]): CliOptions {
 	}
 
 	for (const arg of args) {
-		const handler = handlers[arg]
-		if (handler) {
-			handler(options)
-			continue
-		}
-		if (arg.startsWith('-')) throw new Error(`Unknown option: ${arg}`)
-		if (options.target) throw new Error(`Unexpected argument: ${arg}`)
-		options.target = arg
+		processArg(arg, options, handlers)
 	}
 	return options
+}
+
+function processArg(
+	arg: string,
+	options: CliOptions,
+	handlers: Record<string, (o: CliOptions) => void>,
+) {
+	const handler = handlers[arg]
+	if (handler) {
+		handler(options)
+		return
+	}
+	if (arg.startsWith('-')) throw new Error(`Unknown option: ${arg}`)
+	if (options.target) throw new Error(`Unexpected argument: ${arg}`)
+	options.target = arg
 }
 
 async function prepareScaffoldContext(options: CliOptions) {
