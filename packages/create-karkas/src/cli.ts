@@ -47,50 +47,72 @@ async function main() {
 
 function parseArgs(args: string[]): CliOptions {
 	const options: CliOptions = { force: false }
+	const handlers: Record<string, (o: CliOptions) => void> = {
+		'--help': (o) => {
+			o.help = true
+		},
+		'--version': (o) => {
+			o.version = true
+		},
+		'--force': (o) => {
+			o.force = true
+		},
+		'--git': (o) => {
+			o.git = true
+		},
+		'--no-git': (o) => {
+			o.git = false
+		},
+	}
+
 	for (const arg of args) {
-		switch (arg) {
-			case '--help':
-				options.help = true
-				break
-			case '--version':
-				options.version = true
-				break
-			case '--force':
-				options.force = true
-				break
-			case '--git':
-				options.git = true
-				break
-			case '--no-git':
-				options.git = false
-				break
-			default:
-				if (arg.startsWith('-')) throw new Error(`Unknown option: ${arg}`)
-				if (options.target) throw new Error(`Unexpected argument: ${arg}`)
-				options.target = arg
+		const handler = handlers[arg]
+		if (handler) {
+			handler(options)
+			continue
 		}
+		if (arg.startsWith('-')) throw new Error(`Unknown option: ${arg}`)
+		if (options.target) throw new Error(`Unexpected argument: ${arg}`)
+		options.target = arg
 	}
 	return options
 }
 
 async function prepareScaffoldContext(options: CliOptions) {
-	const targetInput = options.target ?? (await promptForTarget())
-	const targetDirectory = resolve(targetInput)
+	const targetDirectory = await resolveTargetDirectory(options.target)
+	const packageName = getPackageName(targetDirectory)
+	const force = await resolveForceMode(targetDirectory, options.force)
+	const initializeGit = await resolveGitMode(options.git)
+
+	return { targetDirectory, packageName, force, initializeGit }
+}
+
+async function resolveTargetDirectory(target?: string): Promise<string> {
+	const targetInput = target ?? (await promptForTarget())
+	return resolve(targetInput)
+}
+
+function getPackageName(targetDirectory: string): string {
 	const packageName = normalizePackageName(packageNameFromTarget(targetDirectory))
 	if (!packageName) throw new Error('Project directory must contain a valid package name.')
+	return packageName
+}
 
-	let force = options.force
-	if (!(await isDirectoryEmpty(targetDirectory)) && !force) {
-		if (!process.stdin.isTTY) {
-			throw new Error(
-				`Target directory is not empty: ${targetDirectory}. Pass --force to replace it.`,
-			)
-		}
-		force = await promptToReplaceTarget(targetDirectory)
+async function resolveForceMode(targetDirectory: string, forceOption: boolean): Promise<boolean> {
+	if (forceOption || (await isDirectoryEmpty(targetDirectory))) {
+		return forceOption
 	}
+	if (!process.stdin.isTTY) {
+		throw new Error(
+			`Target directory is not empty: ${targetDirectory}. Pass --force to replace it.`,
+		)
+	}
+	return await promptToReplaceTarget(targetDirectory)
+}
 
-	const initializeGit = options.git ?? (process.stdin.isTTY ? await promptForGit() : false)
-	return { targetDirectory, packageName, force, initializeGit }
+async function resolveGitMode(gitOption?: boolean): Promise<boolean> {
+	if (gitOption !== undefined) return gitOption
+	return process.stdin.isTTY ? await promptForGit() : false
 }
 
 async function runScaffold(context: {
@@ -114,10 +136,14 @@ function displayNextSteps(
 	const displayPath =
 		relativePath && !relativePath.startsWith('..') ? relativePath : result.targetDirectory
 	p.note(`cd ${displayPath}\nnub install\nmise run dev`, 'Next steps')
-	if (initializeGit && !result.gitInitialized) {
+	warnIfGitUnavailable(initializeGit, result.gitInitialized)
+	p.outro('Built on the Karkas stack — https://karkas.apphane.dev')
+}
+
+function warnIfGitUnavailable(initializeGit: boolean, gitInitialized: boolean) {
+	if (initializeGit && !gitInitialized) {
 		p.log.warn('Git is unavailable, so the project was created without a repository.')
 	}
-	p.outro('Built on the Karkas stack — https://karkas.apphane.dev')
 }
 
 async function promptForTarget(): Promise<string> {
