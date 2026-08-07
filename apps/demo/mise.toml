@@ -133,7 +133,7 @@ run = "nub exec vp test run"
 
 [tasks."test:coverage"]
 description = "Run tests with coverage"
-run = "nub exec vp test run --coverage"
+run = "nub exec vp test run --coverage --maxWorkers 1"
 
 [tasks.format]
 description = "Format demo code with oxfmt"
@@ -157,7 +157,7 @@ run = "nub exec tsc -b"
 
 [tasks."lint:steiger"]
 description = "Check demo FSD architecture with steiger"
-run = "nub scripts/steiger.ts"
+run = "cd scripts/steiger && ../../node_modules/.bin/steiger ../../src"
 
 [tasks."lint:paraglide-tree-shaking"]
 description = "Verify unused translations are tree-shaken"

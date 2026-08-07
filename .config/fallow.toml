@@ -3,12 +3,19 @@ entry = ["apps/demo/scripts/**/*.ts", "packages/**/*.ts"]
 # `idb-keyval`: optional dependency of @reatom/core. The Storybook/Vite optimizer
 # eagerly analyzes its dynamic import, so the package must remain resolvable.
 # `storybook`: imported by the kahraman actor harness but never runs in production.
-ignoreDependencies = ["@typescript/native", "idb-keyval", "storybook"]
+# Steiger and its FSD plugin are loaded by the excluded tooling config and mise task.
+ignoreDependencies = [
+	"@feature-sliced/steiger-plugin",
+	"@typescript/native",
+	"idb-keyval",
+	"steiger",
+	"storybook",
+]
 
 # Park UI and generated assets are committed vendor/generated code.
 ignorePatterns = [
 	"apps/demo/public/mockServiceWorker.js",
-	"apps/demo/scripts/steiger/**",
+	"apps/demo/scripts/steiger/steiger.config.ts",
 	"apps/demo/src/paraglide/**",
 	"apps/demo/src/shared/components/ui/**",
 	"apps/demo/src/shared/styled-system/**",

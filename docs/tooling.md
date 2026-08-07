@@ -46,19 +46,18 @@ mise run ci                 # full non-mutating CI pipeline
 - **Vite+** runs Vite, formatting, linting, and Vitest for the projects that declare it.
 - **hk** calls mise-backed format, lint, and typecheck steps plus a root Fallow check.
 - **Fallow** checks dead code, duplicates, and coverage-aware complexity.
-- **Steiger** checks Feature-Sliced Design boundaries in `apps/demo/src`.
+- **Steiger** checks Feature-Sliced Design boundaries in `apps/demo/src` using `apps/demo/scripts/steiger/steiger.config.ts`.
 
 The root `prepare` task calls child preparation with `mise run --no-deps`. This prevents a
 nested mise invocation from starting another automatic Nub install while Nub is already
 running the workspace lifecycle.
 
-## Vite+ aliases
+## Vite+ test runtime
 
-`apps/demo/package.json` aliases `vitest` to `@voidzero-dev/vite-plus-test`. Upstream peer
-checks compare literal package names and versions, so installation can report peer warnings
-for the aliased runner even though `vp test` uses the intended bundled Vitest runtime.
-`@vitest/browser-playwright` and `@vitest/coverage-v8` track the bundled upstream Vitest
-version rather than the Vite+ package version.
+`apps/demo/package.json` keeps `vitest`, `@vitest/browser-playwright`, and
+`@vitest/coverage-v8` on the upstream Vitest version bundled by Vite+. The matching versions
+let Storybook's Vitest addon and browser provider share one peer context while `vp test`
+remains the task entry point.
 
 ## Fallow and coverage
 
