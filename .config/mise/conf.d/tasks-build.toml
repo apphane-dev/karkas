@@ -1,89 +1,68 @@
 [vars]
-build_dir = ".var/dist"
+build_dir = "{{ config_root }}/.var/dist"
 webapp_out_dir = "{{ vars.build_dir }}/webapp"
 storybook_out_dir = "{{ vars.build_dir }}/storybook"
 site_out_dir = "{{ vars.build_dir }}/site"
 cf_pages_out_dir = "{{ vars.build_dir }}/cf-pages"
 
-# exposing defaults to terminal so that
-# direct commands can be run consistently with tasks
 [env]
-# asserted in vite.config.ts
-WEBAPP_OUT_DIR = "{{ vars.webapp_out_dir }}"
-WEBAPP_BASE_URL = "/"
-# asserted in .storybook/main.ts
-STORYBOOK_BASE_URL = "/"
-# expected in .github/workflows/deploy.yml
 CF_PAGES_OUT_DIR = "{{ vars.cf_pages_out_dir }}"
 
-[tasks."build:webapp:base"]
-hide = true
-usage = '''
-arg "<dir>" env="WEBAPP_OUT_DIR" default="{{ vars.webapp_out_dir }}" help="Output directory for the webapp build"
-arg "<base>" env="WEBAPP_BASE_URL" default="/" help="Base URL for the webapp"
-'''
-run = "WEBAPP_OUT_DIR=${usage_dir?} WEBAPP_BASE_URL=${usage_base?} vp build"
-
 [tasks."build:webapp"]
-description = "Build Application"
-depends = ["prepare:codegen"]
-run = "mise run build:webapp:base"
-sources = ["src/**/*.{ts,tsx}", "index.html", "vite.config.ts"]
+description = "Build demo application"
+run = "mise run //apps/demo:build:webapp"
+sources = ["apps/demo/src/**/*.{ts,tsx}", "apps/demo/index.html", "apps/demo/vite.config.ts"]
 outputs = ["{{ vars.webapp_out_dir }}/**/*"]
 
-[tasks."build:storybook:base"]
-hide = true
-usage = '''
-arg "<dir>" env="STORYBOOK_OUT_DIR" default="{{ vars.storybook_out_dir }}" help="Output directory for the Storybook build"
-arg "<base>" env="STORYBOOK_BASE_URL" default="/" help="Base URL for the Storybook"
-'''
-run = "STORYBOOK_BASE_URL=${usage_base?} storybook build -o ${usage_dir?}"
-
 [tasks."build:storybook"]
-description = "Build Storybook"
-depends = ["prepare:codegen"]
-run = "mise run build:storybook:base"
-sources = ["src/**/*.{ts,tsx,stories.tsx}", ".storybook/**/*"]
+description = "Build demo Storybook"
+run = "mise run //apps/demo:build:storybook"
+sources = ["apps/demo/src/**/*.{ts,tsx,stories.tsx}", "apps/demo/.storybook/**/*"]
 outputs = ["{{ vars.storybook_out_dir }}/**/*"]
 
-[tasks."build:site:base"]
-hide = true
-usage = '''
-arg "<dir>" env="SITE_OUT_DIR" default="{{ vars.site_out_dir }}" help="Output directory for the landing site build"
-'''
-# astro resolves a relative --outDir against --root (site/), so make it
-# absolute against the repo root (the task's CWD) to target the real path.
-run = "astro build --root site --config astro.config.mjs --outDir $(pwd)/${usage_dir?}"
-
 [tasks."build:site"]
-description = "Build landing site (Astro)"
-run = "mise run build:site:base"
-sources = ["site/**/*.{astro,ts,css,md}", "site/astro.config.mjs"]
+description = "Build landing site"
+run = "mise run //site:build"
+sources = ["site/src/**/*.{astro,ts,css,md}", "site/astro.config.mjs"]
 outputs = ["{{ vars.site_out_dir }}/**/*"]
 
-[tasks."build"]
-description = "Run all build tasks"
-run = [{ task = "build:webapp" }, { task = "build:storybook" }, { task = "build:site" }]
+[tasks."build:create-karkas"]
+description = "Build the create-karkas CLI"
+run = "mise run //packages/create-karkas:build"
+sources = [
+	"packages/create-karkas/src/**/*.ts",
+	"packages/create-karkas/tsup.config.ts",
+	"packages/create-karkas/package.json",
+]
+outputs = ["packages/create-karkas/dist/cli.js"]
+
+[tasks.build]
+description = "Build all monorepo projects"
+run = [
+	{ task = "build:webapp" },
+	{ task = "build:storybook" },
+	{ task = "build:site" },
+	{ task = "build:create-karkas" },
+]
 
 [tasks."build:cf-pages"]
-description = "Prepare deployment artifacts for Cloudflare Pages (combine builds)"
-depends = ["prepare:codegen"]
+description = "Prepare deployment artifacts for Cloudflare Pages"
 env = { VITE_ENABLE_MSW = "true", VITE_CONNECT_LOGGER = "true" }
-# Order matters: the landing site is built first into the artifact root, then
-# the demo SPA fills /demo/ and Storybook /storybook/. Astro cleans its own
-# outDir on build, so it must run before the sub-path builds that share it.
+# Astro cleans its output directory, so it must build before the demo and Storybook
+# fill their subpaths in the shared artifact.
 run = [
-	"mise run build:site:base {{ vars.cf_pages_out_dir }}",
-	"mise run build:webapp:base {{ vars.cf_pages_out_dir }}/demo /demo/",
-	"mise run build:storybook:base {{ vars.cf_pages_out_dir }}/storybook /storybook/",
+	"mise run //apps/demo:prepare:codegen",
+	"mise run //site:prepare",
+	"mise run //site:build:base {{ vars.cf_pages_out_dir }}",
+	"mise run //apps/demo:build:webapp:base {{ vars.cf_pages_out_dir }}/demo /demo/",
+	"mise run //apps/demo:build:storybook:base {{ vars.cf_pages_out_dir }}/storybook /storybook/",
 ]
 sources = [
-	"src/**/*.{ts,tsx}",
-	"index.html",
-	"vite.config.ts",
-	".storybook/**/*",
-	"site/**/*.{astro,ts,css,md}",
+	"apps/demo/src/**/*.{ts,tsx}",
+	"apps/demo/index.html",
+	"apps/demo/vite.config.ts",
+	"apps/demo/.storybook/**/*",
+	"site/src/**/*.{astro,ts,css,md}",
 	"site/astro.config.mjs",
 ]
 outputs = ["{{ vars.cf_pages_out_dir }}/**/*"]
-

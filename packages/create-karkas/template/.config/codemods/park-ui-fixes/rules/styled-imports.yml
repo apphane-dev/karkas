@@ -1,0 +1,14 @@
+# Replace styled-system/* imports with #styled-system/*
+id: replace-styled-system-imports
+language: tsx
+rule:
+  kind: string_fragment
+  pattern: $MODULE
+  inside:
+    kind: string
+    inside:
+      kind: import_statement
+constraints:
+  MODULE:
+    regex: ^styled-system
+fix: '#$MODULE'

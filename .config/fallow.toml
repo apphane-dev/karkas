@@ -1,25 +1,29 @@
-entry = ["scripts/**/*.ts"]
+entry = ["apps/demo/scripts/**/*.ts", "packages/**/*.ts"]
 # `@typescript/native`: TypeScript 7 compiler, not imported by source.
-# `idb-keyval`: optional dependency of the @reatom/core v1001 pkg.pr.new
-# preview (IndexedDB persistence). The app doesn't use it directly, but the
-# Storybook/Vite optimizer eagerly analyzes reatom's dynamic import, so the
-# package must be resolvable. Drop once #1294 ships to stable npm.
-# `storybook`: imported only by the test-actor factory in `src/shared/test`
-# (a Storybook/kahraman actor harness), which Fallow classifies as production
-# because it isn't named `*.test.ts`. It never runs outside Storybook/tests.
-ignoreDependencies = ["@typescript/native", "idb-keyval", "storybook"]
+# `idb-keyval`: optional dependency of @reatom/core. The Storybook/Vite optimizer
+# eagerly analyzes its dynamic import, so the package must remain resolvable.
+# `storybook`: imported by the kahraman actor harness but never runs in production.
+# Steiger and its FSD plugin are loaded by the excluded tooling config and mise task.
+ignoreDependencies = [
+	"@feature-sliced/steiger-plugin",
+	"@typescript/native",
+	"idb-keyval",
+	"steiger",
+	"storybook",
+]
 
-# Park UI and generated assets are committed vendor/generated code; keep them out of findings.
+# Park UI and generated assets are committed vendor/generated code.
 ignorePatterns = [
-	"public/mockServiceWorker.js",
-	"scripts/steiger/**",
-	"src/paraglide/**",
-	"src/shared/components/ui/**",
-	"src/shared/styled-system/**",
-	"theme/recipes/**",
+	"apps/demo/public/mockServiceWorker.js",
+	"apps/demo/scripts/steiger/steiger.config.ts",
+	"apps/demo/src/paraglide/**",
+	"apps/demo/src/shared/components/ui/**",
+	"apps/demo/src/shared/styled-system/**",
+	"apps/demo/theme/recipes/**",
+	"packages/create-karkas/template/**",
 	"site/**",
 ]
 
 [duplicates]
-ignore = ["messages/**", "src/**/*.stories.tsx"]
+ignore = ["apps/demo/messages/**", "apps/demo/src/**/*.stories.tsx"]
 ignoreImports = true

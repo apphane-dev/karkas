@@ -1,0 +1,20 @@
+{
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"moduleDetection": "force",
+		"types": ["node"],
+		"verbatimModuleSyntax": true,
+		"isolatedModules": true,
+		"strict": true,
+		"noEmit": true,
+		"noUncheckedIndexedAccess": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"exactOptionalPropertyTypes": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"skipLibCheck": true
+	},
+	"include": ["src", "tsup.config.ts", "vite.config.ts"]
+}

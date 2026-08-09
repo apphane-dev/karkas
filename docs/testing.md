@@ -4,7 +4,7 @@ This doc follows the source-first approach in `docs/README.md`.
 
 ## Overview
 
-All tests are Storybook integration stories with inline `.test()` assertions. There are no standalone `*.test.ts` or `*.spec.ts` files — the only `.test.` file is `src/shared/test/actor.test.stories.tsx`, which tests the kahraman integration.
+The demo tests are Storybook integration stories with inline `.test()` assertions. Its only `.test.` story is `apps/demo/src/shared/test/actor.test.stories.tsx`, which exercises the Kahraman integration. The initializer has Node-side scaffold tests under `packages/create-karkas/src/`.
 
 The default stabilization strategy is:
 
@@ -20,29 +20,29 @@ Grepping `test|spec|vitest` inside an entity directory will not find its tests �
 
 | What you are looking for       | Where to look                                            |
 | ------------------------------ | -------------------------------------------------------- |
-| Integration tests              | `src/app/integration/*.stories.tsx`                      |
+| Integration tests              | `apps/demo/src/app/integration/*.stories.tsx`                      |
 | Current product test coverage  | Integration stories above                                |
-| Reusable page actor helpers    | `src/pages/<page>/testing.ts`                            |
-| Mock handlers and fixture data | `src/entities/<entity>/mocks/handlers.ts`, `.../data.ts` |
-| Actor/helper self-tests        | `src/shared/test/actor.test.stories.tsx`                 |
+| Reusable page actor helpers    | `apps/demo/src/pages/<page>/testing.ts`                            |
+| Mock handlers and fixture data | `apps/demo/src/entities/<entity>/mocks/handlers.ts`, `.../data.ts` |
+| Actor/helper self-tests        | `apps/demo/src/shared/test/actor.test.stories.tsx`                 |
 
-To find tests for an entity, search for `.test(` in `src/app/integration/` or look for the entity name in story file names.
+To find tests for an entity, search for `.test(` in `apps/demo/src/app/integration/` or look for the entity name in story file names.
 
 ### Key files
 
 | File                                                  | Why read it                                                                            |
 | ----------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | [`kahraman`](https://github.com/apphane-dev/kahraman) | Base actor and locator DSL (`I.see`, `role`, `text`, `.wait()`, `.all()`, `.within()`) |
-| `src/shared/test/pageActor.ts`                        | Application-specific actor extensions                                                  |
-| `src/shared/test/actor.test.stories.tsx`              | Focused examples of scoping and locator behavior                                       |
-| `src/app/integration/Articles.stories.tsx`            | Canonical master-detail integration patterns (default, error, loading, detail states)  |
-| `src/app/integration/Connections.stories.tsx`         | Advanced master-detail and mobile navigation coverage                                  |
-| `src/app/integration/Dashboard.stories.tsx`           | Simple page with success/error/loading variants                                        |
-| `src/pages/articles/testing.ts`                       | Page actor style for master-detail pages                                               |
-| `src/pages/dashboard/testing.ts`                      | Page actor style for simple pages                                                      |
-| `src/entities/item/mocks/handlers.ts`                 | All handler variants including `retrySucceeds` assert pattern                          |
-| `src/app/mocks/handlers.ts`                           | Central default MSW handler registry                                                   |
-| `src/shared/mocks/utils.ts`                           | Shared mock helpers (`to500`, `neverResolve`, etc.)                                    |
+| `apps/demo/src/shared/test/pageActor.ts`                        | Application-specific actor extensions                                                  |
+| `apps/demo/src/shared/test/actor.test.stories.tsx`              | Focused examples of scoping and locator behavior                                       |
+| `apps/demo/src/app/integration/Articles.stories.tsx`            | Canonical master-detail integration patterns (default, error, loading, detail states)  |
+| `apps/demo/src/app/integration/Connections.stories.tsx`         | Advanced master-detail and mobile navigation coverage                                  |
+| `apps/demo/src/app/integration/Dashboard.stories.tsx`           | Simple page with success/error/loading variants                                        |
+| `apps/demo/src/pages/articles/testing.ts`                       | Page actor style for master-detail pages                                               |
+| `apps/demo/src/pages/dashboard/testing.ts`                      | Page actor style for simple pages                                                      |
+| `apps/demo/src/entities/item/mocks/handlers.ts`                 | All handler variants including `retrySucceeds` assert pattern                          |
+| `apps/demo/src/app/mocks/handlers.ts`                           | Central default MSW handler registry                                                   |
+| `apps/demo/src/shared/mocks/utils.ts`                           | Shared mock helpers (`to500`, `neverResolve`, etc.)                                    |
 
 ## Story Conventions
 
@@ -127,7 +127,7 @@ If a test exposes that the UI copy is misleading, fix the product copy and updat
 
 ## Actor and Locator Guidance
 
-The actor is codecept-style and should stay declarative. Extend per-page actors in `src/pages/<page>/testing.ts`.
+The actor is codecept-style and should stay declarative. Extend per-page actors in `apps/demo/src/pages/<page>/testing.ts`.
 
 Key base methods:
 
@@ -181,7 +181,7 @@ comparison experiment preserved on the `experiment/codecept-comparison` branch):
 
 ### Page actor guidance
 
-Keep reusable expectations in `src/pages/<page>/testing.ts` when they describe page-level behavior shared by multiple stories. This keeps stories readable and prevents duplicated strings from drifting.
+Keep reusable expectations in `apps/demo/src/pages/<page>/testing.ts` when they describe page-level behavior shared by multiple stories. This keeps stories readable and prevents duplicated strings from drifting.
 
 Good candidates for page actors:
 
@@ -206,21 +206,21 @@ If a loaded-state integration story can be stabilized with `play: () => I.waitEx
 
 ## MSW Structure
 
-Each entity exposes handlers in `src/entities/<entity>/mocks/handlers.ts`:
+Each entity exposes handlers in `apps/demo/src/entities/<entity>/mocks/handlers.ts`:
 
 - `.default`: successful response (usually with delay)
 - `.error`: failing response
 - `.loading`: never resolves
 
-Default handlers are aggregated in `src/app/mocks/handlers.ts` and used by Storybook preview. Story-level overrides replace only specific keys.
+Default handlers are aggregated in `apps/demo/src/app/mocks/handlers.ts` and used by Storybook preview. Story-level overrides replace only specific keys.
 
 ### Stateful handler factories
 
 Handlers like `.retrySucceeds` are factory functions (`()`) that close over mutable state (e.g. an error counter). The factory is required so each story gets its own isolated state.
 
-The canonical pattern keeps successful resolvers separate from their URL bindings, then composes retry handlers with `withRetrySuccess(resolver)`. See `src/entities/item/mocks/handlers.ts` for the reference implementation.
+The canonical pattern keeps successful resolvers separate from their URL bindings, then composes retry handlers with `withRetrySuccess(resolver)`. See `apps/demo/src/entities/item/mocks/handlers.ts` for the reference implementation.
 
-Key details about `withRetrySuccess`, `Error500`, and other error classes are in `src/shared/mocks/utils.ts` — error classes extend `Error` but return an `HttpResponse` via `assign`, so throwing them inside an MSW handler produces the corresponding HTTP error response.
+Key details about `withRetrySuccess`, `Error500`, and other error classes are in `apps/demo/src/shared/mocks/utils.ts` — error classes extend `Error` but return an `HttpResponse` via `assign`, so throwing them inside an MSW handler produces the corresponding HTTP error response.
 
 ### Route fetch abort checks
 
@@ -295,9 +295,9 @@ Excluded from coverage:
 
 - `*.stories.tsx`
 - `*.test.{ts,tsx}`
-- `src/shared/styled-system/`
-- `src/shared/components/ui/`
-- `src/main.tsx`
+- `apps/demo/src/shared/styled-system/`
+- `apps/demo/src/shared/components/ui/`
+- `apps/demo/src/main.tsx`
 
 ### Known uncovered branches
 
@@ -305,37 +305,37 @@ Some branches are intentionally left uncovered because they cannot be exercised 
 
 **Defensive code unreachable from the UI:**
 
-- `src/pages/timer/model/model.ts` lines 45–46: the `remaining() <= 0` guard in the running change hook. The UI disables the Start button when the timer reaches zero, so `running.setTrue()` is never called with zero remaining. This is a defensive check against programmatic misuse.
-- `src/pages/calculator/ui/CalculatorPage.tsx` line 43: the `default` case in `calculate()`. The function is only called when a prior operator exists (`prev !== null && op`), so the argument is always one of `+`, `-`, `*`, `/`. The default exists for TypeScript exhaustiveness.
+- `apps/demo/src/pages/timer/model/model.ts` lines 45–46: the `remaining() <= 0` guard in the running change hook. The UI disables the Start button when the timer reaches zero, so `running.setTrue()` is never called with zero remaining. This is a defensive check against programmatic misuse.
+- `apps/demo/src/pages/calculator/ui/CalculatorPage.tsx` line 43: the `default` case in `calculate()`. The function is only called when a prior operator exists (`prev !== null && op`), so the argument is always one of `+`, `-`, `*`, `/`. The default exists for TypeScript exhaustiveness.
 
 **Topbar conditional renders (localStorage + responsive visibility):**
 
-- `src/widgets/app-shell/ui/AppShell.tsx` line 226: the LanguageSwitcher `onValueChange`. The language button is present on desktop, but the current UI does not expose the selected locale as a stable user-facing state in the top bar. Prefer adding accessible state before covering this path.
-- `src/widgets/app-shell/ui/sidebar.tsx` line 17: the `SidebarToggleButton` click handler. This mobile-only button uses the same responsive CSS pattern and is not found in the accessibility tree at the `sm` viewport in headless tests.
-- `src/pages/settings/ui/SettingsPage.tsx` lines 130, 252: the notifications form dirty save button and the language select `onValueChange`. The save button shares text with the profile form's save button, making it ambiguous to target. The language select callback (`localeAtom.set`) is a one-line delegation already exercised by the settings Theme/Density select tests which use the same `CollectionSelect` + `onValueChange` pattern.
+- `apps/demo/src/widgets/app-shell/ui/AppShell.tsx` line 226: the LanguageSwitcher `onValueChange`. The language button is present on desktop, but the current UI does not expose the selected locale as a stable user-facing state in the top bar. Prefer adding accessible state before covering this path.
+- `apps/demo/src/widgets/app-shell/ui/sidebar.tsx` line 17: the `SidebarToggleButton` click handler. This mobile-only button uses the same responsive CSS pattern and is not found in the accessibility tree at the `sm` viewport in headless tests.
+- `apps/demo/src/pages/settings/ui/SettingsPage.tsx` lines 130, 252: the notifications form dirty save button and the language select `onValueChange`. The save button shares text with the profile form's save button, making it ambiguous to target. The language select callback (`localeAtom.set`) is a one-line delegation already exercised by the settings Theme/Density select tests which use the same `CollectionSelect` + `onValueChange` pattern.
 
 **Shared infrastructure guards (corrupt-storage, environment, and non-JSON defenses):**
 
-- `src/shared/model/locale.ts` lines 40–45: the `isLocale(value) ? value : baseLocale` coercion in `withParams` and `fromSnapshot`. These run only when `localStorage` holds a value that is not a configured locale, so normal UI flows never reach the `baseLocale` fallback. Defensive against corrupted persisted state, like the timer `remaining() <= 0` guard above.
-- `src/shared/model/theme.ts` lines 7, 18–20: `reatomMediaQuery('(prefers-color-scheme: dark)')` and the `system` branch of `resolved` that reads it. The resolved value depends on the host `prefers-color-scheme` media query, which is not deterministic in headless Chromium; the `coerceThemePreference` invalid-value fallback is the same corrupt-storage defense as the locale coercion.
-- `src/shared/router.ts` line 12: `createAppPath`'s non-empty-`basePath` branch (`return normalizedPath ? ... : basePath`). `basePath` is derived from `BASE_URL` by stripping slashes; the app deploys at the root (`BASE_URL` is `'/'`), so `basePath` is empty and the `if (!basePath)` branch (line 11) is the normal code path in dev and production. The line 12 branch is only reached when the app is served under a subpath.
-- `src/shared/api/index.ts` line 5 (and the line 4 `if`) and line 40 (and the line 36 nullish branch): `composeApiUrl`'s empty/root-path early return and `parseResponsePayload`'s `response.text()` fallback. Every caller passes a non-empty path starting with `/`, and every MSW handler returns JSON or a `204`; the text-content and empty-path paths are defenses against malformed responses/inputs.
-- `src/pages/usage/ui/UsagePage.tsx` and `src/pages/usage/ui/UsageCard.tsx`: the storage-bar color ternary `percentage >= 90 ? 'red.9' : percentage >= 70 ? 'orange.9' : 'blue.9'`. `percentage` is derived from `UsageData`; the default MSW data currently resolves to `42`, so normal usage stories reach the `blue.9` branch. Although story-specific MSW data could force the other branches, asserting the generated color token would test a presentational implementation detail rather than user-observable accessible state.
+- `apps/demo/src/shared/model/locale.ts` lines 40–45: the `isLocale(value) ? value : baseLocale` coercion in `withParams` and `fromSnapshot`. These run only when `localStorage` holds a value that is not a configured locale, so normal UI flows never reach the `baseLocale` fallback. Defensive against corrupted persisted state, like the timer `remaining() <= 0` guard above.
+- `apps/demo/src/shared/model/theme.ts` lines 7, 18–20: `reatomMediaQuery('(prefers-color-scheme: dark)')` and the `system` branch of `resolved` that reads it. The resolved value depends on the host `prefers-color-scheme` media query, which is not deterministic in headless Chromium; the `coerceThemePreference` invalid-value fallback is the same corrupt-storage defense as the locale coercion.
+- `apps/demo/src/shared/router.ts` line 12: `createAppPath`'s non-empty-`basePath` branch (`return normalizedPath ? ... : basePath`). `basePath` is derived from `BASE_URL` by stripping slashes; the app deploys at the root (`BASE_URL` is `'/'`), so `basePath` is empty and the `if (!basePath)` branch (line 11) is the normal code path in dev and production. The line 12 branch is only reached when the app is served under a subpath.
+- `apps/demo/src/shared/api/index.ts` line 5 (and the line 4 `if`) and line 40 (and the line 36 nullish branch): `composeApiUrl`'s empty/root-path early return and `parseResponsePayload`'s `response.text()` fallback. Every caller passes a non-empty path starting with `/`, and every MSW handler returns JSON or a `204`; the text-content and empty-path paths are defenses against malformed responses/inputs.
+- `apps/demo/src/pages/usage/ui/UsagePage.tsx` and `apps/demo/src/pages/usage/ui/UsageCard.tsx`: the storage-bar color ternary `percentage >= 90 ? 'red.9' : percentage >= 70 ? 'orange.9' : 'blue.9'`. `percentage` is derived from `UsageData`; the default MSW data currently resolves to `42`, so normal usage stories reach the `blue.9` branch. Although story-specific MSW data could force the other branches, asserting the generated color token would test a presentational implementation detail rather than user-observable accessible state.
 
 ## Adding a New Page Test
 
-1. Create typed mock data in `src/entities/<entity>/mocks/data.ts`.
-2. Add `default` / `error` / `loading` / `retrySucceeds` handlers in `src/entities/<entity>/mocks/handlers.ts` (see `src/entities/item/mocks/handlers.ts` for reference).
-3. Register defaults in `src/app/mocks/handlers.ts`.
-4. Create `src/pages/<page>/testing.ts` with page actor methods for reusable content, loading, error, and navigation expectations.
-5. Add `src/app/integration/<Page>.stories.tsx` with `Default`, `Default (Mobile)`, error, and loading variants.
+1. Create typed mock data in `apps/demo/src/entities/<entity>/mocks/data.ts`.
+2. Add `default` / `error` / `loading` / `retrySucceeds` handlers in `apps/demo/src/entities/<entity>/mocks/handlers.ts` (see `apps/demo/src/entities/item/mocks/handlers.ts` for reference).
+3. Register defaults in `apps/demo/src/app/mocks/handlers.ts`.
+4. Create `apps/demo/src/pages/<page>/testing.ts` with page actor methods for reusable content, loading, error, and navigation expectations.
+5. Add `apps/demo/src/app/integration/<Page>.stories.tsx` with `Default`, `Default (Mobile)`, error, and loading variants.
 6. If the route loader fetches data, add an `Aborts Pending <Feature> Request On Navigation` story with `createRouteFetchAbortProbe`, `routeFetchAbortLifecycle`, and `expectRouteFetchAbortOnNavigation`.
 7. Add `play: () => I.waitExit(role('status'))` to loaded-state and async error variants, but not to persistent-loading or abort-probe stories.
 8. Review the tests against the quality bar above: assertions should be specific, accessible, scoped, and backed by the intended UX/mocks.
 
 ## Adding Coverage for an Entity Model Branch
 
-1. Find or create an error-variant MSW handler in `src/entities/<entity>/mocks/handlers.ts` that triggers the branch (e.g. `logoutError` returning HTTP 500).
-2. Add a story to the existing integration file (`src/app/integration/<Entity>.stories.tsx`) with `msw.handlers` overriding the relevant endpoint.
+1. Find or create an error-variant MSW handler in `apps/demo/src/entities/<entity>/mocks/handlers.ts` that triggers the branch (e.g. `logoutError` returning HTTP 500).
+2. Add a story to the existing integration file (`apps/demo/src/app/integration/<Entity>.stories.tsx`) with `msw.handlers` overriding the relevant endpoint.
 3. Assert the user-visible outcome (e.g. redirect to login despite API failure).
 4. If the branch cannot be reached from the UI, document it under "Known uncovered branches" in the Coverage section above.

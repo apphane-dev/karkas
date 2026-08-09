@@ -20,7 +20,7 @@ Docs should avoid duplicating large code blocks that are already clear in source
 
 ## Project Tooling
 
-See `docs/tooling.md` for the current Vite+ / mise / hk split, known Vite+ alias warnings, hk builtin usage, and Fallow integration details.
+See `docs/tooling.md` for the current Nub / Vite+ / mise / hk split, namespaced project tasks, known Vite+ alias warnings, and Fallow integration details.
 
 ## Standard Structure
 

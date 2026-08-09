@@ -1,0 +1,26 @@
+{
+	"name": "@karkas/site",
+	"version": "0.0.0",
+	"private": true,
+	"license": "MIT",
+	"type": "module",
+	"scripts": {
+		"build": "mise run build",
+		"dev": "mise run dev",
+		"format": "mise run format",
+		"lint": "mise run lint",
+		"prepare": "mise run --no-deps prepare"
+	},
+	"devDependencies": {
+		"astro": "^5.6.1",
+		"vite-plus": "^0.2.5"
+	},
+	"devEngines": {
+		"packageManager": {
+			"name": "nub",
+			"version": "^0.4.12",
+			"onFail": "warn"
+		}
+	},
+	"packageManager": "nub@0.4.12"
+}

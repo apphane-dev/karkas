@@ -39,7 +39,7 @@ styled-system
 styled-system-studio
 
 # ParaglideJS generated output
-src/paraglide/
+**/src/paraglide/
 
 # Storybook
 *storybook.log

@@ -11,14 +11,14 @@ hk = "latest"
 dir = "{{ config_root }}"
 
 [env]
-'_'.path = { path = "./node_modules/.bin" }
+'_'.path = { path = "{{ config_root }}/node_modules/.bin" }
 STORYBOOK_ENABLE_CRASH_REPORTS = 1
 HK_PKL_BACKEND = "pklr"
 HK_MISE = 1
 
 [deps.nub]
 auto = true
-sources = ["nub.lock", "package.json"]
+sources = ["nub.lock", "package.json", "apps/*/package.json", "packages/*/package.json", "site/package.json"]
 outputs = ["node_modules/.modules.yaml"]
 run = "nub install"
 

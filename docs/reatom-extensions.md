@@ -12,13 +12,13 @@ Use extensions to add behavior at the atom/action boundary: validation, persiste
 
 | File                                                                                          | Why read it                                                           |
 | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `src/shared/model/locale.ts`                                                                  | `withParams` + `withLocalStorage` + `withChangeHook` composition      |
-| `src/shared/model/theme.ts`                                                                   | enum coercion and persisted preferences                               |
-| `src/pages/items/model/filters.ts`                                                            | URL-bound filters via `withSearchParams`                              |
-| `src/entities/conversation/model/unreadCount.ts`                                              | async read model with `withAsyncData`                                 |
-| `src/shared/model/documentTitle.ts`                                                           | connect-scoped side effects with `withConnectHook` + `addChangeHook`  |
-| `src/pages/timer/model/model.ts`                                                              | action lifecycle with `withAbort` and change hooks                    |
-| `src/shared/model/headerTrail.ts`                                                             | custom domain extension (`withMatch*`) with module-level registration |
+| `apps/demo/src/shared/model/locale.ts`                                                                  | `withParams` + `withLocalStorage` + `withChangeHook` composition      |
+| `apps/demo/src/shared/model/theme.ts`                                                                   | enum coercion and persisted preferences                               |
+| `apps/demo/src/pages/items/model/filters.ts`                                                            | URL-bound filters via `withSearchParams`                              |
+| `apps/demo/src/entities/conversation/model/unreadCount.ts`                                              | async read model with `withAsyncData`                                 |
+| `apps/demo/src/shared/model/documentTitle.ts`                                                           | connect-scoped side effects with `withConnectHook` + `addChangeHook`  |
+| `apps/demo/src/pages/timer/model/model.ts`                                                              | action lifecycle with `withAbort` and change hooks                    |
+| `apps/demo/src/shared/model/headerTrail.ts`                                                             | custom domain extension (`withMatch*`) with module-level registration |
 | `https://github.com/reatom/reatom/blob/v1001/packages/core/src/extensions/withConnectHook.ts` | connect/disconnect runtime behavior                                   |
 | `https://github.com/reatom/reatom/blob/v1001/packages/core/src/extensions/withChangeHook.ts`  | state-change hook scheduling semantics                                |
 
@@ -39,15 +39,15 @@ Use extensions to add behavior at the atom/action boundary: validation, persiste
 
 | Need                                        | Primary extension(s)                    | Example                                                         |
 | ------------------------------------------- | --------------------------------------- | --------------------------------------------------------------- |
-| Normalize input before write                | `withParams`, custom coercion           | `src/shared/model/locale.ts`                                    |
-| Persist state                               | `withLocalStorage`/`withSessionStorage` | `src/shared/model/topBar.ts`, `src/shared/model/theme.ts`       |
-| React to value changes                      | `withChangeHook`                        | `src/shared/model/locale.ts`, `src/pages/timer/model/model.ts`  |
+| Normalize input before write                | `withParams`, custom coercion           | `apps/demo/src/shared/model/locale.ts`                                    |
+| Persist state                               | `withLocalStorage`/`withSessionStorage` | `apps/demo/src/shared/model/topBar.ts`, `apps/demo/src/shared/model/theme.ts`       |
+| React to value changes                      | `withChangeHook`                        | `apps/demo/src/shared/model/locale.ts`, `apps/demo/src/pages/timer/model/model.ts`  |
 | React to action calls                       | `withCallHook`                          | Use when behavior depends on action invocations, not atom value |
-| Resource lifecycle on first/last subscriber | `withConnectHook`/`withDisconnectHook`  | `src/shared/model/documentTitle.ts`                             |
-| Async state (`pending/data/error/retry`)    | `withAsync`, `withAsyncData`            | `src/entities/conversation/model/unreadCount.ts`                |
-| Concurrency/abort strategy                  | `withAbort`                             | `src/pages/timer/model/model.ts`                                |
-| URL query synchronization                   | `withSearchParams`                      | `src/pages/items/model/filters.ts`                              |
-| Custom cross-cutting behavior               | custom `Ext<T>` + helpers               | `src/shared/model/headerTrail.ts`                               |
+| Resource lifecycle on first/last subscriber | `withConnectHook`/`withDisconnectHook`  | `apps/demo/src/shared/model/documentTitle.ts`                             |
+| Async state (`pending/data/error/retry`)    | `withAsync`, `withAsyncData`            | `apps/demo/src/entities/conversation/model/unreadCount.ts`                |
+| Concurrency/abort strategy                  | `withAbort`                             | `apps/demo/src/pages/timer/model/model.ts`                                |
+| URL query synchronization                   | `withSearchParams`                      | `apps/demo/src/pages/items/model/filters.ts`                              |
+| Custom cross-cutting behavior               | custom `Ext<T>` + helpers               | `apps/demo/src/shared/model/headerTrail.ts`                               |
 
 ## Workflows
 

@@ -1,0 +1,19 @@
+schema_version: '1.0'
+
+name: 'park-ui-fixes'
+version: '0.1.0'
+description: 'Transform components from Park UI to match project style and requirements.'
+author: 'Aleksei Gurianov <gurianov@gmail.com>'
+license: 'MIT'
+workflow: 'workflow.yaml'
+
+targets:
+  languages: ['typescript']
+
+keywords: ['park-ui', 'react']
+
+registry:
+  access: 'private'
+  visibility: 'private'
+
+capabilities: []

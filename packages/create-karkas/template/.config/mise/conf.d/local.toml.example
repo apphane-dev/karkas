@@ -1,0 +1,10 @@
+[env]
+## This is the template that is copied to mise.local.toml for local overrides
+## This copy is committed to VCS to provide an example of local overrides
+## Update it whenever new env vars are added to the project that may need local overrides
+# Local environment overrides
+# Uncomment and modify the variables below as needed
+
+# VITE_PORT = 5173
+# STORYBOOK_PORT = 6006
+VITE_CONNECT_LOGGER = "true"

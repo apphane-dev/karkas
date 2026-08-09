@@ -1,0 +1,15 @@
+{
+	"dashboard_title": "Dashboard",
+	"dashboard_error_title": "Could not load dashboard",
+	"dashboard_error_description": "We couldn't load the dashboard data. Try again in a moment.",
+	"dashboard_loading_page": "Loading dashboard page",
+	"dashboard_stat_vs_last_week": "vs last week",
+	"dashboard_top_pages": "Top Pages",
+	"dashboard_col_page": "Page",
+	"dashboard_col_views": "Views",
+	"dashboard_col_traffic_share": "Traffic Share",
+	"dashboard_weekly_traffic": "Weekly Traffic",
+	"dashboard_recent_activity": "Recent Activity",
+	"dashboard_col_activity": "Activity",
+	"dashboard_col_time": "Time"
+}

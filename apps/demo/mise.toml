@@ -1,0 +1,182 @@
+[task_config]
+dir = "{{ config_root }}"
+
+[tools]
+"npm:codemod" = "latest"
+
+[vars]
+repo_root = "{{ config_root }}/../.."
+build_dir = "{{ vars.repo_root }}/.var/dist"
+webapp_out_dir = "{{ vars.build_dir }}/webapp"
+storybook_out_dir = "{{ vars.build_dir }}/storybook"
+panda_outdir = "src/shared/styled-system"
+panda_config = "panda.config.ts"
+vite_port = "5173"
+storybook_port = "6006"
+test_timeout = "10000"
+coverage_threshold_lines = "80"
+coverage_threshold_functions = "80"
+coverage_threshold_branches = "75"
+coverage_threshold_statements = "80"
+codemod_workflow = "../../.config/codemods/park-ui-fixes/"
+codemod_target = "./src/shared/components/ui/"
+codemod_base_args = " run -w {{ vars.codemod_workflow }} -t {{ vars.codemod_target }}"
+codemod_flags = "--allow-dirty --no-interactive --disable-analytics"
+
+[env]
+'_'.path = { path = "{{ vars.repo_root }}/node_modules/.bin" }
+PANDA_OUTDIR = "{{ vars.panda_outdir }}"
+WEBAPP_OUT_DIR = "{{ vars.webapp_out_dir }}"
+WEBAPP_BASE_URL = "/"
+STORYBOOK_BASE_URL = "/"
+TEST_TIMEOUT = "{{ vars.test_timeout }}"
+COVERAGE_DIR = "{{ vars.repo_root }}/.var/coverage"
+COVERAGE_THRESHOLD_LINES = "{{ vars.coverage_threshold_lines }}"
+COVERAGE_THRESHOLD_FUNCTIONS = "{{ vars.coverage_threshold_functions }}"
+COVERAGE_THRESHOLD_BRANCHES = "{{ vars.coverage_threshold_branches }}"
+COVERAGE_THRESHOLD_STATEMENTS = "{{ vars.coverage_threshold_statements }}"
+VITE_CONNECT_LOGGER = "false"
+
+[tasks."prepare:panda"]
+description = "Run Panda code generation"
+run = "nub exec panda codegen --clean"
+sources = ["{{ vars.panda_config }}", "theme/**/*.ts", "components.json"]
+outputs = ["{{ vars.panda_outdir }}/**/*"]
+
+[tasks."prepare:msw"]
+description = "Generate and verify Mock Service Worker"
+run = "nub ../../.config/scripts/verify-msw-worker-version.ts --ensure && touch public/mockServiceWorker.js"
+sources = ["package.json", "../../.config/scripts/verify-msw-worker-version.ts"]
+outputs = ["public/mockServiceWorker.js"]
+
+[tasks."prepare:paraglide"]
+description = "Compile ParaglideJS message catalogs"
+run = "nub exec paraglide-js compile --project ./project.inlang --outdir ./src/paraglide"
+sources = ["messages/**/*.json", "project.inlang/settings.json"]
+outputs = ["src/paraglide/**/*"]
+
+[tasks."prepare:codegen"]
+description = "Generate all build-input artifacts (Panda, Paraglide, MSW)"
+depends = ["prepare:panda", "prepare:paraglide", "prepare:msw"]
+
+[tasks.prepare]
+description = "Prepare demo application"
+run = [{ task = "prepare:panda" }, { task = "prepare:paraglide" }, { task = "prepare:msw" }]
+
+[tasks."build:webapp:base"]
+hide = true
+usage = '''
+arg "<dir>" env="WEBAPP_OUT_DIR" default="{{ vars.webapp_out_dir }}" help="Output directory for the webapp build"
+arg "<base>" env="WEBAPP_BASE_URL" default="/" help="Base URL for the webapp"
+'''
+run = "WEBAPP_OUT_DIR=${usage_dir?} WEBAPP_BASE_URL=${usage_base?} nub exec vp build"
+
+[tasks."build:webapp"]
+description = "Build demo application"
+depends = ["prepare:codegen"]
+run = "mise run build:webapp:base"
+sources = ["src/**/*.{ts,tsx}", "index.html", "vite.config.ts"]
+outputs = ["{{ vars.webapp_out_dir }}/**/*"]
+
+[tasks."build:storybook:base"]
+hide = true
+usage = '''
+arg "<dir>" env="STORYBOOK_OUT_DIR" default="{{ vars.storybook_out_dir }}" help="Output directory for the Storybook build"
+arg "<base>" env="STORYBOOK_BASE_URL" default="/" help="Base URL for Storybook"
+'''
+run = "STORYBOOK_BASE_URL=${usage_base?} nub exec storybook build -o ${usage_dir?}"
+
+[tasks."build:storybook"]
+description = "Build demo Storybook"
+depends = ["prepare:codegen"]
+run = "mise run build:storybook:base"
+sources = ["src/**/*.{ts,tsx,stories.tsx}", ".storybook/**/*"]
+outputs = ["{{ vars.storybook_out_dir }}/**/*"]
+
+[tasks.build]
+description = "Build demo application and Storybook"
+run = [{ task = "build:webapp" }, { task = "build:storybook" }]
+
+[tasks.dev]
+description = "Start Vite dev server"
+depends = ["prepare:codegen"]
+usage = '''
+flag "-p --port <port>" env="VITE_PORT" default="{{ vars.vite_port }}" help="Port for the Vite dev server"
+arg "[rest]" help="Additional arguments to pass to Vite"
+'''
+run = "nub exec vp dev --port ${usage_port?} ${usage_rest}"
+
+[tasks.storybook]
+description = "Start Storybook dev server"
+depends = ["prepare:codegen"]
+usage = '''
+flag "-p --port <port>" env="STORYBOOK_PORT" default="{{ vars.storybook_port }}" help="Port for Storybook"
+'''
+run = "nub exec storybook dev -p ${usage_port?}"
+
+[tasks.preview]
+description = "Preview production build"
+depends = ["build:webapp"]
+run = "nub exec vp preview"
+
+[tasks.clean]
+description = "Clean demo build artifacts and caches"
+run = ["rm -rf {{ vars.repo_root }}/.var", "rm -rf node_modules/.vite"]
+
+[tasks.test]
+description = "Run tests in watch mode"
+run = "nub exec vp test"
+
+[tasks."test:run"]
+description = "Run tests once"
+run = "nub exec vp test run"
+
+[tasks."test:coverage"]
+description = "Run tests with coverage"
+run = "nub exec vp test run --coverage --maxWorkers 1"
+
+[tasks.format]
+description = "Format demo code with oxfmt"
+run = "nub exec vp fmt"
+
+[tasks."format:check"]
+description = "Check demo code formatting"
+run = "nub exec vp fmt --check"
+
+[tasks.lint]
+description = "Lint demo code with oxlint"
+run = "nub exec vp lint"
+
+[tasks."lint:fix"]
+description = "Lint demo code and apply fixes"
+run = "nub exec vp lint --fix"
+
+[tasks.typecheck]
+description = "Type check demo with TypeScript 7"
+run = "nub exec tsc -b"
+
+[tasks."lint:steiger"]
+description = "Check demo FSD architecture with steiger"
+run = "cd scripts/steiger && ../../node_modules/.bin/steiger ../../src"
+
+[tasks."lint:paraglide-tree-shaking"]
+description = "Verify unused translations are tree-shaken"
+depends = ["build:webapp"]
+run = "nub scripts/check-tree-shaking.ts"
+
+[tasks."park:add"]
+description = "Add a new park-ui component"
+depends_post = "park:fix"
+usage = '''
+arg "<name>..." help="Name of the component to add, e.g. 'button'"
+'''
+run = ["nubx @park-ui/cli add ${usage_name?}", { task = "prepare:panda" }]
+
+[tasks."park:fix"]
+description = "Replace styled-system imports with #styled-system in shared UI components"
+run = [
+	"nub exec codemod workflow {{ vars.codemod_base_args }} {{ vars.codemod_flags }}",
+	{ task = "prepare" },
+	{ task = "lint:fix" },
+	{ task = "format" },
+]

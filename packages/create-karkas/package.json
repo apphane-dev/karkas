@@ -1,0 +1,63 @@
+{
+	"name": "create-karkas",
+	"version": "0.0.0",
+	"description": "Create a production-ready React application with the Karkas stack.",
+	"keywords": [
+		"create",
+		"karkas",
+		"react",
+		"reatom",
+		"scaffold"
+	],
+	"homepage": "https://karkas.apphane.dev/",
+	"bugs": "https://github.com/apphane-dev/karkas/issues",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/apphane-dev/karkas.git",
+		"directory": "packages/create-karkas"
+	},
+	"bin": {
+		"create-karkas": "./dist/cli.js"
+	},
+	"files": [
+		"dist",
+		"template",
+		"README.md",
+		"LICENSE"
+	],
+	"type": "module",
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"scripts": {
+		"build": "mise run build",
+		"format": "mise run format",
+		"lint": "mise run lint",
+		"prepack": "mise run build",
+		"test": "mise run test",
+		"typecheck": "mise run typecheck"
+	},
+	"dependencies": {
+		"@clack/prompts": "^0.11.0"
+	},
+	"devDependencies": {
+		"@types/node": "^24.0.0",
+		"tsup": "^8.5.0",
+		"typescript": "npm:@typescript/typescript6@^6.0.2",
+		"vite-plus": "^0.2.5",
+		"vitest": "4.1.10"
+	},
+	"devEngines": {
+		"packageManager": {
+			"name": "nub",
+			"version": "^0.4.12",
+			"onFail": "warn"
+		}
+	},
+	"engines": {
+		"node": ">=20.11.0"
+	},
+	"packageManager": "nub@0.4.12"
+}

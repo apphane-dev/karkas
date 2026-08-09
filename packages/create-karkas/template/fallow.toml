@@ -1,0 +1,3 @@
+# Fallow only auto-discovers config files from the project root.
+# Keep the actual policy with the rest of repo tooling under .config/.
+extends = ["./.config/fallow.toml"]

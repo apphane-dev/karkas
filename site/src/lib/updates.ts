@@ -1,4 +1,4 @@
-import { getCollection, type CollectionEntry } from 'astro:content'
+import { getCollection, type CollectionEntry } from "astro:content";
 
 /**
  * Build-time feature flag for seed/example content.
@@ -11,15 +11,15 @@ import { getCollection, type CollectionEntry } from 'astro:content'
  * `import.meta.env` inside plain modules across Astro versions, so we read
  * `process.env` directly.
  */
-export const SHOW_EXAMPLES = process.env.SHOW_EXAMPLES === '1'
+export const SHOW_EXAMPLES = process.env.SHOW_EXAMPLES === "1";
 
 /**
  * Project updates, newest first. This is the single choke point where example/
  * seed entries are filtered out — hidden unless SHOW_EXAMPLES is set.
  */
-export async function getUpdates(): Promise<CollectionEntry<'updates'>[]> {
-	const updates = await getCollection('updates', ({ data }) =>
+export async function getUpdates(): Promise<CollectionEntry<"updates">[]> {
+	const updates = await getCollection("updates", ({ data }) =>
 		SHOW_EXAMPLES ? true : !data.example,
-	)
-	return updates.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+	);
+	return updates.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }
