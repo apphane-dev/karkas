@@ -55,7 +55,7 @@
 		"@types/react": "^19.2.17",
 		"@types/react-dom": "^19.2.3",
 		"@typescript/native": "npm:typescript@^7.0.2",
-		"@vitejs/plugin-react": "^6.0.3",
+		"@vitejs/plugin-react": "^6.0.5",
 		"@vitest/browser-playwright": "4.1.10",
 		"@vitest/coverage-v8": "^4.1.10",
 		"fallow": "^3.5.1",
@@ -64,18 +64,18 @@
 		"steiger": "^0.6.0",
 		"storybook": "~10.4.6",
 		"typescript": "npm:@typescript/typescript6@^6.0.2",
-		"vite": "^8.1.0",
-		"vite-plus": "^0.2.5",
+		"vite": "^8.2.1",
+		"vite-plus": "^0.2.8",
 		"vitest": "4.1.10"
 	},
 	"devEngines": {
 		"packageManager": {
 			"name": "nub",
-			"version": "^0.4.12",
+			"version": "^0.7.4",
 			"onFail": "warn"
 		}
 	},
-	"packageManager": "nub@0.4.12",
+	"packageManager": "nub@0.7.4",
 	"msw": {
 		"workerDirectory": [
 			"public"

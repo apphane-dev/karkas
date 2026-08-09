@@ -46,18 +46,18 @@
 		"@types/node": "^24.0.0",
 		"tsup": "^8.5.0",
 		"typescript": "npm:@typescript/typescript6@^6.0.2",
-		"vite-plus": "^0.2.5",
+		"vite-plus": "^0.2.8",
 		"vitest": "4.1.10"
 	},
 	"devEngines": {
 		"packageManager": {
 			"name": "nub",
-			"version": "^0.4.12",
+			"version": "^0.7.4",
 			"onFail": "warn"
 		}
 	},
 	"engines": {
 		"node": ">=20.11.0"
 	},
-	"packageManager": "nub@0.4.12"
+	"packageManager": "nub@0.7.4"
 }
