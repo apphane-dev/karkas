@@ -50,7 +50,7 @@ jobs:
           artifacts-dir: .var/fallow
 
       - name: Install Playwright browsers
-        run: nubx playwright install --with-deps chromium -y
+        run: nub exec --cwd apps/demo playwright install --with-deps chromium
 
       - name: Run CI checks
         run: mise run ci
