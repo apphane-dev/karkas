@@ -13,14 +13,14 @@
 	},
 	"devDependencies": {
 		"astro": "^5.6.1",
-		"vite-plus": "^0.2.5"
+		"vite-plus": "^0.2.8"
 	},
 	"devEngines": {
 		"packageManager": {
 			"name": "nub",
-			"version": "^0.4.12",
+			"version": "^0.7.4",
 			"onFail": "warn"
 		}
 	},
-	"packageManager": "nub@0.4.12"
+	"packageManager": "nub@0.7.4"
 }

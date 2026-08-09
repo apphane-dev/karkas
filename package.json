@@ -28,11 +28,11 @@
 	"devEngines": {
 		"packageManager": {
 			"name": "nub",
-			"version": "^0.4.12",
+			"version": "^0.7.4",
 			"onFail": "warn"
 		}
 	},
-	"packageManager": "nub@0.4.12",
+	"packageManager": "nub@0.7.4",
 	"allowBuilds": {
 		"sharp": false,
 		"esbuild": true,
