@@ -12,8 +12,8 @@
 		"prepare": "mise run --no-deps prepare"
 	},
 	"devDependencies": {
-		"astro": "^5.6.1",
-		"vite-plus": "^0.2.8"
+		"astro": "^7.2.2",
+		"vite-plus": "^0.2.9"
 	},
 	"devEngines": {
 		"packageManager": {
