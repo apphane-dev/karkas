@@ -165,7 +165,8 @@ async function promptForTarget(): Promise<string> {
 		message: 'Where should the project be created?',
 		placeholder: 'my-karkas-app',
 		defaultValue: 'my-karkas-app',
-		validate: (value) => (normalizePackageName(value) ? undefined : 'Enter a valid project name.'),
+		validate: (value) =>
+			value && normalizePackageName(value) ? undefined : 'Enter a valid project name.',
 	})
 	if (p.isCancel(answer)) return cancel()
 	return answer
