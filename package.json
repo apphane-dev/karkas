@@ -22,8 +22,8 @@
 		"site"
 	],
 	"devDependencies": {
-		"@changesets/cli": "^3.0.0",
-		"fallow": "^3.16.0"
+		"@changesets/cli": "^3.0.1",
+		"fallow": "^3.17.0"
 	},
 	"devEngines": {
 		"packageManager": {
