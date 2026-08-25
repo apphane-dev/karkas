@@ -14,6 +14,7 @@ const detailUrl = composeApiUrl(`${CONNECTIONS_API_PATH}/:connectionId`)
 const connectionListResolver = (async () => {
 	await delay()
 
+	// oxlint-disable-next-line no-unused-vars
 	return HttpResponse.json(connectionsMockData.map(({ details: _, ...rest }) => rest))
 }) satisfies HttpResponseResolver
 
@@ -24,6 +25,7 @@ const connectionDetailResolver = (async ({ params }) => {
 	const connection = connectionsMockData.find(({ id }) => id === connectionId)
 	assert(connection, `Connection with id ${connectionId} not found in mock data`, Error404)
 
+	// oxlint-disable-next-line no-unused-vars
 	return HttpResponse.json(connection)
 }) satisfies HttpResponseResolver
 

@@ -66,6 +66,7 @@ const cloneConversation = (conversation: Conversation) => ({
 const conversationListResolver = (async ({ request }) => {
 	await delay()
 
+	// oxlint-disable-next-line no-unused-vars
 	return HttpResponse.json(storyConversations(request).map(({ messages: _, ...rest }) => rest))
 }) satisfies HttpResponseResolver
 
@@ -77,6 +78,7 @@ const conversationUnreadCountResolver = (async ({ request }) => {
 		0,
 	)
 
+	// oxlint-disable-next-line no-unused-vars
 	return HttpResponse.json({ unreadCount })
 }) satisfies HttpResponseResolver
 
@@ -88,6 +90,7 @@ const conversationDetailResolver = (async ({ params, request }) => {
 		String(params['conversationId']),
 	)
 
+	// oxlint-disable-next-line no-unused-vars
 	return HttpResponse.json(cloneConversation(conversation))
 }) satisfies HttpResponseResolver
 
@@ -103,6 +106,7 @@ const conversationSendMessageResolver = (async ({ params, request }) => {
 	const message = { id: crypto.randomUUID(), sender: 'You', text, time: nowTime(), isOwn: true }
 	conversation.messages.push(message)
 
+	// oxlint-disable-next-line no-unused-vars
 	return HttpResponse.json(message)
 }) satisfies HttpResponseResolver
 
