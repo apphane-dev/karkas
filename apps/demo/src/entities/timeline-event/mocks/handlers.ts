@@ -14,6 +14,7 @@ const detailUrl = composeApiUrl(`${TIMELINE_EVENTS_API_PATH}/:timelineEventId`)
 const timelineEventListResolver = (async () => {
 	await delay()
 
+	// oxlint-disable-next-line no-unused-vars
 	return HttpResponse.json(timelineEventsMockData.map(({ description: _, ...rest }) => rest))
 }) satisfies HttpResponseResolver
 
@@ -28,6 +29,7 @@ const timelineEventDetailResolver = (async ({ params }) => {
 		Error404,
 	)
 
+	// oxlint-disable-next-line no-unused-vars
 	return HttpResponse.json(timelineEvent)
 }) satisfies HttpResponseResolver
 
