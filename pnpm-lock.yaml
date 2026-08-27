@@ -33,8 +33,8 @@ importers:
         specifier: ^6.2.1
         version: 6.3.0
       kahraman:
-        specifier: ^0.3.0
-        version: 0.3.0(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(msw@2.15.0(typescript@6.0.2))(react@19.2.8)(storybook@10.5.10(@types/react@19.2.18)(prettier@3.2.5)(vite-plus@0.2.9(@vitest/browser-playwright@4.1.10(playwright@1.62.1)(vitest@4.1.10))))(typescript@6.0.2)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(yaml@2.9.0))(yaml@2.9.0)
+        specifier: ^0.3.1
+        version: 0.3.1(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(msw@2.15.0(typescript@6.0.2))(react@19.2.8)(storybook@10.5.10(@types/react@19.2.18)(prettier@3.2.5)(vite-plus@0.2.9(@vitest/browser-playwright@4.1.10(playwright@1.62.1)(vitest@4.1.10))))(typescript@6.0.2)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(yaml@2.9.0))(yaml@2.9.0)
       lucide-react:
         specifier: ^1.31.0
         version: 1.33.0(react@19.2.8)
@@ -61,16 +61,16 @@ importers:
         specifier: ^1.11.4
         version: 1.12.0(@types/node@24.13.3)(@types/react@19.2.18)(@types/react-dom@19.2.5(@types/react@19.2.18))(idb-keyval@6.3.0)(typescript@6.0.2)(yaml@2.9.0)
       '@storybook/addon-a11y':
-        specifier: ~10.5.8
+        specifier: ~10.5.10
         version: 10.5.10(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(msw@2.15.0(typescript@6.0.2))(react@19.2.8)(storybook@10.5.10(@types/react@19.2.18)(prettier@3.2.5)(vite-plus@0.2.9(@vitest/browser-playwright@4.1.10(playwright@1.62.1)(vitest@4.1.10))))(typescript@6.0.2)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(yaml@2.9.0))(yaml@2.9.0)
       '@storybook/addon-docs':
-        specifier: ~10.5.8
+        specifier: ~10.5.10
         version: 10.5.10(@types/node@24.13.3)(@types/react@19.2.18)(@types/react-dom@19.2.5(@types/react@19.2.18))(@vitest/coverage-v8@4.1.10)(esbuild@0.28.2)(msw@2.15.0(typescript@6.0.2))(storybook@10.5.10(@types/react@19.2.18)(prettier@3.2.5)(vite-plus@0.2.9(@vitest/browser-playwright@4.1.10(playwright@1.62.1)(vitest@4.1.10))))(typescript@6.0.2)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(yaml@2.9.0))(yaml@2.9.0)
       '@storybook/addon-vitest':
-        specifier: ~10.5.8
+        specifier: ~10.5.10
         version: 10.5.10(@vitest/browser@4.1.10(vitest@4.1.10(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(@vitest/browser-preview@4.1.10)(@vitest/coverage-v8@4.1.10)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(yaml@2.9.0))))(@vitest/browser-playwright@4.1.11(playwright@1.62.1)(vitest@4.1.11))(@vitest/runner@4.1.10)(msw@2.15.0(typescript@6.0.2))(react@19.2.8)(storybook@10.5.10(@types/react@19.2.18)(prettier@3.2.5)(vite-plus@0.2.9(@vitest/browser-playwright@4.1.10(playwright@1.62.1)(vitest@4.1.10))))(typescript@6.0.2)(vitest@4.1.11(@types/node@24.13.3)(@vitest/browser-playwright@4.1.11)(@vitest/browser-preview@4.1.11)(@vitest/coverage-v8@4.1.11)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(yaml@2.9.0)))
       '@storybook/react-vite':
-        specifier: ~10.5.8
+        specifier: ~10.5.10
         version: 10.5.10(@types/react-dom@19.2.5(@types/react@19.2.18))(@vitest/coverage-v8@4.1.10)(msw@2.15.0(typescript@6.0.2))(react@19.2.8)(react-dom@19.2.8(react@19.2.8))(storybook@10.5.10(@types/react@19.2.18)(prettier@3.2.5)(vite-plus@0.2.9(@vitest/browser-playwright@4.1.10(playwright@1.62.1)(vitest@4.1.10))))(typescript@6.0.2)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(yaml@2.9.0))
       '@total-typescript/ts-reset':
         specifier: ^0.6.1
@@ -106,7 +106,7 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0(typescript@6.0.2)
       storybook:
-        specifier: ~10.5.8
+        specifier: ~10.5.10
         version: 10.5.10(@types/node@24.13.3)(@types/react@19.2.18)(@vitest/coverage-v8@4.1.10)(msw@2.15.0(typescript@6.0.2))(prettier@3.2.5)(react@19.2.8)(typescript@6.0.2)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(yaml@2.9.0))(vite-plus@0.2.9(@vitest/browser-playwright@4.1.10(playwright@1.62.1)(vitest@4.1.10)))(yaml@2.9.0)
       typescript:
         specifier: npm:@typescript/typescript6@^6.0.2
@@ -4582,8 +4582,8 @@ packages:
   jsonfile@6.2.1:
     resolution: {integrity: sha512-zwOTdL3rFQ/lRdBnntKVOX6k5cKJwEc1HdilT71BWEu7J41gXIB2MRp+vxduPSwZJPWBxEzv4yH1wYLJGUHX4Q==}
 
-  kahraman@0.3.0:
-    resolution: {integrity: sha512-edhyPM5dkQWEOPyCd3s1dkaZppcbmmTSkVwv7B8VxF9WkWjb0t9DpdgwS62gW40ND7+JK+AfhCdVorQ07Nyvrw==}
+  kahraman@0.3.1:
+    resolution: {integrity: sha512-ko2qh4CCyM136N+4hQ1VnopDL9TQty8DJ6RIIqYMg+ABpe1k3bWBedsWjsBjeVM9A2AzM+cwp25jz2NnGPKPYQ==}
     engines: {node: '>=20.11.0'}
     peerDependencies:
       storybook: '>=9.0.0'
@@ -10574,7 +10574,7 @@ snapshots:
     optionalDependencies:
       graceful-fs: 4.2.11
 
-  kahraman@0.3.0(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(msw@2.15.0(typescript@6.0.2))(react@19.2.8)(storybook@10.5.10(@types/react@19.2.18)(prettier@3.2.5)(vite-plus@0.2.9(@vitest/browser-playwright@4.1.10(playwright@1.62.1)(vitest@4.1.10))))(typescript@6.0.2)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(yaml@2.9.0))(yaml@2.9.0):
+  kahraman@0.3.1(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(msw@2.15.0(typescript@6.0.2))(react@19.2.8)(storybook@10.5.10(@types/react@19.2.18)(prettier@3.2.5)(vite-plus@0.2.9(@vitest/browser-playwright@4.1.10(playwright@1.62.1)(vitest@4.1.10))))(typescript@6.0.2)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(yaml@2.9.0))(yaml@2.9.0):
     dependencies:
       storybook: 10.5.10(@types/node@24.13.3)(@types/react@19.2.18)(@vitest/coverage-v8@4.1.10)(msw@2.15.0(typescript@6.0.2))(prettier@3.2.5)(react@19.2.8)(typescript@6.0.2)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(yaml@2.9.0))(vite-plus@0.2.9(@vitest/browser-playwright@4.1.10(playwright@1.62.1)(vitest@4.1.10)))(yaml@2.9.0)
 
