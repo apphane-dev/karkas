@@ -23,7 +23,7 @@
 	],
 	"devDependencies": {
 		"@changesets/cli": "^3.0.1",
-		"fallow": "^3.18.0"
+		"fallow": "^3.19.0"
 	},
 	"devEngines": {
 		"packageManager": {
