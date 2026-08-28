@@ -1,7 +1,7 @@
 min_version = "2026.4.18" # required for [deps] (renamed from [prepare])
 
 [tools]
-"npm:@nubjs/nub" = "0.7.4"
+"npm:@nubjs/nub" = "0.7.5"
 node = "lts"
 jq = "latest"
 vp = "latest"
@@ -18,7 +18,7 @@ HK_MISE = 1
 
 [deps.nub]
 auto = true
-sources = ["nub.lock", "package.json", "apps/*/package.json", "packages/*/package.json", "site/package.json"]
+sources = ["pnpm-lock.yaml", "package.json", "apps/*/package.json", "packages/*/package.json", "site/package.json"]
 outputs = ["node_modules/.modules.yaml"]
 run = "nub install"
 
