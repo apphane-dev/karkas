@@ -37,7 +37,7 @@
 		"@reatom/react": "^1001.0.1",
 		"idb-keyval": "^6.2.1",
 		"kahraman": "^0.3.1",
-		"lucide-react": "^1.35.0",
+		"lucide-react": "^1.31.0",
 		"msw": "2.15.0",
 		"react": "^19.2.7",
 		"react-dom": "^19.2.7"
