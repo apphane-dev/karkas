@@ -1,29 +1,33 @@
-import type { LoginForm } from "#pages/login/model/routes";
+import type { LoginForm } from '#pages/login/model/routes'
 
-import { wrap } from "@reatom/core";
-import { bindField, reatomComponent } from "@reatom/react";
+import { wrap } from '@reatom/core'
+import { bindField, reatomComponent } from '@reatom/react'
 
-import { m } from "#paraglide/messages.js";
-import { Alert, Button, Field, Heading, Input, Text } from "#shared/components";
-import { formAlertMessage, visibleFieldError } from "#shared/reatom";
-import { styled } from "#styled-system/jsx";
+import { m } from '#paraglide/messages.js'
+import { isApiValidationError } from '#shared/api'
+import { Alert, Button, Field, Heading, Input, Text } from '#shared/components'
+import { formAlertMessage, visibleFieldError } from '#shared/reatom'
+import { styled } from '#styled-system/jsx'
 
 export const LoginPage = reatomComponent(({ form }: { form: LoginForm }) => {
-	const { fields, submit } = form;
+	const { fields, submit } = form
 	// `formAlertMessage`, not `submit.error()` directly: it stays null while a
 	// field-level validation owns the failure, so the alert never repeats a
 	// message already printed under a field. The copy here is deliberately
 	// canned — ApiError.message is a status string, not user-facing text.
-	const showErrorAlert = formAlertMessage(form) !== null;
+	// `isApiValidationError` as the handled-predicate: server validation issues
+	// were already mapped onto fields by the model, so the alert must not
+	// re-announce them — a mapped error outlives the field errors it produced.
+	const showErrorAlert = formAlertMessage(form, isApiValidationError) !== null
 	// `visibleFieldError`, not bindField's `error`: with `keepErrorOnChange:
 	// false` the last issue lingers in Reatom without its `triggered` flag, and
 	// reading that raw error would leave stale copy under the field while the
 	// user fixes the value.
-	const { error: _emailError, ...emailBind } = bindField(fields.email);
-	const { error: _passwordError, ...passwordBind } = bindField(fields.password);
-	const emailError = visibleFieldError(fields.email);
-	const passwordError = visibleFieldError(fields.password);
-	const pending = !submit.ready();
+	const { error: _emailError, ...emailBind } = bindField(fields.email)
+	const { error: _passwordError, ...passwordBind } = bindField(fields.password)
+	const emailError = visibleFieldError(fields.email)
+	const passwordError = visibleFieldError(fields.password)
+	const pending = !submit.ready()
 
 	return (
 		<styled.main minH="100dvh" display="grid" placeItems="center" bg="gray.2" px="4" py="8">
@@ -59,7 +63,7 @@ export const LoginPage = reatomComponent(({ form }: { form: LoginForm }) => {
 					<Field.Label>{m.login_email()}</Field.Label>
 					<Input
 						ref={wrap((element) => {
-							fields.email.elementRef.set(element ?? undefined);
+							fields.email.elementRef.set(element ?? undefined)
 						})}
 						type="email"
 						autoComplete="email"
@@ -72,7 +76,7 @@ export const LoginPage = reatomComponent(({ form }: { form: LoginForm }) => {
 					<Field.Label>{m.login_password()}</Field.Label>
 					<Input
 						ref={wrap((element) => {
-							fields.password.elementRef.set(element ?? undefined);
+							fields.password.elementRef.set(element ?? undefined)
 						})}
 						type="password"
 						autoComplete="current-password"
@@ -86,5 +90,5 @@ export const LoginPage = reatomComponent(({ form }: { form: LoginForm }) => {
 				</Button>
 			</styled.form>
 		</styled.main>
-	);
-}, "LoginPage");
+	)
+}, 'LoginPage')

@@ -72,6 +72,16 @@ the same sentence twice), and never for a submit error a caller has mapped
 elsewhere (pass an `isHandled` predicate) — mapped errors outlive the field
 errors they produced, and the stale text must not migrate into the alert.
 
+## Server validation lands under fields, not in the alert
+
+A 422 from the server is field business: `applyApiValidationToFields` maps
+each issue onto its form field by name suffix (`body.email` → `email`), so
+the message renders where the user can fix it. A server error is the only
+kind a field cannot re-check by editing — the mapping flips the field to
+`keepErrorOnChange: false` so the next keystroke drops it and the server
+judges the new value on the next submit. Issues no field claims return to
+the caller as unmapped, and the form-level alert carries them.
+
 ## Errors that leave when the user fixes the value
 
 `visibleFieldError(field)` reads the field's `triggered` flag alongside its
@@ -95,7 +105,12 @@ success. To reproduce:
 4. Fix the email but use a wrong password (`wrong-password`). The form-level
    alert appears: the server rejected the request and no field owns that
    failure. This is `formAlertMessage` letting an unowned failure through.
-5. Submit `alex@example.com` / `password`. Pending state, then the dashboard
+5. Set the email to `taken@example.com` (password `password`) and submit. The
+   server answers 422 and "This email is already registered" appears **under
+   the email field** — server validation mapped onto its field, no alert.
+   Edit the email once and the server error disappears, handing the verdict
+   back to the server on the next submit.
+6. Submit `alex@example.com` / `password`. Pending state, then the dashboard
    replaces the page — success navigates away, which is exactly why this form
    carries no post-save state handling.
 

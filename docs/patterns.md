@@ -16,11 +16,12 @@ extension-point mechanics, `docs/reatom-extensions.md`.
 
 ## Read Source First
 
-| Pattern                 | The decision                                                                                      | Template (shipped)                                           | Demo (proves it)                             |
-| ----------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------- |
-| Form save semantics     | What `onSubmit` returns owns the post-save state: a returned payload rebaselines, nothing resets. | `packages/create-karkas/template/src/shared/reatom/forms.ts` | `apps/demo/src/pages/login/model/routes.tsx` |
-| Form-level alert gating | An alert shows only failures no field owns; a mapped stale error can never migrate into it.       | `formAlertMessage` in `…/shared/reatom/forms.ts`             | `apps/demo/src/pages/login/ui/LoginPage.tsx` |
-| Visible field errors    | The error reads `triggered`, not just `error`, so stale copy leaves when the user fixes the value. | `visibleFieldError` in `…/shared/reatom/forms.ts`            | `apps/demo/src/pages/login/ui/LoginPage.tsx` |
+| Pattern                   | The decision                                                                                                          | Template (shipped)                                           | Demo (proves it)                             |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------- |
+| Form save semantics       | What `onSubmit` returns owns the post-save state: a returned payload rebaselines, nothing resets.                     | `packages/create-karkas/template/src/shared/reatom/forms.ts` | `apps/demo/src/pages/login/model/routes.tsx` |
+| Form-level alert gating   | An alert shows only failures no field owns; a mapped stale error can never migrate into it.                           | `formAlertMessage` in `…/shared/reatom/forms.ts`             | `apps/demo/src/pages/login/ui/LoginPage.tsx` |
+| Visible field errors      | The error reads `triggered`, not just `error`, so stale copy leaves when the user fixes the value.                    | `visibleFieldError` in `…/shared/reatom/forms.ts`            | `apps/demo/src/pages/login/ui/LoginPage.tsx` |
+| Server validation mapping | A server error is the only one a field cannot re-check: it maps onto fields by name suffix and dies on the next edit. | `src/shared/api/validation.ts`, `errors.ts`                  | `apps/demo/src/pages/login/model/routes.tsx` |
 
 ## Rules
 
