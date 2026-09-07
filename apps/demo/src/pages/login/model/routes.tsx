@@ -2,6 +2,7 @@ import { urlAtom, reatomForm } from '@reatom/core'
 import { Fragment } from 'react'
 
 import { isAuthenticatedAtom, loginAction } from '#entities/auth'
+import { withFormSubmitHandler } from '#shared/reatom'
 import { createAppPath, rootRoute } from '#shared/router'
 
 import { LoginPage } from '../ui/LoginPage'
@@ -12,7 +13,7 @@ const reatomLoginForm = () =>
 	reatomForm(
 		{ email: 'alex@example.com', password: 'password' },
 		{ name: 'loginForm', onSubmit: loginAction },
-	)
+	).extend(withFormSubmitHandler())
 
 export type LoginForm = ReturnType<typeof reatomLoginForm>
 

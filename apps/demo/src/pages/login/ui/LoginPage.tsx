@@ -5,11 +5,16 @@ import { bindField, reatomComponent } from '@reatom/react'
 
 import { m } from '#paraglide/messages.js'
 import { Alert, Button, Field, Heading, Input, Text } from '#shared/components'
+import { formAlertMessage } from '#shared/reatom'
 import { styled } from '#styled-system/jsx'
 
 export const LoginPage = reatomComponent(({ form }: { form: LoginForm }) => {
 	const { fields, submit } = form
-	const error = submit.error()
+	// `formAlertMessage`, not `submit.error()` directly: it stays null while a
+	// field-level validation owns the failure, so the alert never repeats a
+	// message already printed under a field. The copy here is deliberately
+	// canned — ApiError.message is a status string, not user-facing text.
+	const showErrorAlert = formAlertMessage(form) !== null
 	const pending = !submit.ready()
 
 	return (
@@ -25,17 +30,14 @@ export const LoginPage = reatomComponent(({ form }: { form: LoginForm }) => {
 				display="flex"
 				flexDirection="column"
 				gap="5"
-				onSubmit={wrap((event) => {
-					event.preventDefault()
-					submit()
-				})}
+				onSubmit={wrap(form.handleSubmit)}
 			>
 				<styled.div display="flex" flexDirection="column" gap="1">
 					<Heading fontSize="2xl">{m.login_title()}</Heading>
 					<Text color="muted">{m.login_description()}</Text>
 				</styled.div>
 
-				{error && (
+				{showErrorAlert && (
 					<Alert.Root status="error" role="alert">
 						<Alert.Indicator />
 						<Alert.Content>
