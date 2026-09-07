@@ -7,7 +7,6 @@ const patterns = defineCollection({
 	loader: glob({ pattern: "**/*.md", base: "./src/content/patterns" }),
 	schema: z.object({
 		title: z.string(),
-		date: z.coerce.date(),
 		// The failure users would hit without the invention.
 		problem: z.string(),
 		// The non-obvious choice the invention encodes, in one sentence.

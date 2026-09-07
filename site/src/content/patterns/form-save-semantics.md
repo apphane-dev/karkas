@@ -1,6 +1,5 @@
 ---
 title: Form save semantics
-date: 2026-09-07
 tag: forms
 problem: >-
   A form that just saved still claims there is work left: the submit button stays

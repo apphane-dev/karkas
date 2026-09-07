@@ -3,9 +3,6 @@ import Base from '../../layouts/Base.astro'
 import { getPatterns } from '../../lib/patterns'
 
 const patterns = await getPatterns()
-
-const fmt = (d: Date) =>
-	d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
 ---
 
 <Base
@@ -33,7 +30,6 @@ const fmt = (d: Date) =>
 							<li class="feed-item">
 								<div class="feed-meta">
 									<span class="feed-tag">{p.data.tag}</span>
-									<time datetime={p.data.date.toISOString()}>ported {fmt(p.data.date)}</time>
 								</div>
 								<a class="feed-title" href={`/patterns/${p.id}`}>
 									{p.data.title}
