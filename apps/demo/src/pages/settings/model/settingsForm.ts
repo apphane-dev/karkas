@@ -1,71 +1,35 @@
-import type { NotificationSettings, ProfileSettings, SettingsData } from '#entities/setting'
+import type { SettingsData } from '#entities/setting'
 
-import {
-	abortVar,
-	action,
-	framePromise,
-	reatomForm,
-	sleep,
-	withAbort,
-	withAsync,
-	wrap,
-} from '@reatom/core'
+import { abortVar, reatomForm, wrap } from '@reatom/core'
 
 import { updateNotifications, updateProfile } from '#entities/setting'
-import { m } from '#paraglide/messages.js'
-import { toaster } from '#shared/components'
+import { withSavedState } from '#shared/reatom'
 
 // Re-exported so `SettingsPage.tsx`'s existing imports keep working.
 export type { DesktopNotification, EmailNotification } from '#entities/setting'
 export type Density = 'compact' | 'comfortable' | 'spacious'
 
-const SAVE_DELAY_MS = 300
-
-// `framePromise()` must run before any `await` to bind to the action frame, so
-// the shared helper performs the API request itself (mirrors pricingModel.ts).
-async function saveWithToast<TValues>(
-	values: TValues,
-	save: (signal: AbortSignal) => Promise<unknown>,
-	successTitle: string,
-) {
-	const id = toaster.create({ title: m.settings_saving(), type: 'loading', closable: false })
-	let completed = false
-	void framePromise()
-		.finally(() => {
-			if (!completed) toaster.remove(id)
-		})
-		.catch(() => {})
-	try {
-		await wrap(save(abortVar.require().signal))
-		await wrap(sleep(SAVE_DELAY_MS))
-		toaster.update(id, { title: successTitle, type: 'success' })
-		completed = true
-	} catch (error) {
-		toaster.remove(id)
-		throw error
-	}
-	return values
-}
-
-const saveProfileWithToast = (values: ProfileSettings) =>
-	saveWithToast(values, (signal) => updateProfile(values, { signal }), m.settings_profile_saved())
-
-const saveNotificationsWithToast = (values: NotificationSettings) =>
-	saveWithToast(
-		values,
-		(signal) => updateNotifications(values, { signal }),
-		m.settings_notifications_saved(),
-	)
-
 export function reatomSettingsPageModel(data: SettingsData) {
+	// Both forms stay on screen after a save, so `withSavedState` owns the
+	// post-save state: the returned payload rebaselines the form (an edit typed
+	// mid-save survives and keeps it dirty), and the save affordance disappears
+	// because the form reads clean — no toast claiming the save.
 	const profileForm = reatomForm(data.profile, {
 		name: 'settings.profileForm',
-		onSubmit: async (values) => await wrap(saveProfileWithToast(values)),
-	})
+		onSubmit: async (values) => {
+			await wrap(updateProfile(values, { signal: abortVar.require().signal }))
+			return values
+		},
+	}).extend(withSavedState())
+
 	const notificationsForm = reatomForm(data.notifications, {
 		name: 'settings.notificationsForm',
-		onSubmit: async (values) => await wrap(saveNotificationsWithToast(values)),
-	})
+		onSubmit: async (values) => {
+			await wrap(updateNotifications(values, { signal: abortVar.require().signal }))
+			return values
+		},
+	}).extend(withSavedState())
+
 	const appearanceForm = reatomForm(
 		{ density: 'compact' as Density },
 		{
@@ -73,31 +37,9 @@ export function reatomSettingsPageModel(data: SettingsData) {
 		},
 	)
 
-	const saveProfile = action(async () => {
-		if (!profileForm.focus().dirty) return
-		try {
-			const submitted = await wrap(profileForm.submit())
-			profileForm.init(submitted)
-		} catch {
-			toaster.create({ title: m.settings_save_error(), type: 'error' })
-		}
-	}, 'settings.profileForm.save').extend(withAbort(), withAsync())
-
-	const saveNotifications = action(async () => {
-		if (!notificationsForm.focus().dirty) return
-		try {
-			const submitted = await wrap(notificationsForm.submit())
-			notificationsForm.init(submitted)
-		} catch {
-			toaster.create({ title: m.settings_save_error(), type: 'error' })
-		}
-	}, 'settings.notificationsForm.save').extend(withAbort(), withAsync())
-
 	return {
 		profileForm,
-		saveProfile,
 		notificationsForm,
-		saveNotifications,
 		appearanceForm,
 	}
 }
