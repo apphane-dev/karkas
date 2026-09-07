@@ -17,7 +17,7 @@ frontend tooling, and hk for fast file-scoped quality checks.
 | `.config/hk.pkl`                          | hk check/fix and Git-hook orchestration                               |
 | `.config/fallow.toml`                     | Dead-code, duplication, and complexity scope                          |
 | `package.json`                            | Nub workspace and root scripts                                        |
-| `nub.lock`                                | Workspace lockfile                                                    |
+| `pnpm-lock.yaml`                          | Workspace lockfile (pnpm name is a changesets marker, see below)      |
 
 mise discovers `apps/demo`, `packages/create-karkas`, and `site` as namespaced config roots.
 Use names such as `//apps/demo:test:run` when invoking one project directly. Root tasks such
@@ -41,7 +41,14 @@ mise run ci                 # full non-mutating CI pipeline
 
 ## Responsibility split
 
-- **Nub** installs all workspaces from `nub.lock` and runs package lifecycle scripts.
+- **Nub** installs all workspaces from `pnpm-lock.yaml` and runs package lifecycle scripts.
+- The lockfile keeps its **pnpm name**, and `pnpm-workspace.yaml` mirrors the package.json
+  workspaces globs, because changesets resolves workspaces through `@manypkg/get-packages`,
+  which detects the package manager by marker file (`pnpm-workspace.yaml`, `package-lock.json`,
+  …). `nub.lock` matches nothing, so detection falls back to RootTool and package-scoped
+  changesets fail with "not in the workspace". Nub reads both files fine under pnpm incumbency
+  and takes its identity from `packageManager` in the manifest; it does not read the workspace
+  globs from `pnpm-workspace.yaml`.
 - **mise** owns named workflows, code generation, builds, tests, and cross-project ordering.
 - **Vite+** runs Vite, formatting, linting, and Vitest for the projects that declare it.
 - **hk** calls mise-backed format, lint, and typecheck steps plus a root Fallow check.
