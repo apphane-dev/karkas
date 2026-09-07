@@ -27,6 +27,13 @@ export const to500 = (message = 'Internal Server Error') => {
 	throw new Error500(message)
 }
 
+// Server-side field validation, FastAPI style. `loc` may carry envelope
+// prefixes (e.g. ['body', 'email']) — the client maps issues to form fields
+// by field-name suffix.
+export const to422 = (issues: Array<{ loc: Array<string | number>; msg: string }>) => {
+	throw HttpResponse.json({ detail: issues }, { status: 422 })
+}
+
 export function withRetrySuccess<TResolver extends HttpResponseResolver>(
 	resolver: TResolver,
 	failures = 2,

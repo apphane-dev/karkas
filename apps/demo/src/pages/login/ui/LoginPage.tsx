@@ -4,6 +4,7 @@ import { wrap } from '@reatom/core'
 import { bindField, reatomComponent } from '@reatom/react'
 
 import { m } from '#paraglide/messages.js'
+import { isApiValidationError } from '#shared/api'
 import { Alert, Button, Field, Heading, Input, Text } from '#shared/components'
 import { formAlertMessage, visibleFieldError } from '#shared/reatom'
 import { styled } from '#styled-system/jsx'
@@ -14,7 +15,10 @@ export const LoginPage = reatomComponent(({ form }: { form: LoginForm }) => {
 	// field-level validation owns the failure, so the alert never repeats a
 	// message already printed under a field. The copy here is deliberately
 	// canned — ApiError.message is a status string, not user-facing text.
-	const showErrorAlert = formAlertMessage(form) !== null
+	// `isApiValidationError` as the handled-predicate: server validation issues
+	// were already mapped onto fields by the model, so the alert must not
+	// re-announce them — a mapped error outlives the field errors it produced.
+	const showErrorAlert = formAlertMessage(form, isApiValidationError) !== null
 	// `visibleFieldError`, not bindField's `error`: with `keepErrorOnChange:
 	// false` the last issue lingers in Reatom without its `triggered` flag, and
 	// reading that raw error would leave stale copy under the field while the
