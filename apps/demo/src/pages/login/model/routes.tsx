@@ -1,8 +1,9 @@
-import { urlAtom, reatomForm } from '@reatom/core'
+import { reatomField, reatomForm, urlAtom } from '@reatom/core'
 import { Fragment } from 'react'
 
 import { isAuthenticatedAtom, loginAction } from '#entities/auth'
-import { withFormSubmitHandler } from '#shared/reatom'
+import { m } from '#paraglide/messages.js'
+import { withFormAutoFocusOnError, withFormSubmitHandler } from '#shared/reatom'
 import { createAppPath, rootRoute } from '#shared/router'
 
 import { LoginPage } from '../ui/LoginPage'
@@ -11,9 +12,31 @@ const dashboardPath = createAppPath('dashboard')
 
 const reatomLoginForm = () =>
 	reatomForm(
-		{ email: 'alex@example.com', password: 'password' },
-		{ name: 'loginForm', onSubmit: loginAction },
-	).extend(withFormSubmitHandler())
+		{
+			email: reatomField('alex@example.com', {
+				name: 'loginForm.email',
+				// Loose shape only — the backend is the source of truth for real
+				// address validity; this catches obviously malformed input before
+				// a round-trip.
+				validate: ({ state }) => {
+					const value = state.trim()
+					if (!value) return m.login_email_required()
+					if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value)) return m.login_email_invalid()
+					return undefined
+				},
+			}),
+			password: reatomField('password', {
+				name: 'loginForm.password',
+				validate: ({ state }) => (state ? undefined : m.login_password_required()),
+			}),
+		},
+		{
+			name: 'loginForm',
+			validateOnBlur: true,
+			keepErrorOnChange: false,
+			onSubmit: loginAction,
+		},
+	).extend(withFormSubmitHandler(), withFormAutoFocusOnError())
 
 export type LoginForm = ReturnType<typeof reatomLoginForm>
 

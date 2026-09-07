@@ -15,6 +15,7 @@ files:
   - packages/create-karkas/template/src/shared/reatom/forms.ts
   - apps/demo/src/shared/reatom/forms.ts
   - apps/demo/src/pages/login/model/routes.tsx
+  - apps/demo/src/pages/login/ui/LoginPage.tsx
 demo: /demo/login
 order: 1
 ---
@@ -24,13 +25,28 @@ worse under deadline. The Karkas template ships the solved versions as Reatom
 form extensions — imported from the shared barrel, attached with `.extend()`,
 no configuration.
 
-## The rebaseline decision
+## Two form lifecycles — and why only one needs post-save state
 
-After a successful save a form must stop reading as dirty without losing what
-the user sees. The mechanism is `withSavedState`: the values `onSubmit`
-**returns** become the form's new baseline via `init` — not `reset`, which
-would clobber anything typed while the request was in flight. Two consequences
-fall out of that choice:
+**Navigate-away forms** (login is the canonical case): a successful submit
+unmounts the form — the authed route guard redirects, the page is gone. There
+is no post-save state to own, so `withSavedState` is deliberately **not**
+applied here; adding it would be ceremony. What this lifecycle must get right
+is the _failure_ path, because a failed submit leaves the user on the form:
+
+- Field validation errors live under their fields (`visibleFieldError`,
+  rendered through Ark UI's `Field.ErrorText`), and the first invalid field is
+  focused after a rejected submit (`withFormAutoFocusOnError`).
+- The form-level alert shows **only** when no field owns the failure — a
+  server rejection like "invalid credentials". Empty fields therefore produce
+  no alert; wrong credentials do. That split is the alert-gating decision
+  made visible.
+
+**Stay-on-screen forms** (settings, profiles, any inline edit): a successful
+submit leaves the form on screen, and now the post-save question is
+everything. The form must stop reading as dirty — without adopting edits the
+user typed while the request was in flight. That is `withSavedState`: the
+values `onSubmit` **returns** become the new baseline via `init` — not
+`reset`, which would clobber in-flight edits. Two consequences fall out:
 
 - The payload rebaselined is the payload actually persisted. Rebaseline from
   the form's live state instead, and an edit that never reached the server
@@ -39,9 +55,13 @@ fall out of that choice:
   `onSubmit`, and `withSavedState` clears it with `reset`. Nothing to read
   back; the secret must not linger.
 
-`reatomForm`'s own `resetOnSubmit` option is deliberately unused: two owners of
-the post-save decision disagree with each other. `withSavedState` is the single
-owner.
+The rule in one line: if the route leaves on success, you don't need
+post-save ownership; if the form stays, `withSavedState` owns it — do not
+hand-roll `init` calls next to it.
+
+`reatomForm`'s own `resetOnSubmit` option is deliberately unused: two owners
+of the post-save decision disagree with each other. `withSavedState` is the
+single owner.
 
 ## Failures no field can carry
 
@@ -61,20 +81,24 @@ stale copy on screen while the user fixes the value.
 
 ## See it in the demo
 
-The login form wires `withFormSubmitHandler` (native-submit bridging) and
-`formAlertMessage` (form-level alert) — the smallest complete usage. To see
-the behavior:
+The login form is wired end-to-end — both failure kinds and the navigate-away
+success. To reproduce:
 
 1. Open the demo and go to the login page (the "See it in the demo" button
    below leads straight there).
-2. Leave the prefilled email, break the password, submit. A form-level alert
-   appears under the heading — that is `formAlertMessage` showing a failure
-   no field owns. Note what does _not_ happen: no error text appears under
-   the email or password fields, because neither field owns this failure.
-3. Restore the password (`password`) and submit. The button shows its pending
-   state, then the dashboard replaces the page — `withFormSubmitHandler`
-   bridged the native form submission, and the session atom's route guard let
-   you through.
+2. Clear the password and submit. "Password is required" appears **under the
+   field**, the field is focused, and **no form-level alert appears** — a
+   field owns this failure, so the alert stays out. This is the alert-gating
+   split, observable.
+3. Restore the password (`password`), clear the email's `@`, and submit. Now
+   the fields' own errors explain themselves — still no alert.
+4. Fix the email but use a wrong password (`wrong-password`). The form-level
+   alert appears: the server rejected the request and no field owns that
+   failure. This is `formAlertMessage` letting an unowned failure through.
+5. Submit `alex@example.com` / `password`. Pending state, then the dashboard
+   replaces the page — success navigates away, which is exactly why this form
+   carries no post-save state handling.
 
-The rebaseline half of the story (`withSavedState`) shows its value on
-settings-style forms and lands with the disclosure-card pattern.
+The rebaseline half of the story (`withSavedState` on a form that stays on
+screen) is exercised by the settings pattern; its demo wiring lands with the
+settings-form port.

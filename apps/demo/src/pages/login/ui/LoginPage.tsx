@@ -5,7 +5,7 @@ import { bindField, reatomComponent } from '@reatom/react'
 
 import { m } from '#paraglide/messages.js'
 import { Alert, Button, Field, Heading, Input, Text } from '#shared/components'
-import { formAlertMessage } from '#shared/reatom'
+import { formAlertMessage, visibleFieldError } from '#shared/reatom'
 import { styled } from '#styled-system/jsx'
 
 export const LoginPage = reatomComponent(({ form }: { form: LoginForm }) => {
@@ -15,6 +15,14 @@ export const LoginPage = reatomComponent(({ form }: { form: LoginForm }) => {
 	// message already printed under a field. The copy here is deliberately
 	// canned — ApiError.message is a status string, not user-facing text.
 	const showErrorAlert = formAlertMessage(form) !== null
+	// `visibleFieldError`, not bindField's `error`: with `keepErrorOnChange:
+	// false` the last issue lingers in Reatom without its `triggered` flag, and
+	// reading that raw error would leave stale copy under the field while the
+	// user fixes the value.
+	const { error: _emailError, ...emailBind } = bindField(fields.email)
+	const { error: _passwordError, ...passwordBind } = bindField(fields.password)
+	const emailError = visibleFieldError(fields.email)
+	const passwordError = visibleFieldError(fields.password)
 	const pending = !submit.ready()
 
 	return (
@@ -47,14 +55,30 @@ export const LoginPage = reatomComponent(({ form }: { form: LoginForm }) => {
 					</Alert.Root>
 				)}
 
-				<Field.Root required>
+				<Field.Root required invalid={Boolean(emailError)}>
 					<Field.Label>{m.login_email()}</Field.Label>
-					<Input type="email" autoComplete="email" {...bindField(fields.email)} />
+					<Input
+						ref={wrap((element) => {
+							fields.email.elementRef.set(element ?? undefined)
+						})}
+						type="email"
+						autoComplete="email"
+						{...emailBind}
+					/>
+					{emailError && <Field.ErrorText>{emailError}</Field.ErrorText>}
 				</Field.Root>
 
-				<Field.Root required>
+				<Field.Root required invalid={Boolean(passwordError)}>
 					<Field.Label>{m.login_password()}</Field.Label>
-					<Input type="password" autoComplete="current-password" {...bindField(fields.password)} />
+					<Input
+						ref={wrap((element) => {
+							fields.password.elementRef.set(element ?? undefined)
+						})}
+						type="password"
+						autoComplete="current-password"
+						{...passwordBind}
+					/>
+					{passwordError && <Field.ErrorText>{passwordError}</Field.ErrorText>}
 				</Field.Root>
 
 				<Button type="submit" loading={pending} loadingText={m.login_signing_in()}>
