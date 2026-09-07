@@ -33,7 +33,8 @@ extension-point mechanics, `docs/reatom-extensions.md`.
   `.pi/prompts/migrate-reatom-patterns.candidates.md`.
 - Publishing a new pattern entry on the site is part of shipping the pattern,
   not an afterthought: add `site/src/content/patterns/<slug>.md` with problem,
-  decision, file pointers, and a demo link.
+  decision, file pointers, a demo link, and a "See it in the demo" section
+  with step-by-step instructions for reproducing the behavior.
 
 ## Workflows
 

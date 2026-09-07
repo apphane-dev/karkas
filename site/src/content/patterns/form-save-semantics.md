@@ -59,9 +59,22 @@ error. With `keepErrorOnChange: false` Reatom keeps the last issue for
 bookkeeping but drops `triggered` — reading only `validation.error` leaves
 stale copy on screen while the user fixes the value.
 
-## Where to see it
+## See it in the demo
 
-The login form in the demo wires `withFormSubmitHandler` (native-submit
-bridging) and `formAlertMessage` (form-level alert) — the smallest complete
-usage. The full rebaseline story lands with settings and disclosure-card
-patterns.
+The login form wires `withFormSubmitHandler` (native-submit bridging) and
+`formAlertMessage` (form-level alert) — the smallest complete usage. To see
+the behavior:
+
+1. Open the demo and go to the login page (the "See it in the demo" button
+   below leads straight there).
+2. Leave the prefilled email, break the password, submit. A form-level alert
+   appears under the heading — that is `formAlertMessage` showing a failure
+   no field owns. Note what does _not_ happen: no error text appears under
+   the email or password fields, because neither field owns this failure.
+3. Restore the password (`password`) and submit. The button shows its pending
+   state, then the dashboard replaces the page — `withFormSubmitHandler`
+   bridged the native form submission, and the session atom's route guard let
+   you through.
+
+The rebaseline half of the story (`withSavedState`) shows its value on
+settings-style forms and lands with the disclosure-card pattern.
