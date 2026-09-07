@@ -6,8 +6,9 @@ import { wrap } from '@reatom/core'
 import { bindField, reatomComponent } from '@reatom/react'
 
 import { m } from '#paraglide/messages.js'
-import { Button, CollectionSelect, Heading, Input, Text } from '#shared/components'
+import { Alert, Button, CollectionSelect, Heading, Input, Text } from '#shared/components'
 import { reatomLoc } from '#shared/model'
+import { formAlertMessage } from '#shared/reatom'
 import { styled } from '#styled-system/jsx'
 
 import { ArticleStatusBadge } from '../ArticleStatusBadge'
@@ -29,15 +30,26 @@ const statusCollection = reatomLoc(
 export const ArticleDetail = reatomComponent(({ model }: { model: ArticleDetailModel }) => {
 	if (model.isEditing()) {
 		const isDirty = model.form.focus().dirty
+		// Save failures here are network-level — no field owns them — so the
+		// alert carries the whole failure and the edit stays on screen, dirty.
+		const showSaveError = formAlertMessage(model.form) !== null
 		return (
 			<styled.div p="8">
 				<styled.form
 					onSubmit={wrap((e) => {
 						e.preventDefault()
-						model.save()
+						model.form.submit()
 					})}
 				>
 					<styled.div display="flex" flexDirection="column" gap="4">
+						{showSaveError && (
+							<Alert.Root status="error" role="alert">
+								<Alert.Indicator />
+								<Alert.Content>
+									<Alert.Title>{m.article_save_error()}</Alert.Title>
+								</Alert.Content>
+							</Alert.Root>
+						)}
 						<Input
 							{...bindField(model.form.fields.title)}
 							size="sm"
@@ -61,7 +73,7 @@ export const ArticleDetail = reatomComponent(({ model }: { model: ArticleDetailM
 						<styled.div display="flex" gap="3">
 							{isDirty && (
 								<Button
-									loading={!model.save.ready()}
+									loading={!model.form.submit.ready()}
 									loadingText={m.article_saving()}
 									type="submit"
 								>

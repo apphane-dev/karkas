@@ -42,7 +42,5 @@
 	"settings_error_title": "No se pudieron cargar los ajustes",
 	"settings_error_description": "No pudimos cargar tus ajustes. Inténtalo de nuevo en un momento.",
 	"settings_saving": "Guardando…",
-	"settings_profile_saved": "Perfil guardado",
-	"settings_notifications_saved": "Preferencias de notificaciones guardadas",
 	"settings_save_error": "No se pudo guardar. Inténtalo de nuevo."
 }
