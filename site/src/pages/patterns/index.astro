@@ -1,0 +1,81 @@
+---
+import Base from '../../layouts/Base.astro'
+import { getPatterns } from '../../lib/patterns'
+
+const patterns = await getPatterns()
+
+const fmt = (d: Date) =>
+	d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+---
+
+<Base
+	title="Patterns — Karkas"
+	description="Problems the template already solves: the failure users would hit, the decision the shipped mechanism encodes, and where to read it in the code."
+>
+	<section class="section-pad">
+		<div class="wrap">
+			<a class="tlink back" href="/">← Back to Karkas</a>
+			<div class="section-head arc-head">
+				<span class="tag tag--steel">Patterns</span>
+				<h1>Problems you were about to solve worse.</h1>
+				<p>
+					Each entry is a mechanism proven in production and shipped in the template. The point is
+					never the code alone — it is the decision inside it: what stays mounted, what clears when,
+					who owns the state after a save. Start a project from the template and the problem is
+					already solved, with the reasoning attached.
+				</p>
+			</div>
+
+			{
+				patterns.length > 0 ? (
+					<ul class="feed">
+						{patterns.map((p) => (
+							<li class="feed-item">
+								<div class="feed-meta">
+									<span class="feed-tag">{p.data.tag}</span>
+									<time datetime={p.data.date.toISOString()}>ported {fmt(p.data.date)}</time>
+								</div>
+								<a class="feed-title" href={`/patterns/${p.id}`}>
+									{p.data.title}
+								</a>
+								<p class="feed-problem">{p.data.problem}</p>
+								<p class="feed-decision">{p.data.decision}</p>
+								<div class="feed-files">
+									{p.data.demo && <a class="tlink" href={p.data.demo}>see it running →</a>}
+									<a class="tlink" href={`/patterns/${p.id}`}>read the decision →</a>
+								</div>
+							</li>
+						))}
+					</ul>
+				) : (
+					<p class="feed-empty">No patterns published yet.</p>
+				)
+			}
+		</div>
+	</section>
+</Base>
+
+<style>
+	.back {
+		display: inline-block;
+		margin-bottom: 2.2rem;
+	}
+	.feed-problem {
+		color: var(--ink-muted);
+		margin: 0 0 0.6rem;
+	}
+	.feed-decision {
+		font-size: 0.92rem;
+		color: var(--ink);
+		border-left: 3px solid var(--steel);
+		padding-left: 0.9rem;
+		margin: 0 0 0.9rem;
+	}
+	.feed-files {
+		display: flex;
+		gap: 1.4rem;
+	}
+	.feed-files :global(.tlink) {
+		font-size: 0.85rem;
+	}
+</style>

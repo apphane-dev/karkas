@@ -1,0 +1,227 @@
+---
+import { render } from 'astro:content'
+import Base from '../../layouts/Base.astro'
+import { getPatterns } from '../../lib/patterns'
+
+export async function getStaticPaths() {
+	const patterns = await getPatterns()
+	return patterns.map((entry) => ({
+		params: { slug: entry.id },
+		props: { entry },
+	}))
+}
+
+const { entry } = Astro.props
+const { Content } = await render(entry)
+
+const fmt = (d: Date) =>
+	d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+
+const repo = 'https://github.com/apphane-dev/karkas/blob/main'
+---
+
+<Base title={`${entry.data.title} — Karkas patterns`} description={entry.data.problem}>
+	<article class="section-pad">
+		<div class="wrap post">
+			<a class="tlink back" href="/patterns">← All patterns</a>
+
+			<div class="post-sheet">
+				<div class="post-meta">
+					<span class="feed-tag">{entry.data.tag}</span>
+					<time datetime={entry.data.date.toISOString()}>ported {fmt(entry.data.date)}</time>
+				</div>
+
+				<h1>{entry.data.title}</h1>
+				<p class="post-problem">{entry.data.problem}</p>
+				<p class="post-decision">{entry.data.decision}</p>
+
+				<hr class="rule" />
+
+				<div class="prose">
+					<Content />
+				</div>
+
+				<div class="post-sources">
+					<h2>Where it ships</h2>
+					<ul>
+						{
+							entry.data.files.map((file) => (
+								<li>
+									<code>{file}</code>
+									<a class="tlink" href={`${repo}/${file}`} aria-label={`Open ${file} on GitHub`}>
+										open ↗
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+
+				{
+					entry.data.demo && (
+						<a class="btn btn--steel post-cta" href={entry.data.demo}>
+							See it in the demo <span class="arrow">→</span>
+						</a>
+					)
+				}
+			</div>
+		</div>
+	</article>
+</Base>
+
+<style>
+	.post {
+		max-width: 720px;
+	}
+	.post-sheet {
+		background: var(--panel);
+		border: 1px solid var(--line-strong);
+		border-radius: var(--radius);
+		box-shadow: 4px 4px 0 var(--blueprint-soft);
+		padding: clamp(1.75rem, 4vw, 3.25rem);
+		margin-top: 1.75rem;
+	}
+	.back {
+		display: inline-block;
+		margin-bottom: 2.2rem;
+	}
+	.post-meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.8rem;
+		font-family: var(--mono);
+		font-size: 0.76rem;
+		color: var(--ink-muted);
+		margin-bottom: 1.1rem;
+	}
+	.feed-tag {
+		color: var(--blueprint);
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+	}
+	.post h1 {
+		font-family: var(--display);
+		font-weight: 800;
+		font-stretch: 125%;
+		font-size: clamp(2rem, 5vw, 3rem);
+		line-height: 1.03;
+		letter-spacing: -0.01em;
+		margin: 0 0 1rem;
+	}
+	.post-problem {
+		font-size: 1.15rem;
+		color: var(--ink-muted);
+		margin-bottom: 1rem;
+	}
+	.post-decision {
+		font-size: 1.02rem;
+		border-left: 3px solid var(--steel);
+		padding-left: 1rem;
+		margin-bottom: 0.4rem;
+	}
+	.post-sources {
+		margin-top: 2.4rem;
+		border-top: 1px solid var(--line-strong);
+		padding-top: 1.4rem;
+	}
+	.post-sources h2 {
+		font-family: var(--display);
+		font-size: 1.05rem;
+		margin: 0 0 0.7rem;
+	}
+	.post-sources ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.45rem;
+	}
+	.post-sources li {
+		display: flex;
+		align-items: baseline;
+		gap: 0.7rem;
+	}
+	.post-sources code {
+		font-family: var(--mono);
+		font-size: 0.82rem;
+		background: var(--panel-2);
+		border: 1px solid var(--line-strong);
+		border-radius: 2px;
+		padding: 0.1rem 0.4rem;
+	}
+	.post-sources :global(.tlink) {
+		font-size: 0.8rem;
+		white-space: nowrap;
+	}
+	.prose {
+		margin-top: 2rem;
+		font-size: 1.04rem;
+		line-height: 1.72;
+	}
+	.prose :global(p) {
+		margin: 0 0 1.3rem;
+	}
+	.prose :global(h2) {
+		font-family: var(--display);
+		font-weight: 700;
+		font-stretch: 112%;
+		font-size: 1.5rem;
+		letter-spacing: -0.01em;
+		margin: 2.2rem 0 0.9rem;
+	}
+	.prose :global(h3) {
+		font-family: var(--display);
+		font-weight: 700;
+		font-size: 1.15rem;
+		margin: 1.8rem 0 0.7rem;
+	}
+	.prose :global(ul),
+	.prose :global(ol) {
+		margin: 0 0 1.3rem;
+		padding-left: 1.3rem;
+	}
+	.prose :global(li) {
+		margin: 0 0 0.45rem;
+	}
+	.prose :global(li::marker) {
+		color: var(--steel);
+	}
+	.prose :global(strong) {
+		font-weight: 600;
+		color: var(--ink);
+	}
+	.prose :global(hr) {
+		border: 0;
+		border-top: 1px solid var(--line-strong);
+		margin: 2rem 0;
+	}
+	.prose :global(blockquote) {
+		margin: 0 0 1.6rem;
+		padding: 0.9rem 1.2rem;
+		border-left: 3px solid var(--steel);
+		background: var(--steel-wash);
+		color: var(--ink-muted);
+		font-size: 0.95rem;
+	}
+	.prose :global(blockquote p) {
+		margin: 0;
+	}
+	.prose :global(code) {
+		font-family: var(--mono);
+		font-size: 0.88em;
+		background: var(--panel-2);
+		border: 1px solid var(--line-strong);
+		border-radius: 2px;
+		padding: 0.08rem 0.34rem;
+	}
+	.prose :global(a) {
+		color: var(--steel-deep);
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+	.post-cta {
+		margin-top: 2.5rem;
+	}
+</style>
