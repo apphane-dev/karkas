@@ -51,9 +51,16 @@ implementation never touches the route tree.
 match, so a missing `wireRouteGuards` call surfaces during the first
 navigation — in dev, immediately — rather than as a quietly missing redirect.
 
-**Closing the last gap between states.** The redirects no-op when the target
-is already active, so login→dashboard and logout→login each fire exactly one
-navigation, and re-visiting an exclusive page while on it re-renders nothing.
+**A pathless guard matches every URL — so it must prove ownership before
+redirecting.** Both guard branches are pathless children of the root, which
+means their `params()` evaluates on public and private pages alike. Each one
+checks that the current pathname belongs to a page its own branch registers
+before firing its redirect; without that check, the public-exclusive branch
+bounces every authenticated navigation back to the dashboard. Idempotence at
+the callback (`!targetRoute.match()`) is not a substitute: it tests the
+target, not whether this guard owns the URL. The wiring itself runs inside
+the app's root frame — the setup clears the ambient Reatom stack, so a bare
+top-level call throws.
 
 ## See it in the demo
 
