@@ -5,6 +5,7 @@ import { isAuthenticatedAtom } from '#entities/auth'
 import { dashboardRoute } from '#pages/dashboard'
 import { loginRoute } from '#pages/login'
 import { m } from '#paraglide/messages.js'
+import { rootFrame } from '#setup'
 import { Toaster } from '#shared/components'
 import { documentTitleAtom, localeAtom } from '#shared/model'
 import { rootRoute, wireRouteGuards } from '#shared/router'
@@ -32,19 +33,23 @@ urlAtom.extend(
 
 // Guard wiring must precede the first navigation: the guards read this config
 // while routes match, and an unwired callback fails loud the moment it runs.
-wireRouteGuards({
-	isAuthenticated: () => isAuthenticatedAtom(),
-	onUnauthenticated: () => {
-		if (!loginRoute.match()) {
-			loginRoute.go(undefined, true)
-		}
-	},
-	onAuthenticatedExclusive: () => {
-		if (!dashboardRoute.match()) {
-			dashboardRoute.go(undefined, true)
-		}
-	},
-})
+// The setup is strict (clearStack), so even this top-level action call needs
+// the app's root frame — without it the call throws `missing async stack`.
+rootFrame.run(() =>
+	wireRouteGuards({
+		isAuthenticated: () => isAuthenticatedAtom(),
+		onUnauthenticated: () => {
+			if (!loginRoute.match()) {
+				loginRoute.go(undefined, true)
+			}
+		},
+		onAuthenticatedExclusive: () => {
+			if (!dashboardRoute.match()) {
+				dashboardRoute.go(undefined, true)
+			}
+		},
+	}),
+)
 
 export const App = reatomComponent(() => {
 	localeAtom()

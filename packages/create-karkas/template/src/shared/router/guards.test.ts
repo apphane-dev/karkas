@@ -1,12 +1,7 @@
 import { context, noop, urlAtom } from '@reatom/core'
 import { afterEach, expect, test } from 'vite-plus/test'
 
-import {
-	protectedRoute,
-	publicExclusiveRoute,
-	routeGuardConfig,
-	wireRouteGuards,
-} from './guards'
+import { protectedRoute, publicExclusiveRoute, routeGuardConfig, wireRouteGuards } from './guards'
 
 const resetRuntime = () => {
 	context.reset()
@@ -19,7 +14,10 @@ const resetRuntime = () => {
 // creating a child re-registers its ancestor chain.
 const makeRoutes = () => ({
 	protectedPage: protectedRoute.reatomRoute({ path: 'guard-protected' }, 'guardProtectedPage'),
-	exclusivePage: publicExclusiveRoute.reatomRoute({ path: 'guard-exclusive' }, 'guardExclusivePage'),
+	exclusivePage: publicExclusiveRoute.reatomRoute(
+		{ path: 'guard-exclusive' },
+		'guardExclusivePage',
+	),
 })
 
 afterEach(() => {
@@ -55,15 +53,23 @@ test('an unauthenticated visit to a guarded page hands off to onUnauthenticated'
 
 test('an authenticated visit to a guarded page passes through', () => {
 	resetRuntime()
-	const { protectedPage } = makeRoutes()
+	const { protectedPage, exclusivePage } = makeRoutes()
+	let exclusive = 0
 	wireRouteGuards({
 		isAuthenticated: () => true,
 		onUnauthenticated: () => {},
-		onAuthenticatedExclusive: () => {},
+		onAuthenticatedExclusive: () => {
+			exclusive++
+		},
 	})
 	urlAtom.go('/guard-protected')
 
 	expect(protectedPage()).toEqual({})
+	// Reading the sibling branch forces its params() to evaluate against this
+	// URL: pathless guard branches match every URL, so without an ownership
+	// check the exclusive redirect would fire on protected pages too.
+	expect(exclusivePage()).toBe(null)
+	expect(exclusive).toBe(0)
 })
 
 test('an authenticated visit to a public-exclusive page hands off to onAuthenticatedExclusive', () => {
@@ -86,14 +92,20 @@ test('an authenticated visit to a public-exclusive page hands off to onAuthentic
 
 test('an unauthenticated visit to a public-exclusive page passes through', () => {
 	resetRuntime()
-	makeRoutes()
+	let unauthenticated = 0
 	wireRouteGuards({
 		isAuthenticated: () => false,
-		onUnauthenticated: () => {},
+		onUnauthenticated: () => {
+			unauthenticated++
+		},
 		onAuthenticatedExclusive: () => {},
 	})
-	const { exclusivePage } = makeRoutes()
+	const { exclusivePage, protectedPage } = makeRoutes()
 	urlAtom.go('/guard-exclusive')
 
 	expect(exclusivePage()).toEqual({})
+	// Same ownership rule, mirrored: evaluating the protected branch against a
+	// public-exclusive URL must not fire the login hand-off.
+	expect(protectedPage()).toBe(null)
+	expect(unauthenticated).toBe(0)
 })
