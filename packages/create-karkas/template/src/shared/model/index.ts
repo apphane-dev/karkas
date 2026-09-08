@@ -8,6 +8,12 @@ export {
 	withMatchMobileHeaderOverride,
 } from './headerTrail'
 export type { HeaderTrailDescriptor } from './headerTrail'
+export {
+	// fallow-ignore-next-line unused-export
+	readPersistRecord,
+	// fallow-ignore-next-line unused-export
+	withAppWebStorage,
+} from './persist'
 export { documentTitleAtom } from './documentTitle'
 export { localeAtom, reatomLoc } from './locale'
 export { themePreferenceAtom } from './theme'
