@@ -10,6 +10,11 @@ export const select = defineSlotRecipe({
 			flexDirection: 'column',
 			gap: '1.5',
 			width: 'full',
+			// A long selected value must not force this box — and every grid/flex
+			// ancestor sizing around it — wider than its track; `valueText`'s
+			// ellipsis only clips once the box itself is bounded, which requires
+			// `minWidth: 0` at each nesting level, not just the innermost trigger.
+			minWidth: '0',
 		},
 		content: {
 			background: 'gray.surface.bg',
@@ -117,10 +122,20 @@ export const select = defineSlotRecipe({
 		variant: {
 			outline: {
 				trigger: {
+					// Opaque field surface — a transparent default lets the canvas
+					// show through the control.
+					bg: 'surface',
 					borderWidth: '1px',
 					borderColor: 'gray.outline.border',
 
 					focusVisibleRing: 'inside',
+					// Mirrors input.ts's `_invalid` — a required Select left empty gets
+					// the same red border + focus ring as a required Input once a
+					// caller passes `invalid` through to `Select.Root`/`CollectionSelect`.
+					_invalid: {
+						focusRingColor: 'error',
+						borderColor: 'error',
+					},
 				},
 			},
 			surface: {
@@ -130,6 +145,10 @@ export const select = defineSlotRecipe({
 					borderColor: 'gray.surface.border',
 
 					focusVisibleRing: 'inside',
+					_invalid: {
+						focusRingColor: 'error',
+						borderColor: 'error',
+					},
 				},
 			},
 		},
