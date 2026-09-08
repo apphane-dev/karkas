@@ -43,6 +43,13 @@ Project Reatom code favors direct reads, explicit names, and inline event wiring
 3. Return the model from the route loader and pass it to the page component from `render`.
 4. Bind inputs/selects in UI; keep persisted app-wide preferences in shared model files.
 
+### Navigating from inside a loader or change hook
+
+1. Never write `urlAtom` from the hooks frame of a fulfillment: superseded child loaders reject with unhandled AbortErrors.
+2. Do not navigate from the state-write transaction either — it aborts the guard's own in-flight rerun into a permanently pending loader.
+3. Defer into its own action with `queueMicrotask(wrap(navigateAction))`; `wrap` carries the async stack into the microtask.
+4. Guard the navigation body with a pathname check so repeated triggers cannot loop.
+
 ### Wiring UI events
 
 1. Use inline `wrap(() => actionCall())` in JSX.
