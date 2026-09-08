@@ -215,6 +215,11 @@ const repo = 'https://github.com/apphane-dev/karkas/blob/main'
 	.prose :global(pre) {
 		/* Shiki inlines its own background on .astro-code; keep the site panel. */
 		background-color: var(--panel-2) !important;
+		/* And the site's ink for plain text. A stale dev server or a mis-set
+		   theme otherwise serves dark-theme token colors (near-white plain
+		   text) that vanish on this light panel; colored spans keep their
+		   inline colors. */
+		color: var(--ink) !important;
 		border: 1px solid var(--line-strong);
 		border-radius: var(--radius);
 		padding: 1rem 1.1rem;
