@@ -4,9 +4,16 @@
   drawn like an engineer's drafting sheet: cool blueprint paper, graphite ink,
   hairline construction grid, blueprint-blue linework, and a single structural
   accent in primed-steel orange (harmonized with the app's own accent).
+
+  The system is light-only by design. `color-scheme: light` says so
+  explicitly — without it, browser force-dark modes invert the paper
+  panels while Shiki's inline code-token colors survive, leaving code
+  illegible.
 */
 
 :root {
+	color-scheme: light;
+
 	/* Surfaces */
 	--paper: #e7ecf1; /* cool drafting paper — deliberately not warm cream */
 	--panel: #f2f5f8; /* raised sheet */
