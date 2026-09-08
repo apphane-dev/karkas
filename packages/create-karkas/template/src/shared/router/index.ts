@@ -6,6 +6,7 @@ export {
 	rootRoute,
 } from './core'
 export {
+	orgGuardRoute,
 	protectedRoute,
 	publicExclusiveRoute,
 	// fallow-ignore-next-line unused-export

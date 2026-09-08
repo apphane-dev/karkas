@@ -1,8 +1,9 @@
 import { action, wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
-import { ChevronsUpDown, LogOut, Plus } from 'lucide-react'
+import { ChevronsUpDown, LogOut } from 'lucide-react'
 
 import { authSessionAtom, logoutAction } from '#entities/auth'
+import { currentOrgAtom, currentOrgIdAtom, orgsAtom } from '#entities/org'
 import { currentPlanIdAtom } from '#entities/pricing'
 import { m } from '#paraglide/messages.js'
 import { Menu, Text } from '#shared/components'
@@ -10,16 +11,26 @@ import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
 
 // App-layer logout orchestration: clears cross-entity cached state that must
-// not survive a session change, then performs the auth logout. Lives here
-// (above entities) so it may import both `auth` and `pricing` statically.
-// `logoutAction` clears the session before its (possibly failing) API call, so
-// swallow that rejection to keep sign-out resilient to a logout API failure.
+// not survive a session change — including the org selection, so a new sign-in
+// boots unscoped and the guard's ready hook resolves its default — then
+// performs the auth logout. Lives here (above entities) so it may import both
+// `auth` and `pricing` statically. `logoutAction` clears the session before its
+// (possibly failing) API call, so swallow that rejection to keep sign-out
+// resilient to a logout API failure.
 const signOut = action(async () => {
 	currentPlanIdAtom.set(undefined)
+	currentOrgIdAtom.set(null)
 	await wrap(logoutAction()).catch(() => {})
 }, 'app.signOut')
 
-const OrgItem = ({ name, email, active }: { name: string; email: string; active?: boolean }) => (
+// The scope write of the org switcher. The org guard owns everything that
+// follows — invalidation, the stale-outlet gate, and the collapse of deep
+// org-scoped URLs once it settles under the new org.
+const switchOrg = action((orgId: string) => {
+	currentOrgIdAtom.set(orgId)
+}, 'app.switchOrg')
+
+const OrgItem = ({ name, email, active }: { name: string; email?: string; active?: boolean }) => (
 	<styled.div display="flex" alignItems="center" gap="2" minW="0">
 		<styled.div
 			w="7"
@@ -40,9 +51,11 @@ const OrgItem = ({ name, email, active }: { name: string; email: string; active?
 			<Text fontSize="sm" fontWeight="medium" truncate>
 				{name}
 			</Text>
-			<Text fontSize="xs" color="muted" truncate>
-				{email}
-			</Text>
+			{email && (
+				<Text fontSize="xs" color="muted" truncate>
+					{email}
+				</Text>
+			)}
 		</styled.div>
 		{active && <Menu.ItemIndicator />}
 	</styled.div>
@@ -50,6 +63,10 @@ const OrgItem = ({ name, email, active }: { name: string; email: string; active?
 
 export const OrgSwitcher = reatomComponent(() => {
 	const session = authSessionAtom()
+	// First read fires the org fetch (withAsyncData); the org guard's loader
+	// has normally already warmed it through its orgState callback.
+	const orgs = orgsAtom.data() ?? []
+	const currentOrg = currentOrgAtom()
 
 	return (
 		<Menu.Root positioning={{ placement: 'bottom-start' }}>
@@ -84,7 +101,7 @@ export const OrgSwitcher = reatomComponent(() => {
 						fontWeight="bold"
 						color="colorPalette.11"
 					>
-						{session?.user.name.charAt(0) ?? ''}
+						{(currentOrg?.name ?? session?.user.name ?? '').charAt(0)}
 					</styled.div>
 					<styled.div
 						flex="1"
@@ -93,7 +110,7 @@ export const OrgSwitcher = reatomComponent(() => {
 						className={css({ '[data-sidebar-collapsed] &': { display: 'none' } })}
 					>
 						<styled.div fontSize="sm" fontWeight="medium" truncate>
-							Acme Inc
+							{currentOrg?.name ?? ''}
 						</styled.div>
 						<styled.div fontSize="xs" color="muted" truncate>
 							{session?.user.email}
@@ -124,21 +141,13 @@ export const OrgSwitcher = reatomComponent(() => {
 					)}
 					<Menu.Separator />
 					<Menu.ItemGroup id="orgs">
-						<Menu.ItemGroupLabel>Organizations</Menu.ItemGroupLabel>
-						<Menu.Item value="acme">
-							<OrgItem name="Acme Inc" email="alex@acme.io" active />
-						</Menu.Item>
-						<Menu.Item value="personal">
-							<OrgItem name="Personal" email={session?.user.email ?? ''} />
-						</Menu.Item>
+						<Menu.ItemGroupLabel>{m.org_switcher_orgs()}</Menu.ItemGroupLabel>
+						{orgs.map((org) => (
+							<Menu.Item key={org.id} value={org.id} onClick={wrap(() => switchOrg(org.id))}>
+								<OrgItem name={org.name} active={org.id === currentOrg?.id} />
+							</Menu.Item>
+						))}
 					</Menu.ItemGroup>
-					<Menu.Separator />
-					<Menu.Item value="create-org">
-						<styled.div display="flex" alignItems="center" gap="2">
-							<Plus className={css({ w: '4', h: '4' })} />
-							Create organization
-						</styled.div>
-					</Menu.Item>
 					<Menu.Separator />
 					<Menu.Item value="sign-out" onClick={wrap(() => signOut())}>
 						<styled.div display="flex" alignItems="center" gap="2" color="red.fg">

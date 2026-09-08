@@ -1,7 +1,8 @@
-import { urlAtom, withChangeHook } from '@reatom/core'
+import { urlAtom, withChangeHook, wrap } from '@reatom/core'
 import { reatomComponent } from '@reatom/react'
 
 import { isAuthenticatedAtom } from '#entities/auth'
+import { currentOrgIdAtom, orgsAtom, resolveCurrentOrgAction } from '#entities/org'
 import { dashboardRoute } from '#pages/dashboard'
 import { loginRoute } from '#pages/login'
 import { m } from '#paraglide/messages.js'
@@ -47,6 +48,19 @@ rootFrame.run(() =>
 			if (!dashboardRoute.match()) {
 				dashboardRoute.go(undefined, true)
 			}
+		},
+		orgState: async () => {
+			const orgs = await wrap(orgsAtom())
+			return { hasOrgs: orgs.length > 0 }
+		},
+		currentOrgId: () => currentOrgIdAtom(),
+		// The mock directory is never empty, so this stays unwired in behavior;
+		// a real product routes org-less accounts to an onboarding page that
+		// sits outside orgGuardRoute's children (the guard's params() already
+		// yields to protected-route siblings).
+		onOrgless: () => {},
+		onOrgsReady: () => {
+			resolveCurrentOrgAction()
 		},
 	}),
 )
