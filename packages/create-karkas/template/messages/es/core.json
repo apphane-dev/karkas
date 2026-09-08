@@ -14,5 +14,6 @@
 	"topbar_toggle_theme_label": "Cambiar tema",
 	"not_found_title": "Página no encontrada",
 	"not_found_description": "La página que buscas no existe.",
-	"reatomloc_tree_shake_canary": "reatomLoc árbol canario — no debe aparecer en el bundle"
+	"reatomloc_tree_shake_canary": "reatomLoc árbol canario — no debe aparecer en el bundle",
+	"toggles_title": "Conmutadores de funciones"
 }

@@ -14,5 +14,6 @@
 	"topbar_toggle_theme_label": "Toggle theme",
 	"not_found_title": "Page not found",
 	"not_found_description": "The page you are looking for does not exist.",
-	"reatomloc_tree_shake_canary": "reatomLoc tree-shake canary — must not appear in bundle"
+	"reatomloc_tree_shake_canary": "reatomLoc tree-shake canary — must not appear in bundle",
+	"toggles_title": "Feature toggles"
 }
