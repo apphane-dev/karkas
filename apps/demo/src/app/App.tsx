@@ -7,7 +7,7 @@ import { loginRoute } from '#pages/login'
 import { m } from '#paraglide/messages.js'
 import { Toaster } from '#shared/components'
 import { documentTitleAtom, localeAtom } from '#shared/model'
-import { rootRoute } from '#shared/router'
+import { rootRoute, wireRouteGuards } from '#shared/router'
 import { styled } from '#styled-system/jsx'
 import { AppShell } from '#widgets/app-shell'
 
@@ -19,6 +19,7 @@ import { SidebarNavigation } from './SidebarNavigation'
 
 urlAtom.extend(
 	withChangeHook(() => {
+		// Bare-base visits have no route to guard them; land on the authed root.
 		if (rootRoute.exact()) {
 			if (isAuthenticatedAtom()) {
 				dashboardRoute.go(undefined, true)
@@ -28,6 +29,22 @@ urlAtom.extend(
 		}
 	}),
 )
+
+// Guard wiring must precede the first navigation: the guards read this config
+// while routes match, and an unwired callback fails loud the moment it runs.
+wireRouteGuards({
+	isAuthenticated: () => isAuthenticatedAtom(),
+	onUnauthenticated: () => {
+		if (!loginRoute.match()) {
+			loginRoute.go(undefined, true)
+		}
+	},
+	onAuthenticatedExclusive: () => {
+		if (!dashboardRoute.match()) {
+			dashboardRoute.go(undefined, true)
+		}
+	},
+})
 
 export const App = reatomComponent(() => {
 	localeAtom()

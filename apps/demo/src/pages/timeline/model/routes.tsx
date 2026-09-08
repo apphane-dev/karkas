@@ -1,8 +1,8 @@
 import { retryComputed, wrap } from '@reatom/core'
 
-import { protectedRoute } from '#entities/auth'
 import { fetchTimelineEvents } from '#entities/timeline-event'
 import { m } from '#paraglide/messages.js'
+import { protectedRoute } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 
 import { TimelinePage } from '../ui/TimelinePage'

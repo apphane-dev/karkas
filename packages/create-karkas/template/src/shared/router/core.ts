@@ -5,12 +5,14 @@ assert(import.meta.env['BASE_URL'], 'BASE_URL must be set in the environment var
 const base = import.meta.env['BASE_URL'].replace(/^\/+|\/+$/g, '')
 const basePath = base ? `/${base}` : ''
 
+// fallow-ignore-next-line unused-export
 export const createAppPath = (path = '') => {
 	const normalizedPath = path.replace(/^\//, '')
 	if (!basePath) return `/${normalizedPath}`
 	return normalizedPath ? `${basePath}/${normalizedPath}` : basePath
 }
 
+// fallow-ignore-next-line unused-export
 export const createSearchParamsPath = (section: string) => `${createAppPath(section)}/*`
 
 export const rootRoute = reatomRoute(
