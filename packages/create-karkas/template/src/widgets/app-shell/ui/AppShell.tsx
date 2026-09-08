@@ -18,8 +18,8 @@ import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
 import { token } from '#styled-system/tokens'
 
-import { GlobalLoader } from './GlobalLoader'
 import { FeatureTogglePanel } from './FeatureTogglePanel'
+import { GlobalLoader } from './GlobalLoader'
 import { SidebarDrawer } from './sidebar'
 
 type Props = {

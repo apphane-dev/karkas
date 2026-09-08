@@ -15,5 +15,9 @@
 	"not_found_title": "Page not found",
 	"not_found_description": "The page you are looking for does not exist.",
 	"reatomloc_tree_shake_canary": "reatomLoc tree-shake canary — must not appear in bundle",
-	"toggles_title": "Feature toggles"
+	"toggles_title": "Feature toggles",
+	"form_unsaved_changes": "You have unsaved changes",
+	"form_unsaved_continue": "Keep editing",
+	"form_reset_changes": "Reset",
+	"form_saving": "Saving…"
 }
