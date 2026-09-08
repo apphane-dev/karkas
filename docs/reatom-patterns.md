@@ -8,15 +8,16 @@ Project Reatom code favors direct reads, explicit names, and inline event wiring
 
 ## Read Source First
 
-| File                                         | Why read it                                                     |
-| -------------------------------------------- | --------------------------------------------------------------- |
-| `apps/demo/src/pages/calculator/ui/CalculatorPage.tsx` | Clear examples of atom/action naming and inline `wrap` handlers |
-| `apps/demo/src/pages/items/model/filters.ts`           | URL-bound filters kept in the page model layer                  |
-| `apps/demo/src/pages/items/ui/ItemsPage.tsx`           | Practical `reatomLoc` + UI binding patterns                     |
-| `apps/demo/src/pages/settings/model/settingsForm.ts`   | Route-loader factory for page-scoped forms                      |
-| `apps/demo/src/pages/settings/ui/SettingsPage.tsx`     | Binding route-scoped form fields to inputs and selects          |
-| `apps/demo/src/pages/timer/model/atoms.ts`             | Async action patterns (`sleep`, `withAbort`, change hooks)      |
-| `apps/demo/src/shared/model/locale.ts`                 | Extended atom pattern with helpers (`label`, `reatomLoc`)       |
+| File                                                   | Why read it                                                           |
+| ------------------------------------------------------ | --------------------------------------------------------------------- |
+| `apps/demo/src/pages/calculator/ui/CalculatorPage.tsx` | Clear examples of atom/action naming and inline `wrap` handlers       |
+| `apps/demo/src/pages/items/model/filters.ts`           | URL-bound filters kept in the page model layer                        |
+| `apps/demo/src/pages/items/ui/ItemsPage.tsx`           | Practical `reatomLoc` + UI binding patterns                           |
+| `apps/demo/src/pages/settings/model/settingsForm.ts`   | Route-loader factory for page-scoped forms                            |
+| `apps/demo/src/pages/settings/ui/SettingsPage.tsx`     | Binding route-scoped form fields to inputs and selects                |
+| `apps/demo/src/pages/timer/model/atoms.ts`             | Async action patterns (`sleep`, `withAbort`, change hooks)            |
+| `apps/demo/src/shared/model/featureToggles.ts`         | Persisted, coerced runtime toggles; actions + `isEnabled` on one atom |
+| `apps/demo/src/shared/model/locale.ts`                 | Extended atom pattern with helpers (`label`, `reatomLoc`)             |
 
 ## Rules
 
@@ -51,6 +52,12 @@ Project Reatom code favors direct reads, explicit names, and inline event wiring
 
 1. For display-only values, call the atom inline in JSX.
 2. For derived branches used multiple times, compute once locally only when needed for clarity or consistency.
+
+### Adding a runtime feature toggle
+
+1. Add the toggle name to `featureToggleNames` in `apps/demo/src/shared/model/featureToggles.ts`.
+2. Gate behavior through `featureTogglesAtom.isEnabled(name)()` in components, or `readPersistedFeatureToggles()` outside render trees (mock handlers, startup code).
+3. Persisted state coerces through `fromSnapshot` on load; storage written by older builds with unknown names loads as if the toggle were off.
 
 ## Edge Cases
 

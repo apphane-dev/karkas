@@ -19,6 +19,7 @@ import { styled } from '#styled-system/jsx'
 import { token } from '#styled-system/tokens'
 
 import { GlobalLoader } from './GlobalLoader'
+import { FeatureTogglePanel } from './FeatureTogglePanel'
 import { SidebarDrawer } from './sidebar'
 
 type Props = {
@@ -315,6 +316,7 @@ export const AppShell = reatomComponent(
 					{children}
 				</styled.div>
 				<GlobalLoader />
+				<FeatureTogglePanel />
 			</styled.div>
 		)
 	},

@@ -1,12 +1,12 @@
 import type { Article } from '#entities/article/model/types'
 
 import { assert } from '@reatom/core'
-import { HttpResponse, delay, http, type HttpResponseResolver } from 'msw'
+import { HttpResponse, http, type HttpResponseResolver } from 'msw'
 
 import { articlesMockData } from '#entities/article/mocks/data'
 import { composeApiUrl } from '#shared/api'
 import { Error404 } from '#shared/mocks'
-import { neverResolve, to500, withRetrySuccess } from '#shared/mocks/utils'
+import { mockDelay, neverResolve, to500, withRetrySuccess } from '#shared/mocks/utils'
 
 import { ARTICLES_API_PATH } from '../api/articlesApi'
 
@@ -40,7 +40,7 @@ const findArticle = (articles: Article[], articleId: string) => {
 }
 
 const articleListResolver = (async ({ request }) => {
-	await delay()
+	await mockDelay()
 
 	return HttpResponse.json(
 		storyArticles(request).map(({ content, ...rest }) => ({ ...rest, content: [content[0]] })),
@@ -48,7 +48,7 @@ const articleListResolver = (async ({ request }) => {
 }) satisfies HttpResponseResolver
 
 const articleDetailResolver = (async ({ params, request }) => {
-	await delay()
+	await mockDelay()
 
 	const article = findArticle(storyArticles(request), String(params['articleId']))
 
@@ -70,7 +70,7 @@ export const articleDetail = {
 }
 
 const articleUpdateResolver = (async ({ params, request }) => {
-	await delay()
+	await mockDelay()
 
 	const article = findArticle(storyArticles(request), String(params['articleId']))
 	const body = (await request.json()) as Omit<Article, 'id'>
