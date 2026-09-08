@@ -155,27 +155,32 @@ EditArticle.test('clicking Edit opens the edit form with current values', async 
 		await I.seeTitleIs('Quarterly report')
 		await I.see(role('textbox', 'Description'))
 		await I.see(role('combobox'))
-		await I.see(button('Cancel'))
+		await I.see(button('Close'))
 	})
 })
 
-EditArticle.test('Cancel returns to read mode without saving', async () => {
+EditArticle.test('closing over a dirty form keeps the draft and warns', async () => {
 	await I.scope(role('main'), async () => {
 		await I.openEdit()
 		await I.fill(role('textbox', 'Title'), 'A discarded title')
-		await I.cancelEdit()
+		await I.closeEdit()
+		await I.seeUnsavedDraftWarning()
+		await I.see(heading('Quarterly report'))
+		await I.openEdit()
+		await I.seeTitleIs('A discarded title')
+		await I.resetDraft()
+		await I.seeTitleIs('Quarterly report')
+		await I.closeEdit()
 		await I.see(button('Edit'))
-		await I.dontSee(role('textbox', 'Title'))
 	})
 })
 
-EditArticle.test('saving updates the title and returns to read mode', async () => {
+EditArticle.test('saving updates the title and the card states it closed', async () => {
 	await I.scope(role('main'), async () => {
 		await I.openEdit()
 		await I.fill(role('textbox', 'Title'), 'Updated quarterly report')
 		await I.saveArticle()
 		await I.seeArticleSaved()
-		await I.see(button('Edit'))
 		await I.see(heading('Updated quarterly report'))
 	})
 })

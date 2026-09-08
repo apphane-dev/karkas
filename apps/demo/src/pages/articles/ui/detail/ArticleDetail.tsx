@@ -6,7 +6,15 @@ import { wrap } from '@reatom/core'
 import { bindField, reatomComponent } from '@reatom/react'
 
 import { m } from '#paraglide/messages.js'
-import { Alert, Button, CollectionSelect, Heading, Input, Text } from '#shared/components'
+import {
+	Alert,
+	CollectionSelect,
+	EditableCard,
+	FormCta,
+	FormReset,
+	Input,
+	Text,
+} from '#shared/components'
 import { reatomLoc } from '#shared/model'
 import { formAlertMessage } from '#shared/reatom'
 import { styled } from '#styled-system/jsx'
@@ -28,13 +36,34 @@ const statusCollection = reatomLoc(
 )
 
 export const ArticleDetail = reatomComponent(({ model }: { model: ArticleDetailModel }) => {
-	if (model.isEditing()) {
-		const isDirty = model.form.focus().dirty
-		// Save failures here are network-level — no field owns them — so the
-		// alert carries the whole failure and the edit stays on screen, dirty.
-		const showSaveError = formAlertMessage(model.form) !== null
-		return (
-			<styled.div p="8">
+	const current = model.current()
+	// Save failures here are network-level — no field owns them — so the
+	// alert carries the whole failure and the edit stays on screen, dirty.
+	const showSaveError = formAlertMessage(model.form) !== null
+
+	return (
+		<styled.div p="8">
+			<EditableCard
+				title={current.title}
+				editLabel={m.article_edit()}
+				closeLabel={m.article_close()}
+				dirty={model.form.focus().dirty}
+				onReset={wrap(() => model.form.reset())}
+				rows={[
+					{ label: m.article_edit_status(), value: <ArticleStatusBadge status={current.status} /> },
+					{ label: m.article_edit_description(), value: current.description },
+				]}
+				preface={
+					<styled.div display="grid" gap="4">
+						{current.content.map((paragraph, index) => (
+							// oxlint-disable-next-line react/no-array-index-key
+							<Text key={index} color="muted" fontSize="sm" lineHeight="relaxed">
+								{paragraph}
+							</Text>
+						))}
+					</styled.div>
+				}
+			>
 				<styled.form
 					// A form without an accessible name has no implicit `form` role,
 					// so tests and assistive tech cannot target it.
@@ -74,48 +103,12 @@ export const ArticleDetail = reatomComponent(({ model }: { model: ArticleDetailM
 							positioning={{ sameWidth: true }}
 						/>
 						<styled.div display="flex" gap="3">
-							{isDirty && (
-								<Button
-									loading={!model.form.submit.ready()}
-									loadingText={m.article_saving()}
-									type="submit"
-								>
-									{m.article_save()}
-								</Button>
-							)}
-							<Button variant="outline" onClick={wrap(() => model.isEditing.set(false))}>
-								{m.article_cancel()}
-							</Button>
+							<FormCta form={model.form}>{m.article_save()}</FormCta>
+							<FormReset form={model.form} />
 						</styled.div>
 					</styled.div>
 				</styled.form>
-			</styled.div>
-		)
-	}
-
-	const current = model.current()
-	return (
-		<styled.div p="8">
-			<styled.div display="flex" alignItems="center" gap="3" mb="6" flexWrap="wrap">
-				<Heading as="h1" fontSize="2xl" fontWeight="bold" flex="1">
-					{current.title}
-				</Heading>
-				<ArticleStatusBadge status={current.status} />
-				<Button size="sm" variant="outline" onClick={wrap(() => model.startEdit())}>
-					{m.article_edit()}
-				</Button>
-			</styled.div>
-			<Text color="muted" fontSize="sm" lineHeight="relaxed">
-				{current.description}
-			</Text>
-			<styled.div display="grid" gap="4" mt="6">
-				{current.content.map((paragraph, index) => (
-					// oxlint-disable-next-line react/no-array-index-key
-					<Text key={index} color="muted" fontSize="sm" lineHeight="relaxed">
-						{paragraph}
-					</Text>
-				))}
-			</styled.div>
+			</EditableCard>
 		</styled.div>
 	)
 }, 'ArticleDetail')

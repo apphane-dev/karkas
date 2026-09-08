@@ -1,6 +1,5 @@
 import { afterEach, expect, test, vi } from 'vite-plus/test'
 
-
 class MemoryStorage implements Storage {
 	readonly store = new Map<string, string>()
 
@@ -32,7 +31,13 @@ class MemoryStorage implements Storage {
 const seedRecord = (localStorage: MemoryStorage, data: unknown) => {
 	localStorage.setItem(
 		'karkas-feature-toggles',
-		JSON.stringify({ data, id: 'seed', timestamp: Date.now(), to: Date.now() + 60_000, version: 0 }),
+		JSON.stringify({
+			data,
+			id: 'seed',
+			timestamp: Date.now(),
+			to: Date.now() + 60_000,
+			version: 0,
+		}),
 	)
 }
 
