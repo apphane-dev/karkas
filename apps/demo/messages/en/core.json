@@ -27,5 +27,6 @@
 	"form_unsaved_changes": "You have unsaved changes",
 	"form_unsaved_continue": "Keep editing",
 	"form_reset_changes": "Reset",
-	"form_saving": "Saving…"
+	"form_saving": "Saving…",
+	"org_switcher_orgs": "Organizations"
 }

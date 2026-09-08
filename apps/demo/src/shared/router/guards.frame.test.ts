@@ -12,6 +12,10 @@ test('guard wiring needs the app frame under the strict setup', () => {
 		isAuthenticated: () => false,
 		onUnauthenticated: noop,
 		onAuthenticatedExclusive: noop,
+		orgState: () => ({ hasOrgs: true }),
+		currentOrgId: () => null,
+		onOrgless: noop,
+		onOrgsReady: noop,
 	}
 
 	clearStack()

@@ -11,6 +11,7 @@ import {
 } from '#entities/conversation/mocks/handlers'
 import { dashboardStats } from '#entities/dashboard/mocks/handlers'
 import { itemDetail, itemList } from '#entities/item/mocks/handlers'
+import { orgHandlers } from '#entities/org/mocks/handlers'
 import { pricingPlans, pricingSubscribe } from '#entities/pricing/mocks/handlers'
 import {
 	settingsFetch,
@@ -35,6 +36,7 @@ export const handlers = {
 	dashboardStats: dashboardStats.default,
 	itemList: itemList.default,
 	itemDetail: itemDetail.default,
+	orgs: orgHandlers.orgs,
 	pricingPlans: pricingPlans.default,
 	pricingSubscribe: pricingSubscribe.default,
 	settingsFetch: settingsFetch.default,

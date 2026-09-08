@@ -27,5 +27,6 @@
 	"form_unsaved_changes": "Tienes cambios sin guardar",
 	"form_unsaved_continue": "Seguir editando",
 	"form_reset_changes": "Restablecer",
-	"form_saving": "Guardando…"
+	"form_saving": "Guardando…",
+	"org_switcher_orgs": "Organizaciones"
 }
