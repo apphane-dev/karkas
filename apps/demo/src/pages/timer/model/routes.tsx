@@ -1,4 +1,4 @@
-import { protectedRoute } from '#entities/auth'
+import { protectedRoute } from '#shared/router'
 
 import { TimerPage } from '../ui/TimerPage'
 
