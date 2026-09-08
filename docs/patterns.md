@@ -26,6 +26,7 @@ extension-point mechanics, `docs/reatom-extensions.md`.
 | Feature toggles           | Names are declared as literal tuples and every read coerces, so an unknown persisted flag degrades to `false` instead of leaking into the UI. | `src/shared/model/featureToggles.ts`, `…/widgets/app-shell/ui/FeatureTogglePanel.tsx` | `apps/demo/src/widgets/app-shell` (panel), `apps/demo/src/pages/articles` (gates) |
 | Display/edit card         | Closing keeps the draft mounted — close is not cancel — and only a successful save rebaselines; dirty state warns before discarding. | `src/shared/components/EditableCard.tsx`, `FormActions.tsx`  | `apps/demo/src/pages/articles/ui/detail/ArticleDetail.tsx` |
 | Route guards              | Guard routes encode structure only; who is authenticated and where each redirect goes are callbacks wired at the composition root, each failing loud until wired. | `src/shared/router/guards.ts`, `src/app/App.tsx`             | `apps/demo/src/app/App.tsx`, `apps/demo/src/pages/login/model/routes.tsx` |
+| Org scope with collapse on switch | The org is a guard branch whose loader fulfills with the active org id; a change hook on the payload collapses deep org-scoped URLs when the id changes A to B — deferred past the fulfillment transaction. | `src/shared/router/guards.ts`, `src/entities/org/model/org.ts` | `apps/demo/src/app/OrgSwitcher.tsx`, `apps/demo/src/pages/settings/model/routes.tsx` |
 
 ## Rules
 
