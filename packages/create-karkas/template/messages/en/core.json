@@ -1,7 +1,7 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"error_retry": "Try again",
-	"app_name": "{{project-title}}",
+	"app_name": "[project-title]",
 	"nav_dashboard": "Dashboard",
 	"language_en": "English",
 	"language_es": "Spanish",
