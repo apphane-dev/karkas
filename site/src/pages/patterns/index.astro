@@ -3,6 +3,10 @@ import Base from '../../layouts/Base.astro'
 import { getPatterns } from '../../lib/patterns'
 
 const patterns = await getPatterns()
+
+const repo = 'https://github.com/apphane-dev/karkas/blob/main'
+// Catalog chips stay scannable; the entry page lists every path in full.
+const filePointer = (file: string) => file.split('/').slice(-2).join('/')
 ---
 
 <Base
@@ -12,7 +16,7 @@ const patterns = await getPatterns()
 	<section class="section-pad">
 		<div class="wrap">
 			<a class="tlink back" href="/">← Back to Karkas</a>
-			<div class="section-head arc-head">
+			<div class="section-head">
 				<span class="tag tag--steel">Patterns</span>
 				<h1>Problems you were about to solve worse.</h1>
 				<p>
@@ -25,26 +29,39 @@ const patterns = await getPatterns()
 
 			{
 				patterns.length > 0 ? (
-					<ul class="feed">
+					<ul class="catalog">
 						{patterns.map((p) => (
-							<li class="feed-item">
-								<div class="feed-meta">
-									<span class="feed-tag">{p.data.tag}</span>
+							<li class="sheet">
+								<div class="sheet-meta">
+									<span class="sheet-tag">{p.data.tag}</span>
+									<span class="sheet-idx">{String(p.data.order).padStart(2, '0')}</span>
 								</div>
-								<a class="feed-title" href={`/patterns/${p.id}`}>
+								<a class="sheet-title" href={`/patterns/${p.id}`}>
 									{p.data.title}
 								</a>
-								<p class="feed-problem">{p.data.problem}</p>
-								<p class="feed-decision">{p.data.decision}</p>
-								<div class="feed-files">
-									{p.data.demo && <a class="tlink" href={p.data.demo}>see it running →</a>}
-									<a class="tlink" href={`/patterns/${p.id}`}>read the decision →</a>
+								<p class="sheet-problem">{p.data.problem}</p>
+								<p class="sheet-decision">{p.data.decision}</p>
+								<div class="sheet-foot">
+									<a
+										class="sheet-file"
+										href={`${repo}/${p.data.files[0]}`}
+										aria-label={`Open ${p.data.files[0]} on GitHub`}
+									>
+										<code>{filePointer(p.data.files[0])}</code>
+										{p.data.files.length > 1 && (
+											<span class="sheet-more">+{p.data.files.length - 1} more</span>
+										)}
+									</a>
+									<div class="sheet-links">
+										{p.data.demo && <a class="tlink" href={p.data.demo}>see it running →</a>}
+										<a class="tlink" href={`/patterns/${p.id}`}>read the decision →</a>
+									</div>
 								</div>
 							</li>
 						))}
 					</ul>
 				) : (
-					<p class="feed-empty">No patterns published yet.</p>
+					<p class="catalog-empty">No patterns published yet.</p>
 				)
 			}
 		</div>
@@ -56,22 +73,146 @@ const patterns = await getPatterns()
 		display: inline-block;
 		margin-bottom: 2.2rem;
 	}
-	.feed-problem {
-		color: var(--ink-muted);
-		margin: 0 0 0.6rem;
+	/* Page-level head: the shared 46ch cap is a landing-section column and
+	   strands the h1 here; 62ch gives the title two lines and the lede a
+	   full readable measure. */
+	.section-head {
+		max-width: 62ch;
 	}
-	.feed-decision {
-		font-size: 0.92rem;
+	.catalog {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1.5rem;
+	}
+	/* One drafting sheet per pattern — the post-sheet language of the entry
+	   pages, shrunk to a card so the catalog and the entries read as a set. */
+	.sheet {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		min-width: 0;
+		background: var(--panel);
+		border: 1px solid var(--line-strong);
+		border-radius: var(--radius);
+		box-shadow: 4px 4px 0 var(--blueprint-soft);
+		padding: 1.55rem 1.6rem 1.45rem;
+		transition:
+			transform 0.15s var(--ease),
+			box-shadow 0.15s var(--ease),
+			border-color 0.15s var(--ease);
+	}
+	.sheet:hover {
+		transform: translateY(-2px);
+		box-shadow: 6px 6px 0 var(--blueprint-soft);
+		border-color: var(--blueprint);
+	}
+	.sheet-meta {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+		font-family: var(--mono);
+		font-size: 0.74rem;
+		color: var(--ink-muted);
+	}
+	.sheet-tag {
+		color: var(--blueprint);
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+	}
+	/* The entry's position in the porting order — content-driven via `order`. */
+	.sheet-idx {
+		color: var(--steel);
+		font-weight: 600;
+		letter-spacing: 0.05em;
+	}
+	.sheet-title {
+		font-family: var(--display);
+		font-weight: 700;
+		font-stretch: 112%;
+		font-size: 1.32rem;
+		line-height: 1.15;
+		color: var(--ink);
+		text-decoration: none;
+		width: fit-content;
+		border-bottom: 2px solid transparent;
+		transition: border-color 0.15s;
+	}
+	.sheet-title:hover {
+		border-color: var(--steel);
+	}
+	.sheet-problem {
+		color: var(--ink-muted);
+		font-size: 0.96rem;
+		line-height: 1.55;
+	}
+	.sheet-decision {
+		font-size: 0.93rem;
 		color: var(--ink);
 		border-left: 3px solid var(--steel);
-		padding-left: 0.9rem;
-		margin: 0 0 0.9rem;
+		padding-left: 0.95rem;
 	}
-	.feed-files {
+	.sheet-foot {
+		margin-top: auto;
+		padding-top: 1.1rem;
+		border-top: 1px solid var(--line);
 		display: flex;
-		gap: 1.4rem;
+		flex-direction: column;
+		gap: 0.85rem;
 	}
-	.feed-files :global(.tlink) {
-		font-size: 0.85rem;
+	.sheet-file {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		min-width: 0;
+		text-decoration: none;
+	}
+	.sheet-file code {
+		font-family: var(--mono);
+		font-size: 0.76rem;
+		color: var(--ink-muted);
+		background: var(--panel-2);
+		border: 1px solid var(--line-strong);
+		border-radius: 2px;
+		padding: 0.1rem 0.45rem;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		transition:
+			color 0.15s,
+			border-color 0.15s;
+	}
+	.sheet-file:hover code {
+		color: var(--steel-deep);
+		border-color: var(--steel);
+	}
+	.sheet-more {
+		flex: none;
+		font-family: var(--mono);
+		font-size: 0.72rem;
+		color: var(--ink-muted);
+	}
+	.sheet-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1.3rem;
+	}
+	.sheet-links :global(.tlink) {
+		font-size: 0.82rem;
+	}
+	.catalog-empty {
+		border-top: 1px solid var(--line-strong);
+		padding-top: 1.7rem;
+		color: var(--ink-muted);
+		max-width: 60ch;
+	}
+
+	@media (max-width: 860px) {
+		.catalog {
+			grid-template-columns: 1fr;
+		}
 	}
 </style>
