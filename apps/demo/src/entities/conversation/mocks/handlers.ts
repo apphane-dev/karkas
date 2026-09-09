@@ -5,7 +5,7 @@ import { HttpResponse, delay, http, type HttpResponseResolver } from 'msw'
 
 import { conversationsMockData } from '#entities/conversation/mocks/data'
 import { composeApiUrl } from '#shared/api'
-import { Error404 } from '#shared/mocks'
+import { Error404, mocksStore } from '#shared/mocks'
 import { neverResolve, to500, withRetrySuccess } from '#shared/mocks/utils'
 
 import {
@@ -31,26 +31,12 @@ const conversationDetailRetryPath = ({ request }: { request: Request }) => {
 
 const nowTime = () => new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
 
-// Per-story mutable conversation state (keyed by request origin), so a sent
-// message persists for that story's refetches without leaking across stories
-// or mutating the shared conversationsMockData fixture. Mirrors the pricing
-// handler's per-story isolation.
-const conversationsByStory = new Map<string, Conversation[]>()
-
-const stateKey = (request: Request) => request.headers.get('referer') ?? 'default'
-
-const storyConversations = (request: Request) => {
-	const key = stateKey(request)
-	let conversations = conversationsByStory.get(key)
-	if (!conversations) {
-		conversations = conversationsMockData.map((conversation) => ({
-			...conversation,
-			messages: conversation.messages.map((message) => ({ ...message })),
-		}))
-		conversationsByStory.set(key, conversations)
-	}
-	return conversations
-}
+// Mutable conversation state so a sent message persists for the module's
+// refetches; the Storybook preview's `resetMockStores()` drain re-seeds it
+// before each story (the isolation contract — see shared/mocks/store). The
+// store deep-clones seeds (messages included), so the shared fixture is never
+// mutated.
+const conversationsStore = mocksStore<Conversation>('conversations', () => conversationsMockData)
 
 const findConversation = (conversations: Conversation[], conversationId: string) => {
 	const conversation = conversations.find(({ id }) => id === conversationId)
@@ -63,32 +49,28 @@ const cloneConversation = (conversation: Conversation) => ({
 	messages: conversation.messages.map((message) => ({ ...message })),
 })
 
-const conversationListResolver = (async ({ request }) => {
+const conversationListResolver = (async () => {
 	await delay()
 
 	// oxlint-disable-next-line no-unused-vars
-	return HttpResponse.json(storyConversations(request).map(({ messages: _, ...rest }) => rest))
+	return HttpResponse.json(conversationsStore.list().map(({ messages: _, ...rest }) => rest))
 }) satisfies HttpResponseResolver
 
-const conversationUnreadCountResolver = (async ({ request }) => {
+const conversationUnreadCountResolver = (async () => {
 	await delay()
 
-	const unreadCount = storyConversations(request).reduce(
-		(totalUnread, conversation) => totalUnread + conversation.unread,
-		0,
-	)
+	const unreadCount = conversationsStore
+		.list()
+		.reduce((totalUnread, conversation) => totalUnread + conversation.unread, 0)
 
 	// oxlint-disable-next-line no-unused-vars
 	return HttpResponse.json({ unreadCount })
 }) satisfies HttpResponseResolver
 
-const conversationDetailResolver = (async ({ params, request }) => {
+const conversationDetailResolver = (async ({ params }) => {
 	await delay()
 
-	const conversation = findConversation(
-		storyConversations(request),
-		String(params['conversationId']),
-	)
+	const conversation = findConversation(conversationsStore.list(), String(params['conversationId']))
 
 	// oxlint-disable-next-line no-unused-vars
 	return HttpResponse.json(cloneConversation(conversation))
@@ -97,10 +79,7 @@ const conversationDetailResolver = (async ({ params, request }) => {
 const conversationSendMessageResolver = (async ({ params, request }) => {
 	await delay()
 
-	const conversation = findConversation(
-		storyConversations(request),
-		String(params['conversationId']),
-	)
+	const conversation = findConversation(conversationsStore.list(), String(params['conversationId']))
 
 	const { text } = (await request.json()) as { text: string }
 	const message = { id: crypto.randomUUID(), sender: 'You', text, time: nowTime(), isOwn: true }
