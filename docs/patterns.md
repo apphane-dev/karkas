@@ -27,6 +27,7 @@ extension-point mechanics, `docs/reatom-extensions.md`.
 | Display/edit card         | Closing keeps the draft mounted — close is not cancel — and only a successful save rebaselines; dirty state warns before discarding. | `src/shared/components/EditableCard.tsx`, `FormActions.tsx`  | `apps/demo/src/pages/articles/ui/detail/ArticleDetail.tsx` |
 | Route guards              | Guard routes encode structure only; who is authenticated and where each redirect goes are callbacks wired at the composition root, each failing loud until wired. | `src/shared/router/guards.ts`, `src/app/App.tsx`             | `apps/demo/src/app/App.tsx`, `apps/demo/src/pages/login/model/routes.tsx` |
 | Org scope with collapse on switch | The org is a guard branch whose loader fulfills with the active org id; a change hook on the payload collapses deep org-scoped URLs when the id changes A to B — deferred past the fulfillment transaction. | `src/shared/router/guards.ts`, `src/entities/org/model/org.ts` | `apps/demo/src/app/OrgSwitcher.tsx`, `apps/demo/src/pages/settings/model/routes.tsx` |
+| Mock state with a reset contract | Mutable mock state is a registered store with a seed provider, deep-cloned items, and no Reatom reactivity; the Storybook preview drains the registry before every story — the drain is the isolation contract, not referer keying. | `src/shared/mocks/store.ts` | `apps/demo/src/entities/article/mocks/handlers.ts`, `apps/demo/.storybook/preview.tsx` |
 
 ## Rules
 

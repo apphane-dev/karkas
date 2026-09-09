@@ -17,6 +17,7 @@ import { useEffect, useMemo, type PropsWithChildren } from 'react'
 import { handlersArray } from '#app/mocks/handlers'
 import { authSessionAtom } from '#entities/auth'
 import { authMockSession } from '#entities/auth/mocks/data'
+import { resetMockStores } from '#shared/mocks'
 import { css } from '#styled-system/css'
 
 import { setupStorybookUrl } from './setupStorybookUrl'
@@ -106,6 +107,10 @@ const preview = definePreview({
 		}
 		configureDiagnostics(parameters['kahraman'])
 		clearAbortErrors()
+		// Mutable mock state (shared/mocks/store) returns to its seed before each
+		// story — the preview-level drain is the isolation contract; handler state
+		// is NOT keyed by request origin.
+		resetMockStores()
 		if (!(globalThis as Record<string, unknown>)['__vitest_worker__']) return
 		const { page } = await import('vite-plus/test/browser')
 		const viewportGlobal = globals['viewport'] as { value?: string } | string | undefined

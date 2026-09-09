@@ -5,7 +5,7 @@ import { HttpResponse, http, type HttpResponseResolver } from 'msw'
 
 import { articlesMockData } from '#entities/article/mocks/data'
 import { composeApiUrl } from '#shared/api'
-import { Error404 } from '#shared/mocks'
+import { Error404, mocksStore } from '#shared/mocks'
 import { mockDelay, neverResolve, to500, withRetrySuccess } from '#shared/mocks/utils'
 
 import { ARTICLES_API_PATH } from '../api/articlesApi'
@@ -14,24 +14,16 @@ const listUrl = composeApiUrl(ARTICLES_API_PATH)
 const detailUrl = composeApiUrl(`${ARTICLES_API_PATH}/:articleId`)
 const updateUrl = composeApiUrl(`${ARTICLES_API_PATH}/:articleId`)
 
-const articlesByStory = new Map<string, Article[]>()
-
-const stateKey = (request: Request) => request.headers.get('referer') ?? 'default'
+// Mutable article state for the module's lifetime; the Storybook preview's
+// `resetMockStores()` drain re-seeds it before each story (the isolation
+// contract — see shared/mocks/store). The store deep-clones seeds, so the
+// shared fixture is never mutated.
+const articlesStore = mocksStore<Article>('articles', () => articlesMockData)
 
 const cloneArticle = (article: Article) => ({
 	...article,
 	content: [...article.content],
 })
-
-const storyArticles = (request: Request) => {
-	const key = stateKey(request)
-	let articles = articlesByStory.get(key)
-	if (!articles) {
-		articles = articlesMockData.map(cloneArticle)
-		articlesByStory.set(key, articles)
-	}
-	return articles
-}
 
 const findArticle = (articles: Article[], articleId: string) => {
 	const article = articles.find(({ id }) => id === articleId)
@@ -39,18 +31,18 @@ const findArticle = (articles: Article[], articleId: string) => {
 	return article
 }
 
-const articleListResolver = (async ({ request }) => {
+const articleListResolver = (async () => {
 	await mockDelay()
 
 	return HttpResponse.json(
-		storyArticles(request).map(({ content, ...rest }) => ({ ...rest, content: [content[0]] })),
+		articlesStore.list().map(({ content, ...rest }) => ({ ...rest, content: [content[0]] })),
 	)
 }) satisfies HttpResponseResolver
 
-const articleDetailResolver = (async ({ params, request }) => {
+const articleDetailResolver = (async ({ params }) => {
 	await mockDelay()
 
-	const article = findArticle(storyArticles(request), String(params['articleId']))
+	const article = findArticle(articlesStore.list(), String(params['articleId']))
 
 	return HttpResponse.json(cloneArticle(article))
 }) satisfies HttpResponseResolver
@@ -72,11 +64,12 @@ export const articleDetail = {
 const articleUpdateResolver = (async ({ params, request }) => {
 	await mockDelay()
 
-	const article = findArticle(storyArticles(request), String(params['articleId']))
+	const articleId = String(params['articleId'])
+	const article = findArticle(articlesStore.list(), articleId)
 	const body = (await request.json()) as Omit<Article, 'id'>
-	Object.assign(article, body)
+	articlesStore.patch(articleId, body)
 
-	return HttpResponse.json(cloneArticle(article))
+	return HttpResponse.json(cloneArticle({ ...article, ...body }))
 }) satisfies HttpResponseResolver
 
 export const articleUpdate = {
