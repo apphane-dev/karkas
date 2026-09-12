@@ -94,6 +94,28 @@ const languageCollection = reatomLoc(
 	'settings.languageCollection',
 )
 
+// The two form sections share the "show Save only while dirty" footer; a
+// component keeps SettingsPage's cyclomatic complexity under the fallow
+// CRAP gate (comp^2 + comp with no coverage data in CI).
+type FormLike = {
+	focus(): { dirty: boolean }
+	submit: (() => Promise<unknown>) & { ready(): boolean }
+}
+
+function SaveFooter({ form, onSave }: { form: FormLike; onSave: () => void }) {
+	if (!form.focus().dirty) return null
+	return (
+		<Button
+			size="sm"
+			loading={!form.submit.ready()}
+			loadingText={m.settings_saving()}
+			onClick={onSave}
+		>
+			{m.settings_save_changes()}
+		</Button>
+	)
+}
+
 export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageModel }) => {
 	const { profileForm, notificationsForm, appearanceForm } = model
 	// Save failures are network-level — no field owns them — so the alert
@@ -107,18 +129,7 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 
 			<Section
 				title={m.settings_profile()}
-				footer={
-					profileForm.focus().dirty ? (
-						<Button
-							size="sm"
-							loading={!profileForm.submit.ready()}
-							loadingText={m.settings_saving()}
-							onClick={wrap(() => profileForm.submit())}
-						>
-							{m.settings_save_changes()}
-						</Button>
-					) : null
-				}
+				footer={<SaveFooter form={profileForm} onSave={wrap(() => profileForm.submit())} />}
 			>
 				{showProfileError && (
 					<Alert.Root status="error" role="alert" mb="4">
@@ -144,16 +155,7 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 			<Section
 				title={m.settings_notifications()}
 				footer={
-					notificationsForm.focus().dirty ? (
-						<Button
-							size="sm"
-							loading={!notificationsForm.submit.ready()}
-							loadingText={m.settings_saving()}
-							onClick={wrap(() => notificationsForm.submit())}
-						>
-							{m.settings_save_changes()}
-						</Button>
-					) : null
+					<SaveFooter form={notificationsForm} onSave={wrap(() => notificationsForm.submit())} />
 				}
 			>
 				{showNotificationsError && (
