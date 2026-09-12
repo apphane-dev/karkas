@@ -6,36 +6,35 @@ import { HttpResponse, delay, http, type HttpResponseResolver } from 'msw'
 import { PRICING_API_PATH, SUBSCRIBE_API_PATH } from '#entities/pricing/api/pricingApi'
 import { pricingMockData } from '#entities/pricing/mocks/data'
 import { composeApiUrl } from '#shared/api'
-import { Error400 } from '#shared/mocks'
+import { Error400, registerMockReset } from '#shared/mocks'
 import { neverResolve, to500, withRetrySuccess } from '#shared/mocks/utils'
 
 const url = composeApiUrl(PRICING_API_PATH)
 const subscribeUrl = composeApiUrl(SUBSCRIBE_API_PATH)
 
-const currentPlanIdByStory = new Map<string, PlanId>()
+// The subscribed plan is ad-hoc mock state that is not a collection, so it
+// registers its own reset callback with the shared registry (see
+// shared/mocks/store) instead of forcing a keyed store shape.
+let currentPlanId: PlanId = pricingMockData.currentPlanId
+registerMockReset(() => {
+	currentPlanId = pricingMockData.currentPlanId
+})
 
-const stateKey = (request: Request) => request.headers.get('referer') ?? 'default'
+const readCurrentPlanId = () => currentPlanId
 
-const readCurrentPlanId = (request: Request) => {
-	const key = stateKey(request)
-	const currentPlanId = currentPlanIdByStory.get(key) ?? pricingMockData.currentPlanId
-	currentPlanIdByStory.set(key, currentPlanId)
+const resetCurrentPlanId = () => {
+	currentPlanId = pricingMockData.currentPlanId
 	return currentPlanId
 }
 
-const resetCurrentPlanId = (request: Request) => {
-	currentPlanIdByStory.set(stateKey(request), pricingMockData.currentPlanId)
-	return pricingMockData.currentPlanId
-}
-
-const pricingResolver = (async ({ request }) => {
+const pricingResolver = (async () => {
 	await delay()
-	return HttpResponse.json({ ...pricingMockData, currentPlanId: readCurrentPlanId(request) })
+	return HttpResponse.json({ ...pricingMockData, currentPlanId: readCurrentPlanId() })
 }) satisfies HttpResponseResolver
 
-const resetPricingResolver = (async ({ request }) => {
+const resetPricingResolver = (async () => {
 	await delay()
-	return HttpResponse.json({ ...pricingMockData, currentPlanId: resetCurrentPlanId(request) })
+	return HttpResponse.json({ ...pricingMockData, currentPlanId: resetCurrentPlanId() })
 }) satisfies HttpResponseResolver
 
 const subscribeResolver = (async ({ request }) => {
@@ -43,7 +42,7 @@ const subscribeResolver = (async ({ request }) => {
 	const body = (await request.json()) as { planId: PlanId }
 	const exists = pricingMockData.plans.some((plan) => plan.id === body.planId)
 	assert(exists, `Unknown plan: ${body.planId}`, Error400)
-	currentPlanIdByStory.set(stateKey(request), body.planId)
+	currentPlanId = body.planId
 	return HttpResponse.json({ currentPlanId: body.planId })
 }) satisfies HttpResponseResolver
 

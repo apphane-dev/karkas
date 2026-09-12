@@ -1,9 +1,9 @@
 import { retryComputed, wrap } from '@reatom/core'
 
 import { fetchArticles, fetchArticleById } from '#entities/article'
-import { protectedRoute } from '#entities/auth'
 import { m } from '#paraglide/messages.js'
 import { isApiError } from '#shared/api'
+import { protectedRoute } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 import { MasterDetails } from '#widgets/master-details'
 

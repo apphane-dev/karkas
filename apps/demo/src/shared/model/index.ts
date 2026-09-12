@@ -9,6 +9,13 @@ export {
 } from './headerTrail'
 export type { HeaderTrailDescriptor } from './headerTrail'
 export {
+	FEATURE_TOGGLES_STORAGE_KEY,
+	featureTogglesAtom,
+	readPersistedFeatureToggles,
+} from './featureToggles'
+// fallow-ignore-next-line unused-type
+export type { FeatureToggle } from './featureToggles'
+export {
 	// fallow-ignore-next-line unused-export
 	readPersistRecord,
 	// fallow-ignore-next-line unused-export

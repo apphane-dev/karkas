@@ -1,7 +1,7 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"error_retry": "Intentar de nuevo",
-	"app_name": "{{project-title}}",
+	"app_name": "[project-title]",
 	"nav_dashboard": "Panel",
 	"language_en": "Inglés",
 	"language_es": "Español",
@@ -14,5 +14,10 @@
 	"topbar_toggle_theme_label": "Cambiar tema",
 	"not_found_title": "Página no encontrada",
 	"not_found_description": "La página que buscas no existe.",
-	"reatomloc_tree_shake_canary": "reatomLoc árbol canario — no debe aparecer en el bundle"
+	"reatomloc_tree_shake_canary": "reatomLoc árbol canario — no debe aparecer en el bundle",
+	"toggles_title": "Conmutadores de funciones",
+	"form_unsaved_changes": "Tienes cambios sin guardar",
+	"form_unsaved_continue": "Seguir editando",
+	"form_reset_changes": "Restablecer",
+	"form_saving": "Guardando…"
 }

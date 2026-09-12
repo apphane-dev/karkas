@@ -1,8 +1,8 @@
 import { retryComputed, wrap } from '@reatom/core'
 
-import { protectedRoute } from '#entities/auth'
 import { fetchSettings } from '#entities/setting'
 import { m } from '#paraglide/messages.js'
+import { orgGuardRoute } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 
 import { SettingsPage } from '../ui/SettingsPage'
@@ -15,7 +15,11 @@ const shouldShowLoading = (
 	model: SettingsPageModel | undefined,
 ) => isFirstPending || (isPending && !model)
 
-export const settingsRoute = protectedRoute.reatomRoute(
+// Org-scoped on purpose: settings describe the organization, so the page
+// hangs off the org guard and an organization switch from this deep URL
+// collapses back to the app root instead of painting the previous org's
+// settings.
+export const settingsRoute = orgGuardRoute.reatomRoute(
 	{
 		path: 'settings',
 		loader: async () => reatomSettingsPageModel(await wrap(fetchSettings())),

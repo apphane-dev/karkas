@@ -22,8 +22,10 @@ const ARTICLE_LINKS = [
 const editLoc = {
 	editForm: role('form', m.article_detail()),
 	editButton: button('Edit'),
+	closeButton: button('Close'),
 	saveButton: button('Save'),
-	cancelButton: button('Cancel'),
+	resetButton: button('Reset'),
+	unsavedStatus: role('status'),
 	titleField: role('textbox', 'Title'),
 	descriptionField: role('textbox', 'Description'),
 	statusSelect: role('combobox', 'Status'),
@@ -125,15 +127,16 @@ export const articlesActor = createActor()
 		openEdit: async () => {
 			await I.click(editLoc.editButton)
 		},
-		cancelEdit: async () => {
-			await I.click(editLoc.cancelButton)
+		closeEdit: async () => {
+			await I.click(editLoc.closeButton)
 		},
 		saveArticle: async () => {
 			await I.click(editLoc.saveButton)
 		},
-		// A save is confirmed by the state change itself: the edit panel collapses
-		// to the summary rows, which now state the saved values — there is no toast.
+		// Closing the card is what reveals the summary rows again; they state the
+		// saved values — there is no toast. The card stays open after a save.
 		seeArticleSaved: async () => {
+			await I.click(editLoc.closeButton)
 			await I.retryTo(() => I.see(editLoc.editButton), 25)
 		},
 		seeArticleSaveError: async () => {
@@ -141,5 +144,14 @@ export const articlesActor = createActor()
 		},
 		seeTitleIs: async (value: string) => {
 			await I.retryTo(() => I.seeInField(editLoc.titleField, value), 25)
+		},
+		// Closing over a dirty form keeps the draft: a warning row appears and
+		// offers Reset as the explicit way back to the saved values.
+		seeUnsavedDraftWarning: async () => {
+			await I.see(editLoc.unsavedStatus)
+			await I.see(editLoc.resetButton)
+		},
+		resetDraft: async () => {
+			await I.click(editLoc.resetButton)
 		},
 	}))

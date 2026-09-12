@@ -11,6 +11,12 @@ export default defineConfig({
 	site: "https://karkas.apphane.dev",
 	base: "/",
 	trailingSlash: "ignore",
+	markdown: {
+		shikiConfig: {
+			// Light theme so token colors read on the site's light panels.
+			theme: "github-light",
+		},
+	},
 	build: {
 		format: "directory",
 	},

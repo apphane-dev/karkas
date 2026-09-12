@@ -1,8 +1,8 @@
 import { retryComputed, wrap } from '@reatom/core'
 
-import { protectedRoute } from '#entities/auth'
 import { fetchUsageData } from '#entities/usage'
 import { m } from '#paraglide/messages.js'
+import { protectedRoute } from '#shared/router'
 import { PageError } from '#widgets/data-page'
 
 import { UsagePage } from '../ui/UsagePage'

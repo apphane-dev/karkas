@@ -22,5 +22,11 @@
 	"list_filters": "Filtros",
 	"topbar_search_placeholder": "Buscar...",
 	"topbar_toggle_theme_label": "Cambiar tema",
-	"reatomloc_tree_shake_canary": "reatomLoc árbol canario — no debe aparecer en el bundle"
+	"reatomloc_tree_shake_canary": "reatomLoc árbol canario — no debe aparecer en el bundle",
+	"toggles_title": "Conmutadores de funciones",
+	"form_unsaved_changes": "Tienes cambios sin guardar",
+	"form_unsaved_continue": "Seguir editando",
+	"form_reset_changes": "Restablecer",
+	"form_saving": "Guardando…",
+	"org_switcher_orgs": "Organizaciones"
 }
