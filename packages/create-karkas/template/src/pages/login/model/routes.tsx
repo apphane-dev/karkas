@@ -1,9 +1,14 @@
 import { reatomField, reatomForm, urlAtom, wrap } from '@reatom/core'
+import { atom } from '@reatom/core'
 import { Fragment } from 'react'
 
 import { isAuthenticatedAtom, loginAction } from '#entities/auth'
 import { m } from '#paraglide/messages.js'
-import { applyApiValidationToFields } from '#shared/api'
+import {
+	applyApiValidationToFields,
+	type ApiValidationIssue,
+	isApiValidationError,
+} from '#shared/api'
 import { withFormAutoFocusOnError, withFormSubmitHandler } from '#shared/reatom'
 import { createAppPath, rootRoute } from '#shared/router'
 
@@ -11,7 +16,14 @@ import { LoginPage } from '../ui/LoginPage'
 
 const dashboardPath = createAppPath('dashboard')
 
-const reatomLoginForm = () => {
+export const reatomLoginForm = () => {
+	// Issues no field claims. The page suppresses its alert only when a
+	// validation error is fully handled — every issue mapped onto a field.
+	// Unmapped or mixed responses keep the alert, otherwise a record-level 422
+	// would fail silently: no field error anywhere and an alert that considers
+	// itself redundant.
+	const unmappedIssues = atom<Array<ApiValidationIssue>>([], 'loginForm.unmappedIssues')
+
 	const fields = {
 		email: reatomField('alex@example.com', {
 			name: 'loginForm.email',
@@ -40,12 +52,18 @@ const reatomLoginForm = () => {
 				return await wrap(loginAction(values))
 			} catch (error) {
 				// Server validation issues surface under their fields; whatever no
-				// field claims falls through to the form-level alert in the page.
-				applyApiValidationToFields(error, fields)
+				// field claims is kept here so the page's alert can own it.
+				unmappedIssues.set(applyApiValidationToFields(error, fields))
 				throw error
 			}
 		},
-	}).extend(withFormSubmitHandler(), withFormAutoFocusOnError())
+	})
+		.extend(withFormSubmitHandler(), withFormAutoFocusOnError())
+		.extend(() => ({
+			unmappedIssues,
+			isErrorHandled: (error: unknown): boolean =>
+				isApiValidationError(error) && unmappedIssues().length === 0,
+		}))
 }
 
 export type LoginForm = ReturnType<typeof reatomLoginForm>
