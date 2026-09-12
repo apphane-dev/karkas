@@ -101,7 +101,10 @@ type FormLike = AtomLike & {
 /** The structural slice `formAlertMessage` reads. */
 type FormWithSubmitError = {
 	validation: () => { errors: ReadonlyArray<unknown> }
-	submit: { error: () => Error | null | undefined }
+	submit: {
+		error: () => Error | null | undefined
+		ready?: () => boolean
+	}
 	submitValidationError?: () => boolean
 }
 
@@ -123,10 +126,17 @@ type FormWithSubmitError = {
  * until a submit succeeds. Callers that map a submit error elsewhere pass an
  * `isHandled` predicate so that stale request error cannot migrate into this
  * alert. Errors no field or mapper owns stay visible here.
+ *
+ * While a submission is pending the alert is suppressed: the retained error
+ * belongs to the previous attempt, and the loading state is the feedback.
  */
 export function formAlertMessage(form: FormWithSubmitError, isHandled?: (error: Error) => boolean) {
 	const error = form.submit.error()
-	if (!error || form.submitValidationError?.() || isHandled?.(error)) return null
+	// `submit.error()` is retained until a later submit fulfills, so while a
+	// re-submission is in flight the stale text would sit beside the loading
+	// state. Nothing is announced until that attempt settles.
+	if (!error || form.submit.ready?.() === false) return null
+	if (form.submitValidationError?.() || isHandled?.(error)) return null
 	return form.validation().errors.length > 0 ? null : error.message
 }
 

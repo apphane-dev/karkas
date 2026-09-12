@@ -142,6 +142,30 @@ test('form alert keeps a failure visible when no field owns it', async () => {
 	expect(formAlertMessage(form)).toBe('Request failed')
 })
 
+test('form alert hides a retained failure while a re-submission is pending', async () => {
+	let attempts = 0
+	const gates: Array<() => void> = []
+	const form = reatomTestForm(async (values) => {
+		attempts += 1
+		if (attempts === 1) throw new Error('Request failed')
+		await new Promise<void>((resolve) => gates.push(resolve))
+		return values
+	})
+
+	await form.submit().catch(() => {})
+	expect(formAlertMessage(form)).toBe('Request failed')
+
+	const retry = form.submit()
+	// The failed attempt's error is retained until the retry fulfills, but the
+	// pending attempt owns the user's attention now.
+	expect(form.submit.ready()).toBe(false)
+	expect(formAlertMessage(form)).toBeNull()
+	await flush()
+	gates[0]?.()
+	await retry
+	expect(formAlertMessage(form)).toBeNull()
+})
+
 test('a form schema blocks onSubmit and owns the visible field error', async () => {
 	let submits = 0
 	const form = reatomForm(

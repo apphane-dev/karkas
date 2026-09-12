@@ -5,7 +5,9 @@ import { getPatterns } from '../lib/patterns'
 import { getUpdates } from '../lib/updates'
 
 const latest = (await getUpdates()).slice(0, 3)
-const patterns = (await getPatterns()).slice(0, 3)
+// Newest entries first: the feed is a changelog of solved problems, not a
+// table of contents (the catalog page owns ordering).
+const patterns = (await getPatterns()).slice(-3).reverse()
 
 const fmt = (d: Date) =>
 	d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
