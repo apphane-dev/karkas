@@ -64,26 +64,38 @@ function extractValidationIssues(payload: unknown): Array<ApiValidationIssue> {
 	return Array.isArray(source) ? source.filter(isValidationIssue) : []
 }
 
+// The extractor is split so no helper's cyclomatic complexity tops the
+// fallow CRAP threshold (in CI, CRAP assumes zero coverage: comp^2 + comp).
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+	typeof value === 'object' && value !== null
+
+const validationCode = (items: unknown[]): string | null =>
+	items.length > 0 ? 'VALIDATION_ERROR' : null
+
+const stringField = (record: Record<string, unknown>, key: string): string | null =>
+	typeof record[key] === 'string' ? (record[key] as string) : null
+
+const codeFromDetail = (detail: unknown): string | null => {
+	if (typeof detail === 'string') return detail
+	if (Array.isArray(detail)) return validationCode(detail)
+	if (!isRecord(detail)) return null
+	return stringField(detail, 'code')
+}
+
+const codeFromError = (error: unknown): string | null => {
+	if (typeof error === 'string') return error
+	if (Array.isArray(error)) return validationCode(error)
+	if (!isRecord(error)) return null
+	return stringField(error, 'message')
+}
+
 function extractErrorCode(payload: unknown): string | null {
-	if (!payload || typeof payload !== 'object') return null
-	const data = payload as ErrorPayload
-	if ('detail' in data) {
-		const { detail } = data
-		if (typeof detail === 'string') return detail
-		if (Array.isArray(detail) && detail.length > 0) return 'VALIDATION_ERROR'
-		if (detail && typeof detail === 'object' && 'code' in detail) {
-			return typeof detail.code === 'string' ? detail.code : null
-		}
+	if (!isRecord(payload)) return null
+	if ('detail' in payload) {
+		const code = codeFromDetail(payload['detail'])
+		if (code !== null) return code
 	}
-	if ('error' in data) {
-		const { error } = data
-		if (typeof error === 'string') return error
-		if (error && !Array.isArray(error) && typeof error === 'object' && 'message' in error) {
-			return typeof error.message === 'string' ? error.message : null
-		}
-		if (Array.isArray(error) && error.length > 0) return 'VALIDATION_ERROR'
-	}
-	return null
+	return 'error' in payload ? codeFromError(payload['error']) : null
 }
 
 export function createApiError(response: Response, payload: unknown) {
