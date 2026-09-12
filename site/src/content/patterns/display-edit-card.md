@@ -6,17 +6,17 @@ problem: >-
   inputs where nothing states its current value, or a read-only view whose
   "Edit" swap hard-cuts to a form that loses the draft when the user sneezes.
   Every card re-solves the toggle, the cancel-vs-close semantics, the dirty
-  warning, and the submit button's prominence — and each solves them
+  warning, and the submit button's prominence. And each solves them
   differently.
 decision: >-
   One card owns the pattern. Closed, it states the saved values as labelled
   rows; a header toggle swaps the rows for the edit form inside a
-  height-animated `Reveal` whose both regions stay mounted — that is what
+  height-animated `Reveal` whose both regions stay mounted. That is what
   lets drafts survive a close. Closing over a dirty form keeps the draft on
   purpose (the toggle says "Close", not "Cancel") and a warning row offers
   the two honest exits: keep editing, or `Reset` back to the saved values.
   The form stays caller content; the submit CTA is quiet while the form is
-  clean and promotes to primary the moment a field diverges — engagement,
+  clean and promotes to primary the moment a field diverges. Engagement,
   not position, signals the primary action.
 files:
   - packages/create-karkas/template/src/shared/components/EditableCard.tsx
@@ -27,8 +27,8 @@ demo: /demo/articles
 order: 4
 ---
 
-The widget owns exactly the chrome every display/edit surface shares — the
-disclosure, the read-only rows, the dirty warning, the CTA promotion — and
+The widget owns the chrome every display/edit surface shares (the
+disclosure, the read-only rows, the dirty warning, the CTA promotion) and
 none of the domain. The form is `children`; the rows are plain data; the
 open state is either local or hoisted into a page-level atom when several
 cards should behave as an accordion.
@@ -38,7 +38,7 @@ cards should behave as an accordion.
 `EditableCard`'s contract is deliberate about the one word that usually gets
 mangled: the toggle reads **Close**, never **Cancel**. Closing does not
 discard anything. If the form is dirty, the closed card shows an
-unsaved-changes row with two actions — continue editing (reopens) or Reset
+unsaved-changes row with two actions: continue editing (reopens) or Reset
 (discards). If the form is clean, the card closes silently, because there is
 nothing to warn about.
 
@@ -55,21 +55,21 @@ pixels ease.
 clean, filled while dirty. A quiet Save invites a click on a clean form; a
 promoted Save says "your draft differs from the saved values". It stays
 actionable either way so submit-time validation can explain an incomplete
-draft — only the in-flight loading state blocks duplicate submits.
+draft. Only the in-flight loading state blocks duplicate submits.
 
 `FormReset` renders only while dirty and discards the whole draft, with an
 `onReset` escape hatch for callers that must also clear derived state.
 
 ## See it in the demo
 
-1. Open any article in the demo — the detail is an `EditableCard`: status and
+1. Open any article in the demo. The detail is an `EditableCard`: status and
    description as rows, the article body as always-visible preface.
 2. Press **Edit**: the rows swap for the form with the height animation; the
    toggle now reads **Close**.
 3. Type a new title, then press **Close** without saving: the card closes,
    a warning row states that unsaved changes are kept, and the rows still
    show the saved values.
-4. Press **Edit** again — the draft is still in the field (the form never
+4. Press **Edit** again. The draft is still in the field (the form never
    unmounted). Press **Reset**: the draft returns to the saved values and
    the warning disappears.
 5. Change the title and **Save**: the button was promoted to filled the
