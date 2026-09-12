@@ -1,20 +1,15 @@
-import { reatomField, reatomForm, urlAtom, wrap } from '@reatom/core'
-import { atom } from '@reatom/core'
+import { reatomField, reatomForm, wrap } from '@reatom/core'
 import { Fragment } from 'react'
 
-import { isAuthenticatedAtom, loginAction } from '#entities/auth'
+import { loginAction } from '#entities/auth'
 import { m } from '#paraglide/messages.js'
-import {
-	applyApiValidationToFields,
-	type ApiValidationIssue,
-	isApiValidationError,
-} from '#shared/api'
+import { applyApiValidationToFields, type ApiValidationIssue, isApiValidationError } from '#shared/api'
+
+import { atom } from '@reatom/core'
 import { withFormAutoFocusOnError, withFormSubmitHandler } from '#shared/reatom'
-import { createAppPath, rootRoute } from '#shared/router'
+import { publicExclusiveRoute } from '#shared/router'
 
 import { LoginPage } from '../ui/LoginPage'
-
-const dashboardPath = createAppPath('dashboard')
 
 export const reatomLoginForm = () => {
 	// Issues no field claims. The page suppresses its alert only when a
@@ -57,8 +52,7 @@ export const reatomLoginForm = () => {
 				throw error
 			}
 		},
-	})
-		.extend(withFormSubmitHandler(), withFormAutoFocusOnError())
+	}).extend(withFormSubmitHandler(), withFormAutoFocusOnError())
 		.extend(() => ({
 			unmappedIssues,
 			isErrorHandled: (error: unknown): boolean =>
@@ -68,14 +62,9 @@ export const reatomLoginForm = () => {
 
 export type LoginForm = ReturnType<typeof reatomLoginForm>
 
-export const loginRoute = rootRoute.reatomRoute(
+export const loginRoute = publicExclusiveRoute.reatomRoute(
 	{
 		path: 'login',
-		params: () => {
-			if (!isAuthenticatedAtom()) return {}
-			urlAtom.go(dashboardPath, true)
-			return null
-		},
 		async loader() {
 			return { loginForm: reatomLoginForm() }
 		},
