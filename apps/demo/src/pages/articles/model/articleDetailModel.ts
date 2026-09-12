@@ -25,7 +25,11 @@ export function reatomArticleDetailModel(article: Article) {
 				// rebaselines the form and its onSaved collapses back to them —
 				// seeing the new values on the rows is what confirms the save.
 				current.set(updated)
-				return updated
+				// withSavedState rebaselines through form.init, whose keys must be
+				// field names exactly: returning the full Article (with `id`) would
+				// throw `Field id not found in fields`.
+				const { id: _, ...fields } = updated
+				return fields
 			},
 		},
 	).extend(withSavedState({ onSaved: () => isEditing.set(false) }))

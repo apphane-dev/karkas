@@ -36,6 +36,9 @@ export const ArticleDetail = reatomComponent(({ model }: { model: ArticleDetailM
 		return (
 			<styled.div p="8">
 				<styled.form
+					// A form without an accessible name has no implicit `form` role,
+					// so tests and assistive tech cannot target it.
+					aria-label={m.article_detail()}
 					onSubmit={wrap((e) => {
 						e.preventDefault()
 						model.form.submit()

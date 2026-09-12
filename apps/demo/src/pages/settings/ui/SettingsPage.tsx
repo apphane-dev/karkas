@@ -102,7 +102,9 @@ type FormLike = {
 	submit: (() => Promise<unknown>) & { ready(): boolean }
 }
 
-function SaveFooter({ form, onSave }: { form: FormLike; onSave: () => void }) {
+const SaveFooter = reatomComponent(({ form, onSave }: { form: FormLike; onSave: () => void }) => {
+	// focus() is a reactive read: the component must render inside a Reatom
+	// frame, hence reatomComponent rather than a plain function component.
 	if (!form.focus().dirty) return null
 	return (
 		<Button
@@ -114,7 +116,7 @@ function SaveFooter({ form, onSave }: { form: FormLike; onSave: () => void }) {
 			{m.settings_save_changes()}
 		</Button>
 	)
-}
+})
 
 export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageModel }) => {
 	const { profileForm, notificationsForm, appearanceForm } = model
