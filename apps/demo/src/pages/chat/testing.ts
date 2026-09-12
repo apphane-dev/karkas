@@ -90,7 +90,9 @@ export const chatActor = createActor()
 				await I.clear((canvas) => canvas.getByPlaceholderText(m.chat_search_placeholder()))
 			},
 			seeConversationInList: async (name: string | RegExp) => {
-				await I.see(link(name))
+				// The filter rides a URL-bound search atom, so the refiltered list
+				// lands a tick after the fill — wait for it instead of racing it.
+				await I.retryTo(() => I.see(link(name)), 25)
 			},
 			dontSeeConversationInList: async (name: string | RegExp) => {
 				await I.dontSee(link(name))

@@ -92,8 +92,7 @@ EditProfileShowsSave.test('save button disappears after saving', async () => {
 	await I.fill(role('textbox', 'Display name'), 'Jane Doe')
 	await I.see(button('Save changes'))
 	await I.saveProfile()
-	await I.seeProfileSavedToast()
-	await I.dontSee(button('Save changes'))
+	await I.savedProfileClearsDirty(loc.profileForm)
 })
 
 export const ToggleSwitches = meta.story({ name: 'Toggle Switches', play: waitForLoad })
@@ -246,12 +245,11 @@ RetrySuccess.test('loads settings after retry succeeds', async () => {
 
 export const SaveProfileSuccess = meta.story({ name: 'Save Profile', play: waitForLoad })
 
-SaveProfileSuccess.test('saving profile shows success toast and clears dirty', async () => {
+SaveProfileSuccess.test('saving profile clears dirty and keeps the saved values', async () => {
 	await I.fill(role('textbox', 'Display name'), 'Jane Doe')
 	await I.see(button('Save changes'))
 	await I.saveProfile()
-	await I.seeProfileSavedToast()
-	await I.dontSee(button('Save changes'))
+	await I.savedProfileClearsDirty(loc.profileForm)
 	await I.seeInField(role('textbox', 'Display name'), 'Jane Doe')
 })
 
@@ -260,16 +258,12 @@ export const SaveNotificationsSuccess = meta.story({
 	play: waitForLoad,
 })
 
-SaveNotificationsSuccess.test(
-	'saving notifications shows success toast and clears dirty',
-	async () => {
-		await I.selectOption(role('combobox', 'Email notifications'), 'Important only')
-		await I.see(button('Save changes'))
-		await I.saveNotifications()
-		await I.seeNotificationsSavedToast()
-		await I.dontSee(button('Save changes'))
-	},
-)
+SaveNotificationsSuccess.test('saving notifications clears dirty', async () => {
+	await I.selectOption(role('combobox', 'Email notifications'), 'Important only')
+	await I.see(button('Save changes'))
+	await I.saveNotifications()
+	await I.savedProfileClearsDirty(loc.notificationsForm)
+})
 
 export const SaveProfileError = meta.story({
 	name: 'Save Profile Error',
@@ -280,9 +274,9 @@ export const SaveProfileError = meta.story({
 	},
 })
 
-SaveProfileError.test('save server error shows error toast and keeps dirty', async () => {
+SaveProfileError.test('save server error shows an inline alert and keeps dirty', async () => {
 	await I.fill(role('textbox', 'Display name'), 'Jane Doe')
 	await I.saveProfile()
-	await I.seeSaveErrorToast()
+	await I.seeSaveError(loc.profileForm)
 	await I.see(button('Save changes'))
 })
