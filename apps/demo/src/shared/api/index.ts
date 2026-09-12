@@ -13,7 +13,6 @@ export {
 	createApiError,
 	isApiError,
 	isApiValidationError,
-	// fallow-ignore-next-line unused-type
 	type ApiValidationIssue,
 } from './errors'
 export { applyApiValidationToFields } from './validation'
