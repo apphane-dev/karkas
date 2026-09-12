@@ -20,7 +20,7 @@ const ARTICLE_LINKS = [
 ] as const
 
 const editLoc = {
-	editForm: role('form'),
+	editForm: role('form', m.article_detail()),
 	editButton: button('Edit'),
 	saveButton: button('Save'),
 	cancelButton: button('Cancel'),
