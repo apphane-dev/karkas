@@ -34,6 +34,19 @@ export default defineConfig({
 	// Files to exclude
 	exclude: [],
 
+	// Ark wrappers (shared/components/ui/*.tsx via createStyleContext) apply
+	// slot-recipe variant classes at runtime; props forwarded through a spread
+	// ({...props} into <Select.Root> in CollectionSelect) are invisible to the
+	// static extractor, so classes like `.select__trigger--size_sm` end up on
+	// the element while their CSS is only generated for the default variant.
+	// Force-emit the full select recipe — every slot at every size/variant —
+	// so the wrapper works regardless of which size a caller passes through it.
+	staticCss: {
+		recipes: {
+			select: ['*'],
+		},
+	},
+
 	// Useful for theme customization
 	theme: {
 		extend: {
@@ -86,6 +99,13 @@ export default defineConfig({
 						value: {
 							_light: '{colors.red.9}',
 							_dark: '{colors.red.9}',
+						},
+					},
+
+					surface: {
+						value: {
+							_light: '{colors.white}',
+							_dark: '{colors.gray.3}',
 						},
 					},
 

@@ -1,5 +1,7 @@
 import { assert, assign, noop } from '@reatom/core'
-import { HttpResponse, type HttpResponseResolver } from 'msw'
+import { delay, HttpResponse, type HttpResponseResolver } from 'msw'
+
+import { readPersistedFeatureToggles } from '#shared/model'
 
 function createHttpErrorClass(status: number, name: string) {
 	return class extends Error {
@@ -48,4 +50,18 @@ export function withRetrySuccess<TResolver extends HttpResponseResolver>(
 
 export async function neverResolve(): Promise<never> {
 	return new Promise(noop)
+}
+
+/**
+ * Handler latency gated by the `slow-mocks` feature toggle. Under vitest the
+ * toggle is bypassed so stories and unit tests keep their deterministic,
+ * 'real'-length delay.
+ */
+export async function mockDelay() {
+	if (
+		(globalThis as Record<string, unknown>)['__vitest_worker__'] ||
+		readPersistedFeatureToggles().includes('slow-mocks')
+	) {
+		await delay('real')
+	}
 }

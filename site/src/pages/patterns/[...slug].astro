@@ -212,6 +212,30 @@ const repo = 'https://github.com/apphane-dev/karkas/blob/main'
 		border-radius: 2px;
 		padding: 0.08rem 0.34rem;
 	}
+	.prose :global(pre) {
+		/* Shiki inlines its own background on .astro-code; keep the site panel. */
+		background-color: var(--panel-2) !important;
+		/* And the site's ink for plain text. A stale dev server or a mis-set
+		   theme otherwise serves dark-theme token colors (near-white plain
+		   text) that vanish on this light panel; colored spans keep their
+		   inline colors. */
+		color: var(--ink) !important;
+		border: 1px solid var(--line-strong);
+		border-radius: var(--radius);
+		padding: 1rem 1.1rem;
+		overflow-x: auto;
+		font-family: var(--mono);
+		font-size: 0.86rem;
+		line-height: 1.6;
+		margin: 0 0 1.5rem;
+	}
+	.prose :global(pre code) {
+		background: none;
+		border: 0;
+		border-radius: 0;
+		padding: 0;
+		font-size: inherit;
+	}
 	.prose :global(a) {
 		color: var(--steel-deep);
 		text-decoration: underline;

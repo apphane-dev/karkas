@@ -3,7 +3,7 @@ import { App } from '#app/App'
 import { SETTINGS_API_PATH } from '#entities/setting/api/settingsApi'
 import { settingsFetch, settingsProfile } from '#entities/setting/mocks/handlers'
 import { settingsActor as I, settingsLoc as loc } from '#pages/settings/testing'
-import { button, link, role, text } from '#shared/test'
+import { button, heading, link, role, text } from '#shared/test'
 import {
 	createRouteFetchAbortProbe,
 	expectRouteFetchAbortOnNavigation,
@@ -279,4 +279,25 @@ SaveProfileError.test('save server error shows an inline alert and keeps dirty',
 	await I.saveProfile()
 	await I.seeSaveError(loc.profileForm)
 	await I.see(button('Save changes'))
+})
+
+// Org-scope regression (INT-566 port): settings hangs off the org guard, so
+// switching organizations from this deep URL must land on the app root once
+// the guard settles — never the previous org's settings.
+export const SwitchOrganizationFromDeepUrl = meta.story({
+	name: 'Switch Organization From Deep URL',
+	play: waitForLoad,
+})
+
+SwitchOrganizationFromDeepUrl.test('collapses to the app root on org switch', async () => {
+	await I.see(loc.heading)
+
+	// The switcher trigger's accessible name carries the active org name.
+	await I.click(role('button', /Acme Trading/).wait())
+	await I.click(role('menuitem', /Northwind Logistics/).wait())
+
+	// The collapse lands on the dashboard root; the old org's settings are
+	// gone from the screen and the route tree.
+	await heading('Dashboard').wait()
+	await I.dontSee(loc.heading)
 })

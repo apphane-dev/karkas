@@ -22,5 +22,11 @@
 	"list_filters": "Filters",
 	"topbar_search_placeholder": "Search...",
 	"topbar_toggle_theme_label": "Toggle theme",
-	"reatomloc_tree_shake_canary": "reatomLoc tree-shake canary — must not appear in bundle"
+	"reatomloc_tree_shake_canary": "reatomLoc tree-shake canary — must not appear in bundle",
+	"toggles_title": "Feature toggles",
+	"form_unsaved_changes": "You have unsaved changes",
+	"form_unsaved_continue": "Keep editing",
+	"form_reset_changes": "Reset",
+	"form_saving": "Saving…",
+	"org_switcher_orgs": "Organizations"
 }

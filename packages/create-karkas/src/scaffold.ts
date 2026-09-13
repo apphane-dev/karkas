@@ -67,6 +67,10 @@ export async function scaffoldProject(options: ScaffoldOptions): Promise<Scaffol
 	await copyTemplateDirectory(templateDirectory, targetDirectory, {
 		'{{project-name}}': packageName,
 		'{{project-title}}': projectTitle(packageName),
+		// Message catalogs use the bracket form: `{{...}}` inside a message is
+		// ICU syntax, so paraglide compiles it into a required-parameter function
+		// and the template repo's own build no longer typechecks.
+		'[project-title]': projectTitle(packageName),
 	})
 
 	const gitInitialized = options.initializeGit ? initializeGitRepository(targetDirectory) : false

@@ -5,7 +5,8 @@ import { reatomComponent } from '@reatom/react'
 import { Plus } from 'lucide-react'
 
 import { m } from '#paraglide/messages.js'
-import { IconButton } from '#shared/components'
+import { Badge, IconButton } from '#shared/components'
+import { featureTogglesAtom } from '#shared/model'
 import { styled } from '#styled-system/jsx'
 import { ListToolbar } from '#widgets/data-page'
 
@@ -26,9 +27,15 @@ export const ArticleList = reatomComponent(({ articles, selectedId }: Props) => 
 					article.description.toLowerCase().includes(query),
 			)
 		: articles
+	const showBetaBadge = featureTogglesAtom.isEnabled('show-beta-badge')()
 
 	return (
 		<>
+			{showBetaBadge && (
+				<styled.div px="3" pt="3">
+					<Badge colorPalette="orange">beta</Badge>
+				</styled.div>
+			)}
 			<ListToolbar
 				placeholder={m.article_search_placeholder()}
 				searchValue={searchQueryAtom()}
