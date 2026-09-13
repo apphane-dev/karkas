@@ -1,5 +1,22 @@
 import { abortVar } from '@reatom/core'
 
+import { createApiError } from './errors'
+
+export {
+	// fallow-ignore-next-line unused-export
+	ApiAuthError,
+	// fallow-ignore-next-line unused-export
+	ApiError,
+	// fallow-ignore-next-line unused-export
+	ApiValidationError,
+	// fallow-ignore-next-line unused-export
+	createApiError,
+	isApiError,
+	isApiValidationError,
+	type ApiValidationIssue,
+} from './errors'
+export { applyApiValidationToFields } from './validation'
+
 const API_PREFIX = '/api'
 
 export function composeApiUrl(path = '') {
@@ -8,22 +25,6 @@ export function composeApiUrl(path = '') {
 	}
 	const normalized = path.startsWith('/') ? path : `/${path}`
 	return `${API_PREFIX}${normalized}`
-}
-
-class ApiError extends Error {
-	readonly status: number
-	readonly payload: unknown
-
-	constructor(status: number, payload: unknown) {
-		super(`API request failed with status ${status}`)
-		this.name = 'ApiError'
-		this.status = status
-		this.payload = payload
-	}
-}
-
-export function isApiError(error: unknown): error is ApiError {
-	return error instanceof ApiError
 }
 
 type RequestOptions = Omit<RequestInit, 'body'> & {
@@ -71,7 +72,7 @@ async function request<TResponse>(path: string, options: RequestOptions = {}) {
 
 	const payload = await parseResponsePayload(response)
 	if (!response.ok) {
-		throw new ApiError(response.status, payload)
+		throw createApiError(response, payload)
 	}
 
 	return payload as TResponse

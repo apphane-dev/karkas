@@ -174,7 +174,7 @@ EditArticle.test('saving updates the title and returns to read mode', async () =
 		await I.openEdit()
 		await I.fill(role('textbox', 'Title'), 'Updated quarterly report')
 		await I.saveArticle()
-		await I.seeArticleSavedToast()
+		await I.seeArticleSaved()
 		await I.see(button('Edit'))
 		await I.see(heading('Updated quarterly report'))
 	})
@@ -185,11 +185,9 @@ EditArticle.test('changing status persists and reflects on return', async () => 
 		await I.openEdit()
 		await I.selectOption(role('combobox'), 'In Progress')
 		await I.saveArticle()
-		await I.seeArticleSavedToast()
-		// A prior save test in this story leaves a stale "Article saved" toast
-		// in the global toaster, so `seeArticleSavedToast` can resolve against it
-		// before this save transitions to read mode. Wait for the real transition.
-		await I.retryTo(() => I.see(button('Edit')), 25)
+		// The edit panel collapsing to the summary rows is what confirms the
+		// save — there is no toast to observe.
+		await I.seeArticleSaved()
 		await I.seeArticleDetailStatus('In Progress')
 	})
 })
@@ -204,13 +202,13 @@ export const EditArticleServerError = meta.story({
 })
 
 EditArticleServerError.test(
-	'save failure shows an error toast and stays in edit mode',
+	'save failure shows an inline alert and stays in edit mode',
 	async () => {
 		await I.scope(role('main'), async () => {
 			await I.openEdit()
 			await I.fill(role('textbox', 'Title'), 'Will not save')
 			await I.saveArticle()
-			await I.seeArticleSaveErrorToast()
+			await I.seeArticleSaveError()
 			await I.see(role('textbox', 'Title'))
 		})
 	},

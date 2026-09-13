@@ -1,38 +1,9 @@
 import type { Article } from '#entities/article'
 
-import {
-	abortVar,
-	action,
-	atom,
-	framePromise,
-	reatomForm,
-	sleep,
-	withAbort,
-	withAsync,
-	wrap,
-} from '@reatom/core'
+import { abortVar, action, atom, reatomForm, wrap } from '@reatom/core'
 
 import { updateArticle } from '#entities/article'
-import { m } from '#paraglide/messages.js'
-import { toaster } from '#shared/components'
-
-const SAVE_DELAY_MS = 300
-
-async function saveWithToast(articleId: string, values: Omit<Article, 'id'>) {
-	const id = toaster.create({ title: m.article_saving(), type: 'loading', closable: false })
-	void framePromise().catch(() => {})
-	try {
-		const updated = await wrap(
-			updateArticle(articleId, values, { signal: abortVar.require().signal }),
-		)
-		await wrap(sleep(SAVE_DELAY_MS))
-		toaster.update(id, { title: m.article_saved(), type: 'success' })
-		return updated
-	} catch (error) {
-		toaster.remove(id)
-		throw error
-	}
-}
+import { withSavedState } from '#shared/reatom'
 
 export function reatomArticleDetailModel(article: Article) {
 	const id = article.id
@@ -48,9 +19,20 @@ export function reatomArticleDetailModel(article: Article) {
 		},
 		{
 			name: `article.${id}.editForm`,
-			onSubmit: async (values) => await wrap(saveWithToast(id, values)),
+			onSubmit: async (values) => {
+				const updated = await wrap(updateArticle(id, values, { signal: abortVar.require().signal }))
+				// The summary rows move when the request lands; withSavedState then
+				// rebaselines the form and its onSaved collapses back to them —
+				// seeing the new values on the rows is what confirms the save.
+				current.set(updated)
+				// withSavedState rebaselines through form.init, whose keys must be
+				// field names exactly: returning the full Article (with `id`) would
+				// throw `Field id not found in fields`.
+				const { id: _, ...fields } = updated
+				return fields
+			},
 		},
-	)
+	).extend(withSavedState({ onSaved: () => isEditing.set(false) }))
 
 	const startEdit = action(() => {
 		form.init({
@@ -62,24 +44,7 @@ export function reatomArticleDetailModel(article: Article) {
 		isEditing.set(true)
 	}, `article.${id}.startEdit`)
 
-	const save = action(async () => {
-		if (!form.focus().dirty) return
-		try {
-			const updated = await wrap(form.submit())
-			current.set(updated)
-			form.init({
-				title: updated.title,
-				description: updated.description,
-				status: updated.status,
-				content: updated.content,
-			})
-			isEditing.set(false)
-		} catch {
-			toaster.create({ title: m.article_save_error(), type: 'error' })
-		}
-	}, `article.${id}.save`).extend(withAbort(), withAsync())
-
-	return { id, current, isEditing, form, startEdit, save }
+	return { id, current, isEditing, form, startEdit }
 }
 
 export type ArticleDetailModel = ReturnType<typeof reatomArticleDetailModel>

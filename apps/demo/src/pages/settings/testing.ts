@@ -5,7 +5,6 @@ import {
 	createActor,
 	heading,
 	role,
-	text,
 	withPageError,
 	withRetryAndLoading,
 } from '#shared/test'
@@ -40,13 +39,8 @@ export const settingsActor = createActor()
 			I.scope(section, async () => {
 				await I.click(settingsLoc.saveButton)
 			})
-		const seeSavedToast = async (title: string) => {
-			// The "Saving…" loading toast is transient and the global toaster is
-			// shared across stories, so observe it best-effort, then firmly wait
-			// for the persistent success toast.
-			await I.tryTo(() => I.retryTo(() => I.see(role('status', 'Saving…').within('global')), 5))
-			await I.retryTo(() => I.see(role('status', title).within('global')), 25)
-		}
+		const seeSaveError = (section: typeof settingsLoc.profileForm) =>
+			I.retryTo(() => I.see(role('alert').within(section)), 25)
 
 		return {
 			seeSettingsContent: async () => {
@@ -57,10 +51,17 @@ export const settingsActor = createActor()
 			},
 			saveProfile: async () => saveSection(settingsLoc.profileForm),
 			saveNotifications: async () => saveSection(settingsLoc.notificationsForm),
-			seeProfileSavedToast: async () => seeSavedToast('Profile saved'),
-			seeNotificationsSavedToast: async () => seeSavedToast('Notification preferences saved'),
-			seeSaveErrorToast: async () => {
-				await I.retryTo(() => I.see(text("Couldn't save. Try again.").within('global')), 25)
+			// A save is confirmed by the state change itself: the save affordance
+			// disappears because the form reads clean — there is no toast.
+			savedProfileClearsDirty: async (section: typeof settingsLoc.profileForm) => {
+				await I.retryTo(
+					() =>
+						I.scope(section, async () => {
+							await I.dontSee(settingsLoc.saveButton)
+						}),
+					25,
+				)
 			},
+			seeSaveError,
 		}
 	})
