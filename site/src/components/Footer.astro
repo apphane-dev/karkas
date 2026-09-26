@@ -5,6 +5,8 @@ const cols = [
 		links: [
 			{ label: 'Demo app', href: '/demo/' },
 			{ label: 'Storybook', href: '/storybook/' },
+			// Dev-only until the patterns catalog ships (see lib/patterns.ts).
+			...(import.meta.env.DEV ? [{ label: 'Patterns', href: '/patterns' }] : []),
 			{ label: 'Updates', href: '/updates' },
 		],
 	},

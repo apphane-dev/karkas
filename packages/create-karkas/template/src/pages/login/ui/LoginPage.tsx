@@ -5,11 +5,31 @@ import { bindField, reatomComponent } from '@reatom/react'
 
 import { m } from '#paraglide/messages.js'
 import { Alert, Button, Field, Heading, Input, Text } from '#shared/components'
+import { formAlertMessage, visibleFieldError } from '#shared/reatom'
 import { styled } from '#styled-system/jsx'
 
 export const LoginPage = reatomComponent(({ form }: { form: LoginForm }) => {
 	const { fields, submit } = form
-	const error = submit.error()
+	// `formAlertMessage`, not `submit.error()` directly: it stays null while a
+	// field-level validation owns the failure, so the alert never repeats a
+	// message already printed under a field. The copy here is deliberately
+	// canned — ApiError.message is a status string, not user-facing text.
+	// `isErrorHandled` from the model as the handled-predicate: it accepts a
+	// validation error only when every issue was mapped onto a field, so the
+	// alert must not re-announce those — a mapped error outlives the field
+	// errors it produced. Unmapped or mixed responses keep the alert.
+	const showErrorAlert = formAlertMessage(form, form.isErrorHandled) !== null
+	// Unlike ApiError.message, a 422 issue's `msg` is written for the user, so
+	// issues no field shows replace the canned description.
+	const unmappedMessages = form.unmappedIssues().map((issue) => issue.msg)
+	// `visibleFieldError`, not bindField's `error`: with `keepErrorOnChange:
+	// false` the last issue lingers in Reatom without its `triggered` flag, and
+	// reading that raw error would leave stale copy under the field while the
+	// user fixes the value.
+	const { error: _emailError, ...emailBind } = bindField(fields.email)
+	const { error: _passwordError, ...passwordBind } = bindField(fields.password)
+	const emailError = visibleFieldError(fields.email)
+	const passwordError = visibleFieldError(fields.password)
 	const pending = !submit.ready()
 
 	return (
@@ -25,34 +45,54 @@ export const LoginPage = reatomComponent(({ form }: { form: LoginForm }) => {
 				display="flex"
 				flexDirection="column"
 				gap="5"
-				onSubmit={wrap((event) => {
-					event.preventDefault()
-					submit()
-				})}
+				// Native constraint validation (`required`, `type="email"`) would block
+				// the submit event before Reatom validation renders its field errors.
+				noValidate
+				onSubmit={wrap(form.handleSubmit)}
 			>
 				<styled.div display="flex" flexDirection="column" gap="1">
 					<Heading fontSize="2xl">{m.login_title()}</Heading>
 					<Text color="muted">{m.login_description()}</Text>
 				</styled.div>
 
-				{error && (
+				{showErrorAlert && (
 					<Alert.Root status="error" role="alert">
 						<Alert.Indicator />
 						<Alert.Content>
 							<Alert.Title>{m.login_error_title()}</Alert.Title>
-							<Alert.Description>{m.login_error_description()}</Alert.Description>
+							<Alert.Description>
+								{unmappedMessages.length > 0
+									? unmappedMessages.join(' ')
+									: m.login_error_description()}
+							</Alert.Description>
 						</Alert.Content>
 					</Alert.Root>
 				)}
 
-				<Field.Root required>
+				<Field.Root required invalid={Boolean(emailError)}>
 					<Field.Label>{m.login_email()}</Field.Label>
-					<Input type="email" autoComplete="email" {...bindField(fields.email)} />
+					<Input
+						ref={wrap((element) => {
+							fields.email.elementRef.set(element ?? undefined)
+						})}
+						type="email"
+						autoComplete="email"
+						{...emailBind}
+					/>
+					{emailError && <Field.ErrorText>{emailError}</Field.ErrorText>}
 				</Field.Root>
 
-				<Field.Root required>
+				<Field.Root required invalid={Boolean(passwordError)}>
 					<Field.Label>{m.login_password()}</Field.Label>
-					<Input type="password" autoComplete="current-password" {...bindField(fields.password)} />
+					<Input
+						ref={wrap((element) => {
+							fields.password.elementRef.set(element ?? undefined)
+						})}
+						type="password"
+						autoComplete="current-password"
+						{...passwordBind}
+					/>
+					{passwordError && <Field.ErrorText>{passwordError}</Field.ErrorText>}
 				</Field.Root>
 
 				<Button type="submit" loading={pending} loadingText={m.login_signing_in()}>

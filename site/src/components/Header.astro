@@ -5,6 +5,8 @@ const nav = [
 	{ label: 'Stack', href: '/#stack' },
 	{ label: 'Testing', href: '/#testing' },
 	{ label: 'Workflow', href: '/#workflow' },
+	// The patterns catalog is dev-only until it ships (see lib/patterns.ts).
+	...(import.meta.env.DEV ? [{ label: 'Patterns', href: '/patterns' }] : []),
 	{ label: 'Updates', href: '/updates' },
 ]
 ---

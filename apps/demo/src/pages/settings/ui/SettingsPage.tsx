@@ -10,7 +10,7 @@ import { wrap } from '@reatom/core'
 import { bindField, reatomComponent } from '@reatom/react'
 
 import { m } from '#paraglide/messages.js'
-import { Button, CollectionSelect, Input, Switch, VisuallyHidden } from '#shared/components'
+import { Alert, Button, CollectionSelect, Input, Switch, VisuallyHidden } from '#shared/components'
 import {
 	localeAtom,
 	reatomLoc,
@@ -19,6 +19,7 @@ import {
 	showThemeSwitcherInTopBarAtom,
 	themePreferenceAtom,
 } from '#shared/model'
+import { formAlertMessage } from '#shared/reatom'
 import { css } from '#styled-system/css'
 import { styled } from '#styled-system/jsx'
 
@@ -93,8 +94,36 @@ const languageCollection = reatomLoc(
 	'settings.languageCollection',
 )
 
+// The two form sections share the "show Save only while dirty" footer; a
+// component keeps SettingsPage's cyclomatic complexity under the fallow
+// CRAP gate (comp^2 + comp with no coverage data in CI).
+type FormLike = {
+	focus(): { dirty: boolean }
+	submit: (() => Promise<unknown>) & { ready(): boolean }
+}
+
+const SaveFooter = reatomComponent(({ form, onSave }: { form: FormLike; onSave: () => void }) => {
+	// focus() is a reactive read: the component must render inside a Reatom
+	// frame, hence reatomComponent rather than a plain function component.
+	if (!form.focus().dirty) return null
+	return (
+		<Button
+			size="sm"
+			loading={!form.submit.ready()}
+			loadingText={m.settings_saving()}
+			onClick={onSave}
+		>
+			{m.settings_save_changes()}
+		</Button>
+	)
+})
+
 export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageModel }) => {
-	const { profileForm, saveProfile, notificationsForm, saveNotifications, appearanceForm } = model
+	const { profileForm, notificationsForm, appearanceForm } = model
+	// Save failures are network-level — no field owns them — so the alert
+	// carries the whole failure and the fields stay untouched.
+	const showProfileError = formAlertMessage(profileForm) !== null
+	const showNotificationsError = formAlertMessage(notificationsForm) !== null
 
 	return (
 		<styled.div p="8" maxW="800px">
@@ -102,19 +131,16 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 
 			<Section
 				title={m.settings_profile()}
-				footer={
-					profileForm.focus().dirty ? (
-						<Button
-							size="sm"
-							loading={!saveProfile.ready()}
-							loadingText={m.settings_saving()}
-							onClick={wrap(() => saveProfile())}
-						>
-							{m.settings_save_changes()}
-						</Button>
-					) : null
-				}
+				footer={<SaveFooter form={profileForm} onSave={wrap(() => profileForm.submit())} />}
 			>
+				{showProfileError && (
+					<Alert.Root status="error" role="alert" mb="4">
+						<Alert.Indicator />
+						<Alert.Content>
+							<Alert.Title>{m.settings_save_error()}</Alert.Title>
+						</Alert.Content>
+					</Alert.Root>
+				)}
 				<FieldRow label={m.settings_display_name()} description={m.settings_display_name_desc()}>
 					<Input {...bindField(profileForm.fields.displayName)} size="sm" />
 				</FieldRow>
@@ -131,18 +157,17 @@ export const SettingsPage = reatomComponent(({ model }: { model: SettingsPageMod
 			<Section
 				title={m.settings_notifications()}
 				footer={
-					notificationsForm.focus().dirty ? (
-						<Button
-							size="sm"
-							loading={!saveNotifications.ready()}
-							loadingText={m.settings_saving()}
-							onClick={wrap(() => saveNotifications())}
-						>
-							{m.settings_save_changes()}
-						</Button>
-					) : null
+					<SaveFooter form={notificationsForm} onSave={wrap(() => notificationsForm.submit())} />
 				}
 			>
+				{showNotificationsError && (
+					<Alert.Root status="error" role="alert" mb="4">
+						<Alert.Indicator />
+						<Alert.Content>
+							<Alert.Title>{m.settings_save_error()}</Alert.Title>
+						</Alert.Content>
+					</Alert.Root>
+				)}
 				<FieldRow
 					label={m.settings_email_notifications()}
 					description={m.settings_email_notifications_desc()}

@@ -20,6 +20,7 @@ const ARTICLE_LINKS = [
 ] as const
 
 const editLoc = {
+	editForm: role('form', m.article_detail()),
 	editButton: button('Edit'),
 	saveButton: button('Save'),
 	cancelButton: button('Cancel'),
@@ -130,17 +131,13 @@ export const articlesActor = createActor()
 		saveArticle: async () => {
 			await I.click(editLoc.saveButton)
 		},
-		seeArticleSavedToast: async () => {
-			// Require the current save's loading toast before accepting success, so a
-			// stale global success toast from another story/test cannot satisfy this helper.
-			await I.retryTo(() => I.see(role('status', 'Saving…').within('global')), 25)
-			await I.retryTo(() => I.see(role('status', 'Article saved').within('global')), 25)
+		// A save is confirmed by the state change itself: the edit panel collapses
+		// to the summary rows, which now state the saved values — there is no toast.
+		seeArticleSaved: async () => {
+			await I.retryTo(() => I.see(editLoc.editButton), 25)
 		},
-		seeArticleSaveErrorToast: async () => {
-			await I.retryTo(
-				() => I.see(text("Couldn't save the article. Try again.").within('global')),
-				25,
-			)
+		seeArticleSaveError: async () => {
+			await I.retryTo(() => I.see(role('alert').within(editLoc.editForm)), 25)
 		},
 		seeTitleIs: async (value: string) => {
 			await I.retryTo(() => I.seeInField(editLoc.titleField, value), 25)
