@@ -53,3 +53,18 @@ test('a mixed 422 keeps the unmapped leftover and is not handled', async () => {
 	expect(form.unmappedIssues()).toHaveLength(1)
 	expect(form.isErrorHandled({ name: 'TypeError', message: 'network down' })).toBe(false)
 })
+
+// Validation accepts outer whitespace; the server compares the email verbatim.
+test('the submitted email is trimmed', async () => {
+	const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) =>
+		json422([{ loc: ['record'], msg: 'stop here' }]),
+	)
+	vi.stubGlobal('fetch', fetchMock)
+	const form = reatomLoginForm()
+	form.fields.email.change('  alex@example.com  ')
+	await form.submit().catch(() => {})
+
+	const [input, init] = fetchMock.mock.calls[0] ?? []
+	const body = init?.body ?? (input instanceof Request ? await input.text() : undefined)
+	expect(JSON.parse(String(body))).toMatchObject({ email: 'alex@example.com' })
+})

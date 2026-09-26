@@ -42,6 +42,9 @@ export const LoginPage = reatomComponent(({ form }: { form: LoginForm }) => {
 				display="flex"
 				flexDirection="column"
 				gap="5"
+				// Native constraint validation (`required`, `type="email"`) would block
+				// the submit event before Reatom validation renders its field errors.
+				noValidate
 				onSubmit={wrap(form.handleSubmit)}
 			>
 				<styled.div display="flex" flexDirection="column" gap="1">

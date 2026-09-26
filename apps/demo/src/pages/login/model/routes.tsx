@@ -49,7 +49,8 @@ export const reatomLoginForm = () => {
 		keepErrorOnChange: false,
 		onSubmit: async (values) => {
 			try {
-				return await wrap(loginAction(values))
+				// Validation trims the email; the server compares it verbatim.
+				return await wrap(loginAction({ ...values, email: values.email.trim() }))
 			} catch (error) {
 				// Server validation issues surface under their fields; whatever no
 				// field claims is kept here so the page's alert can own it.
