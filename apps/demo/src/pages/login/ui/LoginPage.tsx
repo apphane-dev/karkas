@@ -19,6 +19,9 @@ export const LoginPage = reatomComponent(({ form }: { form: LoginForm }) => {
 	// alert must not re-announce those — a mapped error outlives the field
 	// errors it produced. Unmapped or mixed responses keep the alert.
 	const showErrorAlert = formAlertMessage(form, form.isErrorHandled) !== null
+	// Unlike ApiError.message, a 422 issue's `msg` is written for the user, so
+	// issues no field shows replace the canned description.
+	const unmappedMessages = form.unmappedIssues().map((issue) => issue.msg)
 	// `visibleFieldError`, not bindField's `error`: with `keepErrorOnChange:
 	// false` the last issue lingers in Reatom without its `triggered` flag, and
 	// reading that raw error would leave stale copy under the field while the
@@ -57,7 +60,11 @@ export const LoginPage = reatomComponent(({ form }: { form: LoginForm }) => {
 						<Alert.Indicator />
 						<Alert.Content>
 							<Alert.Title>{m.login_error_title()}</Alert.Title>
-							<Alert.Description>{m.login_error_description()}</Alert.Description>
+							<Alert.Description>
+								{unmappedMessages.length > 0
+									? unmappedMessages.join(' ')
+									: m.login_error_description()}
+							</Alert.Description>
 						</Alert.Content>
 					</Alert.Root>
 				)}
