@@ -89,13 +89,14 @@ export const chatActor = createActor()
 			clearSearch: async () => {
 				await I.clear((canvas) => canvas.getByPlaceholderText(m.chat_search_placeholder()))
 			},
+			// The filter rides a URL-bound search atom, so the refiltered list lands
+			// a tick after the fill. Both checks retry: matches are already in the
+			// unfiltered list, so only the absence check observes the filter landing.
 			seeConversationInList: async (name: string | RegExp) => {
-				// The filter rides a URL-bound search atom, so the refiltered list
-				// lands a tick after the fill — wait for it instead of racing it.
 				await I.retryTo(() => I.see(link(name)), 25)
 			},
 			dontSeeConversationInList: async (name: string | RegExp) => {
-				await I.dontSee(link(name))
+				await I.retryTo(() => I.dontSee(link(name)), 25)
 			},
 		}
 	})
