@@ -32,7 +32,15 @@ export function reatomArticleDetailModel(article: Article) {
 				return fields
 			},
 		},
-	).extend(withSavedState({ onSaved: () => isEditing.set(false) }))
+	).extend((target) =>
+		withSavedState({
+			// An edit typed while the request was in flight keeps the form dirty;
+			// collapsing would hide it behind rows showing the saved values.
+			onSaved: () => {
+				if (!target.focus().dirty) isEditing.set(false)
+			},
+		})(target),
+	)
 
 	const startEdit = action(() => {
 		form.init({
