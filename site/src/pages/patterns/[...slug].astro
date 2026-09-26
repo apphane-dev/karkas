@@ -1,7 +1,7 @@
 ---
 import { render } from 'astro:content'
 import Base from '../../layouts/Base.astro'
-import { getPatterns } from '../../lib/patterns'
+import { getPatterns, inlineCode, plainText } from '../../lib/patterns'
 
 export async function getStaticPaths() {
 	const patterns = await getPatterns()
@@ -17,7 +17,7 @@ const { Content } = await render(entry)
 const repo = 'https://github.com/apphane-dev/karkas/blob/main'
 ---
 
-<Base title={`${entry.data.title} — Karkas patterns`} description={entry.data.problem}>
+<Base title={`${entry.data.title} — Karkas patterns`} description={plainText(entry.data.problem)}>
 	<article class="section-pad">
 		<div class="wrap post">
 			<a class="tlink back" href="/patterns">← All patterns</a>
@@ -28,8 +28,8 @@ const repo = 'https://github.com/apphane-dev/karkas/blob/main'
 				</div>
 
 				<h1>{entry.data.title}</h1>
-				<p class="post-problem">{entry.data.problem}</p>
-				<p class="post-decision">{entry.data.decision}</p>
+				<p class="post-problem" set:html={inlineCode(entry.data.problem)} />
+				<p class="post-decision" set:html={inlineCode(entry.data.decision)} />
 
 				<hr class="rule" />
 

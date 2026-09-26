@@ -2,118 +2,110 @@
 title: Form save semantics
 tag: forms
 problem: >-
-  A form that just saved still claims there is work left: the submit button stays
-  primed, the unsaved-changes warning stays up, and an edit typed while the
-  request was in flight gets adopted as "saved" even though it never reached the
-  server. Naive post-save handling — reset the form, or reset and re-set the
-  values — produces exactly these lies.
+  A form that just saved still claims there is work left. The submit button
+  stays primed, the unsaved-changes warning stays up, and an edit typed while
+  the request was in flight counts as saved even though the server never got
+  it. Resetting the form after a save, or resetting and re-setting its values,
+  causes all three.
 decision: >-
-  What `onSubmit` returns decides the post-save state: a returned payload
-  rebaselines the form (`init`, not `reset`) so in-flight edits survive and stay
-  dirty, and returning nothing clears the form — one place owns the decision.
+  What `onSubmit` returns decides the post-save state. A returned payload
+  becomes the new baseline through `init`, not `reset`, so edits typed during
+  the request survive and stay dirty. Returning nothing clears the form.
 files:
   - packages/create-karkas/template/src/shared/reatom/forms.ts
   - apps/demo/src/shared/reatom/forms.ts
   - apps/demo/src/pages/login/model/routes.tsx
   - apps/demo/src/pages/login/ui/LoginPage.tsx
+  - apps/demo/src/pages/settings/model/settingsForm.ts
+  - apps/demo/src/pages/articles/model/articleDetailModel.ts
 demo: /demo/login
 order: 1
 ---
 
-Every app with forms hits the same failure modes, and every team re-solves them
-worse under deadline. The Karkas template ships the solved versions as Reatom
-form extensions — imported from the shared barrel, attached with `.extend()`,
-no configuration.
+The template ships these as Reatom form extensions in `shared/reatom/forms.ts`.
+Import them from the shared barrel and attach them with `.extend()`. None of
+them take configuration beyond an optional callback.
 
-## Two form lifecycles — and why only one needs post-save state
+## Forms that leave on success, and forms that stay
 
-**Navigate-away forms** (login is the canonical case): a successful submit
-unmounts the form — the authed route guard redirects, the page is gone. There
-is no post-save state to own, so `withSavedState` is deliberately **not**
-applied here; adding it would be ceremony. What this lifecycle must get right
-is the _failure_ path, because a failed submit leaves the user on the form:
+A login form leaves on success. The route guard redirects and the form
+unmounts, so there is no post-save state to manage and `withSavedState` is
+not applied. The failure path is what matters, because a failed submit keeps
+the user on the form:
 
-- Field validation errors live under their fields (`visibleFieldError`,
-  rendered through Ark UI's `Field.ErrorText`), and the first invalid field is
-  focused after a rejected submit (`withFormAutoFocusOnError`).
-- The form-level alert shows **only** when no field owns the failure — a
-  server rejection like "invalid credentials". Empty fields therefore produce
-  no alert; wrong credentials do. That split is the alert-gating decision
-  made visible.
+- Field validation errors render under their fields (`visibleFieldError`
+  through Ark UI's `Field.ErrorText`). After a rejected submit,
+  `withFormAutoFocusOnError` focuses the first invalid field.
+- The form-level alert shows only when no field owns the failure, such as a
+  server answer of "invalid credentials". Empty fields produce no alert.
+  Wrong credentials do.
 
-**Stay-on-screen forms** (settings, profiles, any inline edit): a successful
-submit leaves the form on screen, and now the post-save question is
-everything. The form must stop reading as dirty — without adopting edits the
-user typed while the request was in flight. That is `withSavedState`: the
-values `onSubmit` **returns** become the new baseline via `init` — not
-`reset`, which would clobber in-flight edits. Two consequences fall out:
+A settings section or an inline edit stays on screen after it saves, and it
+has to stop reading as dirty without swallowing edits typed during the
+request. `withSavedState` handles that. The values `onSubmit` returns become
+the new baseline through `init`. `reset` would overwrite the in-flight edits.
 
-- The payload rebaselined is the payload actually persisted. Rebaseline from
-  the form's live state instead, and an edit that never reached the server
-  reads as saved — the edit is silently lost while the UI says otherwise.
-- A write-only form (credentials, one-way secrets) returns nothing from
-  `onSubmit`, and `withSavedState` clears it with `reset`. Nothing to read
-  back; the secret must not linger.
+- Rebaseline on the payload the server accepted, never on the form's live
+  state. Live state includes edits the server never saw, and the UI would
+  report them as saved.
+- A write-only form (a password change, an API secret) returns nothing from
+  `onSubmit`. `withSavedState` then clears it with `reset`, so the secret
+  does not stay in memory.
 
-The rule in one line: if the route leaves on success, you don't need
-post-save ownership; if the form stays, `withSavedState` owns it — do not
-hand-roll `init` calls next to it.
-
-`reatomForm`'s own `resetOnSubmit` option is deliberately unused: two owners
-of the post-save decision disagree with each other. `withSavedState` is the
-single owner.
+If the route leaves on success, skip `withSavedState`. If the form stays, use
+it and do not call `init` next to it by hand. The form's own `resetOnSubmit`
+option stays off, because it would make a second, conflicting decision about
+post-save state.
 
 ## Failures no field can carry
 
-A network error or a server-side rejection has no field to live under.
-`formAlertMessage(form)` decides when a form-level alert may show: never while
-a field validation failure explains the same rejection (the alert would print
-the same sentence twice), and never for a submit error a caller has mapped
-elsewhere (pass an `isHandled` predicate) — mapped errors outlive the field
-errors they produced, and the stale text must not migrate into the alert.
+A network error or a record-level server rejection has no field to render
+under. `formAlertMessage(form)` decides whether the form-level alert shows.
+It returns `null` while a field validation failure explains the rejection,
+so the same sentence never prints twice. It also returns `null` for an error
+the caller mapped somewhere else, through an `isHandled` predicate. A mapped
+request error outlives the field errors it produced, and without the
+predicate its text would reappear in the alert after the user edits the
+field.
 
-## Server validation lands under fields, not in the alert
+## Server validation renders under fields
 
-A 422 from the server is field business: `applyApiValidationToFields` maps
-each issue onto its form field by name suffix (`body.email` → `email`), so
-the message renders where the user can fix it. A server error is the only
-kind a field cannot re-check by editing — the mapping flips the field to
-`keepErrorOnChange: false` so the next keystroke drops it and the server
-judges the new value on the next submit. Issues no field claims return to
-the caller as unmapped, and the form-level alert carries them.
+`applyApiValidationToFields` maps each issue in a 422 onto a form field by
+name suffix, so `body.email` lands on `email`. A field cannot re-check a
+server error by itself, so the mapping sets `keepErrorOnChange: false` on
+that field. The next keystroke drops the error, and the server judges the
+new value on the next submit. Issues that match no field come back to the
+caller, and the login model keeps them so the alert can show them.
 
-## Errors that leave when the user fixes the value
+## Errors clear while the user fixes the value
 
-`visibleFieldError(field)` reads the field's `triggered` flag alongside its
-error. With `keepErrorOnChange: false` Reatom keeps the last issue for
-bookkeeping but drops `triggered` — reading only `validation.error` leaves
-stale copy on screen while the user fixes the value.
+`visibleFieldError(field)` checks the field's `triggered` flag as well as its
+error. With `keepErrorOnChange: false`, Reatom keeps the last issue but
+clears `triggered` on change. Reading `validation.error` alone would leave
+the old message on screen while the user types the fix.
 
 ## See it in the demo
 
-The login form is wired end-to-end — both failure kinds and the navigate-away
-success. To reproduce:
+Login covers the failure path. The "See it in the demo" button below opens
+the login page.
 
-1. Open the demo and go to the login page (the "See it in the demo" button
-   below leads straight there).
-2. Clear the password and submit. "Password is required" appears **under the
-   field**, the field is focused, and **no form-level alert appears** — a
-   field owns this failure, so the alert stays out. This is the alert-gating
-   split, observable.
-3. Restore the password (`password`), clear the email's `@`, and submit. Now
-   the fields' own errors explain themselves — still no alert.
-4. Fix the email but use a wrong password (`wrong-password`). The form-level
-   alert appears: the server rejected the request and no field owns that
-   failure. This is `formAlertMessage` letting an unowned failure through.
-5. Set the email to `taken@example.com` (password `password`) and submit. The
-   server answers 422 and "This email is already registered" appears **under
-   the email field** — server validation mapped onto its field, no alert.
-   Edit the email once and the server error disappears, handing the verdict
-   back to the server on the next submit.
-6. Submit `alex@example.com` / `password`. Pending state, then the dashboard
-   replaces the page — success navigates away, which is exactly why this form
-   carries no post-save state handling.
+1. Clear the password and submit. "Password is required" appears under the
+   field, the field takes focus, and no form-level alert appears.
+2. Enter `password` again, remove the `@` from the email, and submit. The
+   email field shows its own error. Still no alert.
+3. Fix the email and submit with the password `wrong-password`. The
+   form-level alert appears, because the server rejected the request and no
+   field owns that failure.
+4. Set the email to `taken@example.com` with the password `password` and
+   submit. The server answers 422, and "This email is already registered"
+   appears under the email field with no alert. Edit the email and the error
+   goes away until the next submit.
+5. Submit `alex@example.com` with `password`. The button shows its pending
+   state, then the dashboard replaces the page.
 
-The rebaseline half of the story (`withSavedState` on a form that stays on
-screen) is exercised by the settings pattern; its demo wiring lands with the
-settings-form port.
+Settings and article editing cover the stay-on-screen path.
+
+1. Open Settings, change the display name, and click "Save changes". The
+   button disappears once the save lands, and the field keeps the new name.
+2. Open an article and click "Edit". Change the title and save. The card
+   collapses to its summary, which now shows the new title.

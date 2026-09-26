@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro'
-import { getPatterns } from '../../lib/patterns'
+import { getPatterns, inlineCode } from '../../lib/patterns'
 
 const patterns = await getPatterns()
 ---
@@ -16,10 +16,10 @@ const patterns = await getPatterns()
 				<span class="tag tag--steel">Patterns</span>
 				<h1>Problems you were about to solve worse.</h1>
 				<p>
-					Each entry is a mechanism proven in production and shipped in the template. The point is
-					never the code alone — it is the decision inside it: what stays mounted, what clears when,
-					who owns the state after a save. Start a project from the template and the problem is
-					already solved, with the reasoning attached.
+					Each entry is a mechanism taken from a production app and shipped in the template. It
+					names the failure it prevents, the decision the code makes (what stays mounted, what
+					clears when, who owns the state after a save), and the files to read. Projects started
+					from the template get the code and the comments that explain it.
 				</p>
 			</div>
 
@@ -34,8 +34,8 @@ const patterns = await getPatterns()
 								<a class="feed-title" href={`/patterns/${p.id}`}>
 									{p.data.title}
 								</a>
-								<p class="feed-problem">{p.data.problem}</p>
-								<p class="feed-decision">{p.data.decision}</p>
+								<p class="feed-problem" set:html={inlineCode(p.data.problem)} />
+								<p class="feed-decision" set:html={inlineCode(p.data.decision)} />
 								<div class="feed-files">
 									{p.data.demo && <a class="tlink" href={p.data.demo}>see it running →</a>}
 									<a class="tlink" href={`/patterns/${p.id}`}>read the decision →</a>

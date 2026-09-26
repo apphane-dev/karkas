@@ -13,3 +13,16 @@ export async function getPatterns(): Promise<CollectionEntry<"patterns">[]> {
 	const patterns = await getCollection("patterns");
 	return patterns.sort((a, b) => a.data.order - b.data.order);
 }
+
+const escapeHtml = (text: string) =>
+	text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+/**
+ * Frontmatter `problem`/`decision` skip the Markdown pipeline, so backticked
+ * identifiers would print literally. Returns escaped HTML for `set:html`.
+ */
+export const inlineCode = (text: string) =>
+	escapeHtml(text).replace(/`([^`]+)`/g, "<code>$1</code>");
+
+/** The same text with backticks dropped, for `<meta>` descriptions. */
+export const plainText = (text: string) => text.replace(/`/g, "");

@@ -4,62 +4,60 @@ This doc follows the source-first approach in `docs/README.md`.
 
 ## Overview
 
-The template ships solved problems, not just scaffolding: mechanisms proven in
-production, each carrying the decision that makes it correct. Every pattern is
-demonstrated in the running demo app — code without a demo is a snippet, and
-snippets rot. Long-form narratives live on the site (`site/src/content/patterns/`);
-this doc is the terse index. The comments at the decision points in the source
-files are the ground truth.
+The template ships mechanisms taken from production apps, each with the
+decision that makes it correct. Every pattern has a working demo in
+`apps/demo`. The long-form write-ups live on the site
+(`site/src/content/patterns/`). This doc is the short index, and the comments
+at the decision points in the source are the ground truth.
 
-For general Reatom usage conventions, see `docs/reatom-patterns.md`; for
-extension-point mechanics, `docs/reatom-extensions.md`.
+For general Reatom conventions, see `docs/reatom-patterns.md`. For
+extension-point mechanics, see `docs/reatom-extensions.md`.
 
 ## Read Source First
 
-| Pattern                   | The decision                                                                                                          | Template (shipped)                                           | Demo (proves it)                             |
-| ------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------- |
-| Form save semantics       | What `onSubmit` returns owns the post-save state: a returned payload rebaselines, nothing resets.                     | `packages/create-karkas/template/src/shared/reatom/forms.ts` | `apps/demo/src/pages/login/model/routes.tsx` |
-| Form-level alert gating   | An alert shows only failures no field owns; a mapped stale error can never migrate into it.                           | `formAlertMessage` in `…/shared/reatom/forms.ts`             | `apps/demo/src/pages/login/ui/LoginPage.tsx` |
-| Visible field errors      | The error reads `triggered`, not just `error`, so stale copy leaves when the user fixes the value.                    | `visibleFieldError` in `…/shared/reatom/forms.ts`            | `apps/demo/src/pages/login/ui/LoginPage.tsx` |
-| Server validation mapping | A server error is the only one a field cannot re-check: it maps onto fields by name suffix and dies on the next edit. | `src/shared/api/validation.ts`, `errors.ts`                  | `apps/demo/src/pages/login/model/routes.tsx` |
+| Pattern                   | The decision                                                                                                          | Template (shipped)                                           | Demo (proves it)                                                                                          |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| Form save semantics       | What `onSubmit` returns owns the post-save state: a returned payload becomes the baseline, nothing resets the form.   | `packages/create-karkas/template/src/shared/reatom/forms.ts` | `apps/demo/src/pages/settings/model/settingsForm.ts`, `…/articles/model/articleDetailModel.ts`            |
+| Form-level alert gating   | The alert shows only failures no field owns, and a mapped request error never reappears in it.                        | `formAlertMessage` in `…/shared/reatom/forms.ts`             | `apps/demo/src/pages/login/ui/LoginPage.tsx`                                                              |
+| Visible field errors      | The error reads `triggered` as well as `error`, so the old message clears while the user fixes the value.             | `visibleFieldError` in `…/shared/reatom/forms.ts`            | `apps/demo/src/pages/login/ui/LoginPage.tsx`                                                              |
+| Server validation mapping | A field cannot re-check a server error, so 422 issues map onto fields by name suffix and clear on the next edit.      | `src/shared/api/validation.ts`, `errors.ts`                  | `apps/demo/src/pages/login/model/routes.tsx`                                                              |
+| Server states             | Each entity exports named MSW scenarios (`loading`, `error`, `retrySucceeds()`) that a story opts into with one call. | `src/shared/mocks/utils.ts`                                  | `apps/demo/src/entities/article/mocks/handlers.ts`, `…/app/integration/Articles.list-request.stories.tsx` |
 
 ## Rules
 
-- Every pattern in this catalog lives in the template AND is wired into at
-  least one real demo page, widget, or story. An export nothing in the demo
-  uses does not count as shipped.
-- The reasoning lives in comments at the decision points in the code. A reader
-  must be able to tell what breaks if they "simplify" each non-obvious part.
-- Candidate evaluation and the production-source workflow are tracked in
-  `.pi/prompts/migrate-reatom-patterns.candidates.md`.
-- Publishing a new pattern entry on the site is part of shipping the pattern,
-  not an afterthought: add `site/src/content/patterns/<slug>.md` with problem,
-  decision, file pointers, a demo link, and a "See it in the demo" section
-  with step-by-step instructions for reproducing the behavior.
+- Every pattern in this catalog lives in the template and runs in at least
+  one demo page, widget, or story. An export the demo never uses does not
+  count as shipped.
+- The reasoning lives in comments at the decision points in the code. A
+  reader must be able to tell what breaks if they simplify each non-obvious
+  part.
+- Shipping a pattern includes its site entry:
+  `site/src/content/patterns/<slug>.md` with the problem, the decision, file
+  pointers, a demo link, and a "See it in the demo" section with steps that
+  reproduce the behavior.
 
 ## Workflows
 
 ### Adopting a pattern in a generated project
 
-1. Find the mechanism in your project's `src/shared/reatom/` (or the layer the
-   catalog above names) — generated projects ship the same files as the
+1. Find the mechanism in the layer the table names, usually
+   `src/shared/reatom/`. Generated projects ship the same files as the
    template.
-2. Read the comments at the decision points before using the API; the naive
-   alternative is usually documented there with the reason it fails.
-3. Mirror the demo wiring (`apps/demo` in the karkas repository) for your
+2. Read the comments at the decision points before using the API. They
+   usually name the obvious alternative and why it fails.
+3. Copy the demo wiring (`apps/demo` in the karkas repository) for your
    equivalent page.
 
 ### Adding a new pattern
 
-Follow the protocol in
-`.pi/prompts/migrate-reatom-patterns.candidates.md`: read the production
-source fully, abstract per the methodology, land code + tests + demo wiring +
-site entry, run the full quality gate, record status in the candidates file.
+1. Read the production source in full before abstracting it.
+2. Land the code in both the template and the demo, with tests and demo
+   wiring.
+3. Add the site entry, then run the full quality gate (`mise run ci`).
 
 ## Edge Cases
 
-- A pattern may exist in the template before its richest demo exists (for
-  example `withSavedState` before a settings page ships) — the demo link in
-  the site entry must still point at wiring that exists, never at a plan.
-- If the template and demo copies of a shared file diverge, that is a bug: fix
-  it before building on either.
+- A pattern can land in the template before its best demo exists. The demo
+  link in the site entry must still point at wiring that exists today.
+- If the template and demo copies of a shared file diverge, that is a bug.
+  Fix it before building on either copy.

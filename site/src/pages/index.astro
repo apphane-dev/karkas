@@ -1,7 +1,7 @@
 ---
 import Base from '../layouts/Base.astro'
 import Frame from '../components/Frame.astro'
-import { getPatterns } from '../lib/patterns'
+import { getPatterns, inlineCode } from '../lib/patterns'
 import { getUpdates } from '../lib/updates'
 
 const latest = (await getUpdates()).slice(0, 3)
@@ -271,8 +271,9 @@ const explore = [
 					<span class="tag tag--steel">Patterns</span>
 					<h2>Problems you were about to solve worse.</h2>
 					<p>
-						Mechanisms proven in production and shipped in the template — each one a decision, not
-						just code: what stays mounted, what clears when, who owns the state after a save.
+						Mechanisms taken from production apps and shipped in the template. Each entry names the
+						decision in the code: what stays mounted, what clears when, who owns the state after a
+						save.
 					</p>
 				</div>
 				<a class="btn" href="/patterns">All patterns <span class="arrow">→</span></a>
@@ -289,7 +290,7 @@ const explore = [
 							<a class="feed-title" href={`/patterns/${p.id}`}>
 								{p.data.title}
 							</a>
-							<p class="feed-summary">{p.data.decision}</p>
+							<p class="feed-summary" set:html={inlineCode(p.data.decision)} />
 						</li>
 					))
 				}

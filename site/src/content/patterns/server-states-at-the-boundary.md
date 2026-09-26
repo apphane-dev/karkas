@@ -2,17 +2,15 @@
 title: Server states modeled at the boundary
 tag: api
 problem: >-
-  UIs lie about the network when the happy path is the only path anyone
-  built: spinners that never resolve, error states nobody has seen, retry
-  flows discovered in production. Testing those states against a real
-  backend means fixture databases and flaky CI; mocking them ad hoc per
-  test means every story re-invents the failure.
+  When only the happy path gets built, loading and error states ship unseen
+  and retry flows get found in production. Testing those states against a
+  real backend needs fixture databases. Mocking fetch ad hoc in each test
+  means every test rebuilds the same failure.
 decision: >-
-  Each entity ships named server scenarios as MSW handlers — `loading`
-  (never resolves), `error` (always 500), `retrySucceeds` (fails twice,
-  then passes), plus the happy default — and stories opt into a scenario
-  with one line, so every server state is a URL a person can open and a
-  test a browser runs.
+  Each entity exports named MSW scenarios next to its happy path: `loading`
+  never resolves, `error` always answers 500, and `retrySucceeds()` fails
+  twice before passing. A story opts into one with a single `msw.use` call,
+  so each server state is a story a person can open and a browser test runs.
 files:
   - apps/demo/src/entities/article/mocks/handlers.ts
   - apps/demo/src/app/integration/Articles.list-request.stories.tsx
@@ -21,46 +19,54 @@ demo: /demo/articles
 order: 2
 ---
 
-The same request boundary serves the demo, the Storybook catalog, and the
-browser test suite. MSW intercepts at the network level in all three, so
-there is exactly one place where the server can misbehave — and the entity
-that owns the endpoint owns its misbehavior scenarios too.
+The demo, the Storybook catalog, and the browser test suite share one
+request boundary. MSW intercepts at the network level in all three, and the
+entity that owns an endpoint also owns its failure scenarios.
 
 ## Named scenarios per entity
 
-Each entity's mock handlers export more than the happy path. From
-`entities/article/mocks/handlers.ts`:
+`entities/article/mocks/handlers.ts` exports `articleList` with four
+handlers:
 
-- `articleList` — the default resolver: realistic data, realistic latency.
-- `articleList.error` — the request always fails with a 500.
-- `articleList.loading` — the request never resolves: the pending state is
-  on screen for as long as a person wants to look at it.
-- `articleList.retrySucceeds()` — fails twice, then passes: retry affordances
-  and retry exhaustion get exercised, not imagined.
+- `articleList.default` returns realistic data after realistic latency.
+- `articleList.error` always fails with a 500.
+- `articleList.loading` never resolves, so the pending state stays on screen
+  as long as anyone wants to inspect it.
+- `articleList.retrySucceeds()` fails twice, then passes. It is a function
+  because each call needs a fresh failure counter.
 
-A story picks a scenario with `msw.use(articleList.error)` in its `beforeEach`
-— one line, and the whole user journey runs against that server state: the
-error screen renders, the retry button re-requests, the success case lands
-after two failures.
+A story calls `msw.use(articleList.error)` in its `beforeEach`, and the
+whole user journey then runs against that server state. The error screen
+renders, the retry button sends a new request, and in the `retrySucceeds`
+case the list loads after two failures.
 
-## The utilities behind the scenarios
+## The helpers behind the scenarios
 
-`shared/mocks/utils.ts` provides the building blocks: `to400`/`to422`/`to500`
-throwers for shaped API errors (the 422 carries Standard-Schema-style
-validation issues), and `withRetrySuccess(resolver, failures)` which wraps any
-resolver in a fail-N-times wrapper.
+`shared/mocks/utils.ts` has the building blocks. `to400`, `to404`, `to422`,
+and `to500` throw shaped API errors. The 422 carries FastAPI-style
+`{ loc, msg }` issues, which the login form maps onto its fields.
+`neverResolve` backs the loading scenario, and
+`withRetrySuccess(resolver, failures)` fails a resolver a set number of
+times before letting it answer.
 
-## Why stories, not unit tests
+## Why stories and not unit tests
 
-A server state is only real when a user can perceive what the interface does
-with it. Modeling scenarios as MSW handlers and asserting through the
-rendered UI means the same story that documents the error screen is the test
-that fails when the error screen regresses. The alternative — mocking fetch
-per test — tests the mock, not the boundary.
+A server state only matters through what the interface does with it.
+Scenarios run as MSW handlers and get asserted through the rendered UI, so
+the story that documents the error screen is also the test that fails when
+the error screen breaks. Mocking fetch in each unit test would check the
+mock instead of the boundary.
 
 ## See it in the demo
 
-Open any list or detail screen and watch the Stories: the
-`Integration/Articles/List Request` group runs the list against `loading`,
-`error`, and `retrySucceeds` in turn — skeleton, error-with-retry, and
-eventual recovery are all the same component meeting different servers.
+The scenarios live in Storybook. Open the `Integration/Articles/List Request`
+group:
+
+1. "Articles Load Server Error" renders the error screen with a
+   retry button.
+2. "Articles Load Retry Success" fails twice, then shows the list.
+3. "Articles Request Loading State" holds the skeleton
+   on screen.
+
+The "See it in the demo" button below opens the articles list against the
+default handler.
