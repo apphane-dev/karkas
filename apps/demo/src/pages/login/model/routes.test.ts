@@ -1,5 +1,7 @@
 import { expect, test, vi } from 'vite-plus/test'
 
+import { formAlertMessage } from '#shared/reatom'
+
 import { reatomLoginForm } from './routes'
 
 const json422 = (issues: Array<{ loc: Array<string | number>; msg: string }>) =>
@@ -33,6 +35,7 @@ test('a fully mapped 422 is handled', async () => {
 	])
 	expect(form.isErrorHandled(form.submit.error())).toBe(true)
 	expect(form.unmappedIssues()).toHaveLength(0)
+	expect(formAlertMessage(form, form.isErrorHandled)).toBeNull()
 })
 
 // A record-level issue (no field matches `loc`) is the one failure no field
@@ -51,6 +54,9 @@ test('a mixed 422 keeps the unmapped leftover and is not handled', async () => {
 	])
 	expect(form.isErrorHandled(form.submit.error())).toBe(false)
 	expect(form.unmappedIssues()).toHaveLength(1)
+	// The email error is on screen, and the alert still carries the remainder.
+	expect(form.validation().errors).toHaveLength(1)
+	expect(formAlertMessage(form, form.isErrorHandled)).not.toBeNull()
 	expect(form.isErrorHandled({ name: 'TypeError', message: 'network down' })).toBe(false)
 })
 

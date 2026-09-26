@@ -20,11 +20,12 @@ type PreventableEvent = { preventDefault(): void }
 export const withFormSubmitHandler =
 	() =>
 	<Target extends Form<any>>(form: Target) => {
+		// `submit` runs `validation.trigger` before `onSubmit`, so its outcome tells
+		// a local validation failure apart from a server rejection. Counting field
+		// errors cannot: a 422 mapped onto fields leaves errors there too.
 		const submitValidationError = atom(false, `${form.name}.submitValidationError`)
-		form.submit.onReject.extend(
-			withCallHook(() => submitValidationError.set(form.validation().errors.length > 0)),
-		)
-		form.submit.onFulfill.extend(withCallHook(() => submitValidationError.set(false)))
+		form.validation.trigger.onReject.extend(withCallHook(() => submitValidationError.set(true)))
+		form.validation.trigger.onFulfill.extend(withCallHook(() => submitValidationError.set(false)))
 
 		return {
 			handleSubmit: action((event?: PreventableEvent) => {
@@ -125,7 +126,9 @@ type FormWithSubmitError = {
  * clears its validation entry, but `submit.error()` keeps the rejected request
  * until a submit succeeds. Callers that map a submit error elsewhere pass an
  * `isHandled` predicate so that stale request error cannot migrate into this
- * alert. Errors no field or mapper owns stay visible here.
+ * alert. When the predicate is passed, its verdict is final: a partial mapping
+ * leaves field errors on screen AND a remainder only the alert can show, so
+ * the aggregate field-error check would hide that remainder.
  *
  * While a submission is pending the alert is suppressed: the retained error
  * belongs to the previous attempt, and the loading state is the feedback.
@@ -136,7 +139,8 @@ export function formAlertMessage(form: FormWithSubmitError, isHandled?: (error: 
 	// re-submission is in flight the stale text would sit beside the loading
 	// state. Nothing is announced until that attempt settles.
 	if (!error || form.submit.ready?.() === false) return null
-	if (form.submitValidationError?.() || isHandled?.(error)) return null
+	if (form.submitValidationError?.()) return null
+	if (isHandled) return isHandled(error) ? null : error.message
 	return form.validation().errors.length > 0 ? null : error.message
 }
 

@@ -142,6 +142,27 @@ test('form alert keeps a failure visible when no field owns it', async () => {
 	expect(formAlertMessage(form)).toBe('Request failed')
 })
 
+// A partially mapped server error leaves field errors on screen and a
+// remainder no field shows. The caller's predicate decides, not the field count.
+test('form alert shows an unhandled failure even while a field shows an error', async () => {
+	const form = reatomForm(
+		{ title: reatomField('', { name: 'test.partial.title' }) },
+		{
+			name: 'test.partial',
+			onSubmit: async () => {
+				form.fields.title.validation.errors.push({ source: 'server', message: 'Taken' })
+				throw new Error('Request failed')
+			},
+		},
+	)
+
+	await form.submit().catch(() => {})
+	expect(form.validation().errors).toHaveLength(1)
+	expect(formAlertMessage(form)).toBeNull()
+	expect(formAlertMessage(form, () => false)).toBe('Request failed')
+	expect(formAlertMessage(form, () => true)).toBeNull()
+})
+
 test('form alert hides a retained failure while a re-submission is pending', async () => {
 	let attempts = 0
 	const gates: Array<() => void> = []
