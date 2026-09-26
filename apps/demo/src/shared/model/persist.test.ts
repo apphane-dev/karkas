@@ -74,6 +74,24 @@ test('absent localStorage falls back to memory and the atom still works', () => 
 	expect(readPersistRecord('test.memory')).toBeUndefined()
 })
 
+test('a localStorage getter that throws falls back to memory', () => {
+	// Opaque origins and blocked site data make the getter itself throw.
+	vi.stubGlobal('localStorage', undefined)
+	Object.defineProperty(globalThis, 'localStorage', {
+		configurable: true,
+		get() {
+			throw new DOMException('Access denied', 'SecurityError')
+		},
+	})
+
+	const adapter = withAppWebStorage('test.blocked')
+	const persisted = atom('a', 'test.blockedAtom').extend(adapter({ key: 'test.blocked' }))
+	persisted.set('b')
+
+	expect(persisted()).toBe('b')
+	expect(readPersistRecord('test.blocked')).toBeUndefined()
+})
+
 test('readPersistRecord returns the payload of a live record', () => {
 	const localStorage = new MemoryStorage()
 	vi.stubGlobal('localStorage', localStorage)
