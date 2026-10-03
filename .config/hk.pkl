@@ -35,7 +35,8 @@ local fastSteps = new Mapping<String, Step> {
 }
 
 local skillsLock = new Step {
-  check = "scripts/check-skills-lock.sh"
+  check = "scripts/sync-skills.sh --check"
+  fix = "scripts/sync-skills.sh"
 }
 
 local checkSteps = new Mapping<String, Step> {
