@@ -51,3 +51,9 @@ progress*.txt
 # vitest browser-mode failure screenshots
 __screenshots__/
 .vitest-attachments/
+
+# APM dependencies
+apm_modules/
+
+# APM-materialized agent skills (generated from apm.yml, do not edit)
+.agents/skills/

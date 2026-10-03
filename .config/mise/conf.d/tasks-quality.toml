@@ -47,6 +47,10 @@ description = "Type check all TypeScript projects"
 alias = "tc"
 run = ["mise run //apps/demo:typecheck", "mise run //packages/create-karkas:typecheck"]
 
+[tasks."lint:skills-lock"]
+description = "Check APM skill refs and lockfile are in sync"
+run = "scripts/sync-skills.sh --check"
+
 [tasks."lint:steiger"]
 description = "Check demo FSD architecture with steiger"
 run = "mise run //apps/demo:lint:steiger"
@@ -100,6 +104,7 @@ env = { VITE_CONNECT_LOGGER = "false" }
 run = [
 	{ task = "prepare" },
 	{ task = "format:check" },
+	{ task = "lint:skills-lock" },
 	{ task = "lint" },
 	{ task = "test:ci" },
 	{ tasks = ["typecheck", "lint:steiger", "lint:fallow"] },

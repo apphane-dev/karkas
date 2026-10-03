@@ -1,0 +1,239 @@
+lockfile_version: '1'
+apm_version: 0.33.0
+dependencies:
+- repo_url: apphane-dev/kahraman
+  name: kahraman
+  host: github.com
+  resolved_commit: fb984ed4c2f3b7bf77414d03526f6353a8f894f5
+  resolved_ref: v0.3.1
+  version: unknown
+  package_type: skill_bundle
+  deployed_files:
+  - .agents/skills/kahraman-storybook-testing
+  - .agents/skills/kahraman-storybook-testing/SKILL.md
+  deployed_file_hashes:
+    .agents/skills/kahraman-storybook-testing/SKILL.md: sha256:92883384858f07732f62e04b679f7c0d3750beb2c5eac26a4b92da0c7d87c3eb
+  content_hash: sha256:e271e09b53f348ac1e86e3a4bd9906433a1295ad5d2f043470940f101c6a7220
+- repo_url: cursor/plugins
+  name: typescript-best-practices
+  host: github.com
+  resolved_commit: 23e4138daa01c42d4969f7a5465f82704e64f798
+  resolved_ref: main
+  version: unknown
+  virtual_path: pstack/skills/typescript-best-practices
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/typescript-best-practices
+  - .agents/skills/typescript-best-practices/SKILL.md
+  - .agents/skills/typescript-best-practices/references/patterns.md
+  deployed_file_hashes:
+    .agents/skills/typescript-best-practices/SKILL.md: sha256:28f9e61710e205f6f3c5476f333483cff0e988f6a5b639e2faad536344b40c5e
+    .agents/skills/typescript-best-practices/references/patterns.md: sha256:faa1362055374452efccac1b629677c61acfb0bcc6c4e3311836b5715638ee18
+  content_hash: sha256:59b3d20cf0939379ac9120ab9fb94076ad3aec99177308c699c720f475bcbd2c
+- repo_url: cursor/plugins
+  name: unslop
+  host: github.com
+  resolved_commit: 23e4138daa01c42d4969f7a5465f82704e64f798
+  resolved_ref: main
+  version: unknown
+  virtual_path: pstack/skills/unslop
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/unslop
+  - .agents/skills/unslop/SKILL.md
+  deployed_file_hashes:
+    .agents/skills/unslop/SKILL.md: sha256:195411d320b5b328f9f642baf59757ed19aaf0931c0838740e0aca273d538dc1
+  content_hash: sha256:6018ca8c329ba87c6b4298207f58d6b773fe23e44ff52a00a9a4d160c19bedc0
+- repo_url: reatom/reatom
+  name: reatom
+  host: github.com
+  resolved_commit: b48778e3bf3a80d85b176157b094c2470d0ab86e
+  resolved_ref: v1001
+  version: unknown
+  package_type: skill_bundle
+  deployed_files:
+  - .agents/skills/reatom
+  - .agents/skills/reatom-async
+  - .agents/skills/reatom-async/REFERENCE.md
+  - .agents/skills/reatom-async/SKILL.md
+  - .agents/skills/reatom-jsx
+  - .agents/skills/reatom-jsx/REFERENCE.md
+  - .agents/skills/reatom-jsx/SKILL.md
+  - .agents/skills/reatom-review
+  - .agents/skills/reatom-review/SKILL.md
+  - .agents/skills/reatom/REFERENCE.md
+  - .agents/skills/reatom/SKILL.md
+  deployed_file_hashes:
+    .agents/skills/reatom-async/REFERENCE.md: sha256:8cdbdd44a17ec47d4ab4ef36186d502c838517df020c6c14044733d188476951
+    .agents/skills/reatom-async/SKILL.md: sha256:a6acfcc8886475923b93e280564193fbfb97be2385df65c758b1d1eec2c7505d
+    .agents/skills/reatom-jsx/REFERENCE.md: sha256:55f87fcefed94fd6b63e5ebfd11dd4c6aac1f7fd61b06d73cca25f212306401c
+    .agents/skills/reatom-jsx/SKILL.md: sha256:e26740b0cc7a3f1ddd0556e0bde67c27381bd0ae50a25619d603fe2a2873a6c2
+    .agents/skills/reatom-review/SKILL.md: sha256:219e3e15521b23d5e88629461c6891fdf95b0b01fbe94620939a6040fa5c6520
+    .agents/skills/reatom/REFERENCE.md: sha256:8dd96cc5bfb697a1848377f98a8a227901cc4144b767293c609822e8191b1b69
+    .agents/skills/reatom/SKILL.md: sha256:2954dab61ae3495ade98ea222164af4e20ae8973c1f0fdcf2875708e78c2da27
+  content_hash: sha256:ac7b61894281e986ec77f58dfe6bbeef9bb12602a3c4e461769303c42d336b29
+deployments:
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/kahraman-storybook-testing
+  runtime: null
+  scope: project
+  owners:
+  - apphane-dev/kahraman
+  active_owner: apphane-dev/kahraman
+  content_hash: null
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/kahraman-storybook-testing/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - apphane-dev/kahraman
+  active_owner: apphane-dev/kahraman
+  content_hash: sha256:92883384858f07732f62e04b679f7c0d3750beb2c5eac26a4b92da0c7d87c3eb
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: null
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom-async
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: null
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom-async/REFERENCE.md
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: sha256:8cdbdd44a17ec47d4ab4ef36186d502c838517df020c6c14044733d188476951
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom-async/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: sha256:a6acfcc8886475923b93e280564193fbfb97be2385df65c758b1d1eec2c7505d
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom-jsx
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: null
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom-jsx/REFERENCE.md
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: sha256:55f87fcefed94fd6b63e5ebfd11dd4c6aac1f7fd61b06d73cca25f212306401c
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom-jsx/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: sha256:e26740b0cc7a3f1ddd0556e0bde67c27381bd0ae50a25619d603fe2a2873a6c2
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom-review
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: null
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom-review/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: sha256:219e3e15521b23d5e88629461c6891fdf95b0b01fbe94620939a6040fa5c6520
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom/REFERENCE.md
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: sha256:8dd96cc5bfb697a1848377f98a8a227901cc4144b767293c609822e8191b1b69
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: sha256:2954dab61ae3495ade98ea222164af4e20ae8973c1f0fdcf2875708e78c2da27
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/typescript-best-practices
+  runtime: null
+  scope: project
+  owners:
+  - cursor/plugins/pstack/skills/typescript-best-practices
+  active_owner: cursor/plugins/pstack/skills/typescript-best-practices
+  content_hash: null
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/typescript-best-practices/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - cursor/plugins/pstack/skills/typescript-best-practices
+  active_owner: cursor/plugins/pstack/skills/typescript-best-practices
+  content_hash: sha256:28f9e61710e205f6f3c5476f333483cff0e988f6a5b639e2faad536344b40c5e
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/typescript-best-practices/references/patterns.md
+  runtime: null
+  scope: project
+  owners:
+  - cursor/plugins/pstack/skills/typescript-best-practices
+  active_owner: cursor/plugins/pstack/skills/typescript-best-practices
+  content_hash: sha256:faa1362055374452efccac1b629677c61acfb0bcc6c4e3311836b5715638ee18
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/unslop
+  runtime: null
+  scope: project
+  owners:
+  - cursor/plugins/pstack/skills/unslop
+  active_owner: cursor/plugins/pstack/skills/unslop
+  content_hash: null
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/unslop/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - cursor/plugins/pstack/skills/unslop
+  active_owner: cursor/plugins/pstack/skills/unslop
+  content_hash: sha256:195411d320b5b328f9f642baf59757ed19aaf0931c0838740e0aca273d538dc1

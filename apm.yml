@@ -1,0 +1,16 @@
+name: karkas
+version: 1.0.0
+dependencies:
+  apm:
+    - reatom/reatom#v1001
+    - apphane-dev/kahraman#v0.3.1
+    - cursor/plugins/pstack/skills/unslop#main
+    - cursor/plugins/pstack/skills/typescript-best-practices#main
+targets:
+  - agent-skills
+lifecycle:
+  post-install:
+    - type: command
+      description: Allow agents to auto-invoke unslop and TypeScript guide
+      bash: ./scripts/patch-skills.sh
+      timeoutSec: 10

@@ -1,0 +1,3 @@
+[tasks."skills:update"]
+description = "Bump APM skill dependencies to latest refs and re-materialize"
+run = "apm install --update --only apm"

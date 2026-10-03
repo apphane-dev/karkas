@@ -86,3 +86,33 @@ decision.
 - `sharp`: denied; no current workflow requires its native install path.
 
 Review newly requested scripts with `nub ignored-builds` before changing these decisions.
+
+## Agent skills
+
+Agent skills are declared in `apm.yml` (Microsoft APM) and materialized into
+`.agents/skills/`, which is gitignored. mise runs the install automatically as
+the `skills` dependency provider whenever `apm.yml` changes:
+
+```sh
+mise deps install skills   # run manually
+mise deps --explain skills # inspect the freshness decision
+```
+
+`apm.lock.yaml` pins resolved git commits and content hashes and is committed.
+The `apm` CLI is pinned in `_config.toml` (0.33.0+ is required to install
+skill-bundle packages such as `reatom/reatom`).
+
+Skill deps are coupled to the npm packages that ship them:
+`scripts/sync-skills.sh` syncs `apm.yml` refs from the installed
+`node_modules` versions (kahraman tracks its exact release tag; reatom
+re-resolves the v1001 branch head when `@reatom/core` moves, recorded in
+`.config/skill-deps.txt`). It runs automatically from the mise `skills`
+dependency provider whenever package manifests or the lockfile change, and the
+hk `skills-lock` check (in `hk check` / pre-push and CI) fails on drift.
+`mise run skills:update` still bumps refs to the latest upstream tags manually.
+
+Two fetched skills (unslop, typescript-best-practices) have
+`disable-model-invocation: true` upstream; `scripts/patch-skills.sh` strips it
+via an `apm.yml` post-install lifecycle hook so agents can auto-apply them.
+Fresh clones must run `apm lifecycle trust` once to enable the hook (apm will
+warn and skip it until then).

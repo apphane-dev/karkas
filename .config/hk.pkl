@@ -1,5 +1,5 @@
-amends "package://github.com/jdx/hk/releases/download/v1.46.0/hk@1.46.0#/Config.pkl"
-import "package://github.com/jdx/hk/releases/download/v1.46.0/hk@1.46.0#/Builtins.pkl"
+amends "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v2.4.0/hk@2.4.0#/Builtins.pkl"
 
 local format = new Step {
   check = "mise run format:check"
@@ -34,9 +34,15 @@ local fastSteps = new Mapping<String, Step> {
   ["typecheck"] = typecheck
 }
 
+local skillsLock = new Step {
+  check = "scripts/sync-skills.sh --check"
+  fix = "scripts/sync-skills.sh"
+}
+
 local checkSteps = new Mapping<String, Step> {
   ...fastSteps
   ["fallow"] = fallow
+  ["skills-lock"] = skillsLock
 }
 
 hooks {

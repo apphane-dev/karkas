@@ -6,6 +6,7 @@ node = "lts"
 jq = "latest"
 vp = "latest"
 hk = "latest"
+apm = "0.33.0"
 
 [task_config]
 dir = "{{ config_root }}"
@@ -24,3 +25,10 @@ run = "nub install"
 
 [shell_alias]
 mr = "mise run"
+
+# Agent skills materialized by APM (see apm.yml); output is gitignored.
+[deps.skills]
+auto = true
+sources = ["apm.yml", "apm.lock.yaml", "pnpm-lock.yaml", "apps/*/package.json", "packages/*/package.json", "site/package.json"]
+outputs = [".agents/skills"]
+run = "scripts/sync-skills.sh"
