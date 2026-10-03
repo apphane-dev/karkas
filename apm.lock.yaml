@@ -15,6 +15,23 @@ dependencies:
     .agents/skills/kahraman-storybook-testing/SKILL.md: sha256:92883384858f07732f62e04b679f7c0d3750beb2c5eac26a4b92da0c7d87c3eb
   content_hash: sha256:e271e09b53f348ac1e86e3a4bd9906433a1295ad5d2f043470940f101c6a7220
 - repo_url: cursor/plugins
+  name: typescript-best-practices
+  host: github.com
+  resolved_commit: 23e4138daa01c42d4969f7a5465f82704e64f798
+  resolved_ref: main
+  version: unknown
+  virtual_path: pstack/skills/typescript-best-practices
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/typescript-best-practices
+  - .agents/skills/typescript-best-practices/SKILL.md
+  - .agents/skills/typescript-best-practices/references/patterns.md
+  deployed_file_hashes:
+    .agents/skills/typescript-best-practices/SKILL.md: sha256:28f9e61710e205f6f3c5476f333483cff0e988f6a5b639e2faad536344b40c5e
+    .agents/skills/typescript-best-practices/references/patterns.md: sha256:faa1362055374452efccac1b629677c61acfb0bcc6c4e3311836b5715638ee18
+  content_hash: sha256:59b3d20cf0939379ac9120ab9fb94076ad3aec99177308c699c720f475bcbd2c
+- repo_url: cursor/plugins
   name: unslop
   host: github.com
   resolved_commit: 23e4138daa01c42d4969f7a5465f82704e64f798
@@ -175,6 +192,33 @@ deployments:
   - reatom/reatom
   active_owner: reatom/reatom
   content_hash: sha256:2954dab61ae3495ade98ea222164af4e20ae8973c1f0fdcf2875708e78c2da27
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/typescript-best-practices
+  runtime: null
+  scope: project
+  owners:
+  - cursor/plugins/pstack/skills/typescript-best-practices
+  active_owner: cursor/plugins/pstack/skills/typescript-best-practices
+  content_hash: null
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/typescript-best-practices/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - cursor/plugins/pstack/skills/typescript-best-practices
+  active_owner: cursor/plugins/pstack/skills/typescript-best-practices
+  content_hash: sha256:28f9e61710e205f6f3c5476f333483cff0e988f6a5b639e2faad536344b40c5e
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/typescript-best-practices/references/patterns.md
+  runtime: null
+  scope: project
+  owners:
+  - cursor/plugins/pstack/skills/typescript-best-practices
+  active_owner: cursor/plugins/pstack/skills/typescript-best-practices
+  content_hash: sha256:faa1362055374452efccac1b629677c61acfb0bcc6c4e3311836b5715638ee18
 - kind: project-relative
   target: agent-skills
   value: .agents/skills/unslop

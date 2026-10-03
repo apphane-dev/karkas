@@ -105,3 +105,9 @@ skill-bundle packages such as `reatom/reatom`).
 Updating: `mise run skills:update` bumps every `apm.yml` ref to the latest
 upstream tag/commit and refreshes `apm.lock.yaml` hashes. CI runs the same
 command weekly (`skills-update.yml`) and opens a PR when anything moved.
+
+Two fetched skills (unslop, typescript-best-practices) have
+`disable-model-invocation: true` upstream; `scripts/patch-skills.sh` strips it
+via an `apm.yml` post-install lifecycle hook so agents can auto-apply them.
+Fresh clones must run `apm lifecycle trust` once to enable the hook (apm will
+warn and skip it until then).
