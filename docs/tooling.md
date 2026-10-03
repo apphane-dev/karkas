@@ -86,3 +86,18 @@ decision.
 - `sharp`: denied; no current workflow requires its native install path.
 
 Review newly requested scripts with `nub ignored-builds` before changing these decisions.
+
+## Agent skills
+
+Agent skills are declared in `apm.yml` (Microsoft APM) and materialized into
+`.agents/skills/`, which is gitignored. mise runs the install automatically as
+the `skills` dependency provider whenever `apm.yml` changes:
+
+```sh
+mise deps install skills   # run manually
+mise deps --explain skills # inspect the freshness decision
+```
+
+`apm.lock.yaml` pins resolved git commits and content hashes and is committed.
+The provider runs APM from a pinned git commit because released APM (0.4.3)
+cannot install skill-bundle packages yet.

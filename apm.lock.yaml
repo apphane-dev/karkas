@@ -1,0 +1,131 @@
+lockfile_version: '1'
+apm_version: 0.33.0
+dependencies:
+- repo_url: reatom/reatom
+  name: reatom
+  host: github.com
+  resolved_commit: b48778e3bf3a80d85b176157b094c2470d0ab86e
+  resolved_ref: v1001
+  version: unknown
+  package_type: skill_bundle
+  deployed_files:
+  - .agents/skills/reatom
+  - .agents/skills/reatom-async
+  - .agents/skills/reatom-async/REFERENCE.md
+  - .agents/skills/reatom-async/SKILL.md
+  - .agents/skills/reatom-jsx
+  - .agents/skills/reatom-jsx/REFERENCE.md
+  - .agents/skills/reatom-jsx/SKILL.md
+  - .agents/skills/reatom-review
+  - .agents/skills/reatom-review/SKILL.md
+  - .agents/skills/reatom/REFERENCE.md
+  - .agents/skills/reatom/SKILL.md
+  deployed_file_hashes:
+    .agents/skills/reatom-async/REFERENCE.md: sha256:8cdbdd44a17ec47d4ab4ef36186d502c838517df020c6c14044733d188476951
+    .agents/skills/reatom-async/SKILL.md: sha256:a6acfcc8886475923b93e280564193fbfb97be2385df65c758b1d1eec2c7505d
+    .agents/skills/reatom-jsx/REFERENCE.md: sha256:55f87fcefed94fd6b63e5ebfd11dd4c6aac1f7fd61b06d73cca25f212306401c
+    .agents/skills/reatom-jsx/SKILL.md: sha256:e26740b0cc7a3f1ddd0556e0bde67c27381bd0ae50a25619d603fe2a2873a6c2
+    .agents/skills/reatom-review/SKILL.md: sha256:219e3e15521b23d5e88629461c6891fdf95b0b01fbe94620939a6040fa5c6520
+    .agents/skills/reatom/REFERENCE.md: sha256:8dd96cc5bfb697a1848377f98a8a227901cc4144b767293c609822e8191b1b69
+    .agents/skills/reatom/SKILL.md: sha256:2954dab61ae3495ade98ea222164af4e20ae8973c1f0fdcf2875708e78c2da27
+  content_hash: sha256:ac7b61894281e986ec77f58dfe6bbeef9bb12602a3c4e461769303c42d336b29
+deployments:
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: null
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom-async
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: null
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom-async/REFERENCE.md
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: sha256:8cdbdd44a17ec47d4ab4ef36186d502c838517df020c6c14044733d188476951
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom-async/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: sha256:a6acfcc8886475923b93e280564193fbfb97be2385df65c758b1d1eec2c7505d
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom-jsx
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: null
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom-jsx/REFERENCE.md
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: sha256:55f87fcefed94fd6b63e5ebfd11dd4c6aac1f7fd61b06d73cca25f212306401c
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom-jsx/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: sha256:e26740b0cc7a3f1ddd0556e0bde67c27381bd0ae50a25619d603fe2a2873a6c2
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom-review
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: null
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom-review/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: sha256:219e3e15521b23d5e88629461c6891fdf95b0b01fbe94620939a6040fa5c6520
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom/REFERENCE.md
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: sha256:8dd96cc5bfb697a1848377f98a8a227901cc4144b767293c609822e8191b1b69
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/reatom/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - reatom/reatom
+  active_owner: reatom/reatom
+  content_hash: sha256:2954dab61ae3495ade98ea222164af4e20ae8973c1f0fdcf2875708e78c2da27

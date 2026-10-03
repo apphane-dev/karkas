@@ -1,0 +1,7 @@
+name: karkas
+version: 1.0.0
+dependencies:
+  apm:
+    - reatom/reatom#v1001
+targets:
+  - agent-skills
