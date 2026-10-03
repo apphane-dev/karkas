@@ -1,6 +1,19 @@
 lockfile_version: '1'
 apm_version: 0.33.0
 dependencies:
+- repo_url: apphane-dev/kahraman
+  name: kahraman
+  host: github.com
+  resolved_commit: fb984ed4c2f3b7bf77414d03526f6353a8f894f5
+  resolved_ref: v0.3.1
+  version: unknown
+  package_type: skill_bundle
+  deployed_files:
+  - .agents/skills/kahraman-storybook-testing
+  - .agents/skills/kahraman-storybook-testing/SKILL.md
+  deployed_file_hashes:
+    .agents/skills/kahraman-storybook-testing/SKILL.md: sha256:92883384858f07732f62e04b679f7c0d3750beb2c5eac26a4b92da0c7d87c3eb
+  content_hash: sha256:e271e09b53f348ac1e86e3a4bd9906433a1295ad5d2f043470940f101c6a7220
 - repo_url: reatom/reatom
   name: reatom
   host: github.com
@@ -30,6 +43,24 @@ dependencies:
     .agents/skills/reatom/SKILL.md: sha256:2954dab61ae3495ade98ea222164af4e20ae8973c1f0fdcf2875708e78c2da27
   content_hash: sha256:ac7b61894281e986ec77f58dfe6bbeef9bb12602a3c4e461769303c42d336b29
 deployments:
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/kahraman-storybook-testing
+  runtime: null
+  scope: project
+  owners:
+  - apphane-dev/kahraman
+  active_owner: apphane-dev/kahraman
+  content_hash: null
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/kahraman-storybook-testing/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - apphane-dev/kahraman
+  active_owner: apphane-dev/kahraman
+  content_hash: sha256:92883384858f07732f62e04b679f7c0d3750beb2c5eac26a4b92da0c7d87c3eb
 - kind: project-relative
   target: agent-skills
   value: .agents/skills/reatom

@@ -3,5 +3,6 @@ version: 1.0.0
 dependencies:
   apm:
     - reatom/reatom#v1001
+    - apphane-dev/kahraman#v0.3.1
 targets:
   - agent-skills
