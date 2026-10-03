@@ -6,7 +6,7 @@ node = "lts"
 jq = "latest"
 vp = "latest"
 hk = "latest"
-uv = "0.12"
+apm = "0.33.0"
 
 [task_config]
 dir = "{{ config_root }}"
@@ -31,6 +31,4 @@ mr = "mise run"
 auto = true
 sources = ["apm.yml"]
 outputs = [".agents/skills"]
-# Pinned to microsoft/apm main (v0.33.0-dev): skill-bundle installs need
-# an unreleased fix (released 0.4.3 rejects SKILL_BUNDLE packages).
-run = "uvx --from 'git+https://github.com/microsoft/apm@18c4c43c924ceae890fe0f2038806690e5b2d6c8' apm install --only apm"
+run = "apm install --only apm"

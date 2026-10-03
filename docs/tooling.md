@@ -99,5 +99,5 @@ mise deps --explain skills # inspect the freshness decision
 ```
 
 `apm.lock.yaml` pins resolved git commits and content hashes and is committed.
-The provider runs APM from a pinned git commit because released APM (0.4.3)
-cannot install skill-bundle packages yet.
+The `apm` CLI is pinned in `_config.toml` (0.33.0+ is required to install
+skill-bundle packages such as `reatom/reatom`).
