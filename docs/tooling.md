@@ -102,10 +102,14 @@ mise deps --explain skills # inspect the freshness decision
 The `apm` CLI is pinned in `_config.toml` (0.33.0+ is required to install
 skill-bundle packages such as `reatom/reatom`).
 
-Sync: the hk `skills-lock` check (runs in `hk check` / pre-push and CI) fails
-when `apm.yml` and `apm.lock.yaml` drift apart, and warns when upstream skill
-refs are outdated. Update with `mise deps install skills` (sync only) or
-`mise run skills:update` (bump refs to latest upstream), then commit.
+Skill deps are coupled to the npm packages that ship them:
+`scripts/sync-skills.sh` syncs `apm.yml` refs from the installed
+`node_modules` versions (kahraman tracks its exact release tag; reatom
+re-resolves the v1001 branch head when `@reatom/core` moves, recorded in
+`.config/skill-deps.txt`). It runs automatically from the mise `skills`
+dependency provider whenever package manifests or the lockfile change, and the
+hk `skills-lock` check (in `hk check` / pre-push and CI) fails on drift.
+`mise run skills:update` still bumps refs to the latest upstream tags manually.
 
 Two fetched skills (unslop, typescript-best-practices) have
 `disable-model-invocation: true` upstream; `scripts/patch-skills.sh` strips it
