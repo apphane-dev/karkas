@@ -102,9 +102,10 @@ mise deps --explain skills # inspect the freshness decision
 The `apm` CLI is pinned in `_config.toml` (0.33.0+ is required to install
 skill-bundle packages such as `reatom/reatom`).
 
-Updating: `mise run skills:update` bumps every `apm.yml` ref to the latest
-upstream tag/commit and refreshes `apm.lock.yaml` hashes. CI runs the same
-command weekly (`skills-update.yml`) and opens a PR when anything moved.
+Sync: the hk `skills-lock` check (runs in `hk check` / pre-push and CI) fails
+when `apm.yml` and `apm.lock.yaml` drift apart, and warns when upstream skill
+refs are outdated. Update with `mise deps install skills` (sync only) or
+`mise run skills:update` (bump refs to latest upstream), then commit.
 
 Two fetched skills (unslop, typescript-best-practices) have
 `disable-model-invocation: true` upstream; `scripts/patch-skills.sh` strips it
