@@ -34,9 +34,14 @@ local fastSteps = new Mapping<String, Step> {
   ["typecheck"] = typecheck
 }
 
+local skillsLock = new Step {
+  check = "scripts/check-skills-lock.sh"
+}
+
 local checkSteps = new Mapping<String, Step> {
   ...fastSteps
   ["fallow"] = fallow
+  ["skills-lock"] = skillsLock
 }
 
 hooks {
