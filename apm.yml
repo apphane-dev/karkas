@@ -4,5 +4,6 @@ dependencies:
   apm:
     - reatom/reatom#v1001
     - apphane-dev/kahraman#v0.3.1
+    - cursor/plugins/pstack/skills/unslop#main
 targets:
   - agent-skills

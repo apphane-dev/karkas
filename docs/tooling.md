@@ -101,3 +101,7 @@ mise deps --explain skills # inspect the freshness decision
 `apm.lock.yaml` pins resolved git commits and content hashes and is committed.
 The `apm` CLI is pinned in `_config.toml` (0.33.0+ is required to install
 skill-bundle packages such as `reatom/reatom`).
+
+Updating: `mise run skills:update` bumps every `apm.yml` ref to the latest
+upstream tag/commit and refreshes `apm.lock.yaml` hashes. CI runs the same
+command weekly (`skills-update.yml`) and opens a PR when anything moved.

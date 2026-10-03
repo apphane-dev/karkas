@@ -1,0 +1,56 @@
+name: Skills update
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # weekly, Monday 06:00 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: skills-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup mise
+        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+        with:
+          install: true
+          cache: true
+
+      - name: Config mise
+        run: mise settings experimental=true
+
+      - name: Update skill dependencies
+        run: mise run --no-deps skills:update
+
+      - name: Open update PR
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git diff --quiet apm.yml apm.lock.yaml; then
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          branch="chore/skills-update"
+          git checkout -b "$branch"
+          git commit -am "chore: update agent skill dependencies"
+          git push origin "$branch" --force
+          gh pr list --head "$branch" --state open --json number --jq '.[0].number' | xargs -r -I{} gh pr merge {} --auto --squash || true
+          gh pr create \
+            --head "$branch" \
+            --title "chore: update agent skill dependencies" \
+            --body "Automated bump of apm.yml skill refs and apm.lock.yaml hashes via \`mise run skills:update\`."
+          echo "updated=true" >> "$GITHUB_OUTPUT"

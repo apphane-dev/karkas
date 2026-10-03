@@ -14,6 +14,21 @@ dependencies:
   deployed_file_hashes:
     .agents/skills/kahraman-storybook-testing/SKILL.md: sha256:92883384858f07732f62e04b679f7c0d3750beb2c5eac26a4b92da0c7d87c3eb
   content_hash: sha256:e271e09b53f348ac1e86e3a4bd9906433a1295ad5d2f043470940f101c6a7220
+- repo_url: cursor/plugins
+  name: unslop
+  host: github.com
+  resolved_commit: 23e4138daa01c42d4969f7a5465f82704e64f798
+  resolved_ref: main
+  version: unknown
+  virtual_path: pstack/skills/unslop
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/unslop
+  - .agents/skills/unslop/SKILL.md
+  deployed_file_hashes:
+    .agents/skills/unslop/SKILL.md: sha256:195411d320b5b328f9f642baf59757ed19aaf0931c0838740e0aca273d538dc1
+  content_hash: sha256:6018ca8c329ba87c6b4298207f58d6b773fe23e44ff52a00a9a4d160c19bedc0
 - repo_url: reatom/reatom
   name: reatom
   host: github.com
@@ -160,3 +175,21 @@ deployments:
   - reatom/reatom
   active_owner: reatom/reatom
   content_hash: sha256:2954dab61ae3495ade98ea222164af4e20ae8973c1f0fdcf2875708e78c2da27
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/unslop
+  runtime: null
+  scope: project
+  owners:
+  - cursor/plugins/pstack/skills/unslop
+  active_owner: cursor/plugins/pstack/skills/unslop
+  content_hash: null
+- kind: project-relative
+  target: agent-skills
+  value: .agents/skills/unslop/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - cursor/plugins/pstack/skills/unslop
+  active_owner: cursor/plugins/pstack/skills/unslop
+  content_hash: sha256:195411d320b5b328f9f642baf59757ed19aaf0931c0838740e0aca273d538dc1
