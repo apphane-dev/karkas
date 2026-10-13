@@ -13,7 +13,7 @@ export async function startBrowserMocking() {
 	const worker = setupWorker(...handlersArray)
 
 	await worker.start({
-		onUnhandledRequest: import.meta.env['PROD'] ? 'bypass' : 'warn',
+		onUnhandledFrame: import.meta.env['PROD'] ? 'bypass' : 'warn',
 		serviceWorker: {
 			url: `${import.meta.env['BASE_URL']}mockServiceWorker.js`,
 		},

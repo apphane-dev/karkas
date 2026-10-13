@@ -3,10 +3,10 @@ import { Avatar } from '@ark-ui/react/avatar'
 import { UserIcon } from 'lucide-react'
 import { type ComponentProps } from 'react'
 
-import { createStyleContext } from '#styled-system/jsx'
+import { createSlotRecipeContext } from '#styled-system/jsx'
 import { avatar } from '#styled-system/recipes'
 
-const { withProvider, withContext } = createStyleContext(avatar)
+const { withProvider, withContext } = createSlotRecipeContext(avatar)
 
 export type RootProps = ComponentProps<typeof Root>
 export const Root = withProvider(Avatar.Root, 'root')

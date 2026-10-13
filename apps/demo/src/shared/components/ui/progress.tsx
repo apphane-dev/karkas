@@ -3,10 +3,10 @@ import type { ComponentProps } from 'react'
 
 import { Progress } from '@ark-ui/react/progress'
 
-import { createStyleContext } from '#styled-system/jsx'
+import { createSlotRecipeContext } from '#styled-system/jsx'
 import { progress } from '#styled-system/recipes'
 
-const { withProvider, withContext } = createStyleContext(progress)
+const { withProvider, withContext } = createSlotRecipeContext(progress)
 
 export type RootProps = ComponentProps<typeof Root>
 export const Root = withProvider(Progress.Root, 'root')

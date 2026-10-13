@@ -78,7 +78,7 @@ excluding generated Panda, Paraglide, Park UI, template snapshot, and site files
 
 ## Dependency build scripts
 
-Nub denies dependency install/build scripts unless `package.json#allowBuilds` records a
+Nub denies dependency install/build scripts unless `package.json#allowScripts` records a
 decision.
 
 - `esbuild`: allowed; Vite and related tooling require its platform binary setup.

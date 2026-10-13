@@ -3,10 +3,10 @@ import { ark } from '@ark-ui/react/factory'
 import { Switch, useSwitchContext } from '@ark-ui/react/switch'
 import { type ComponentProps, type ReactNode } from 'react'
 
-import { createStyleContext, styled } from '#styled-system/jsx'
+import { createSlotRecipeContext, styled } from '#styled-system/jsx'
 import { switchRecipe } from '#styled-system/recipes'
 
-const { withProvider, withContext } = createStyleContext(switchRecipe)
+const { withProvider, withContext } = createSlotRecipeContext(switchRecipe)
 
 export type RootProps = ComponentProps<typeof Root>
 export const Root = withProvider(Switch.Root, 'root')

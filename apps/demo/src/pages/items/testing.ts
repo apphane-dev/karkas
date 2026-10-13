@@ -57,13 +57,22 @@ export const itemsActor = createActor()
 			}
 		},
 		applyCategoryFilter: async (option: string) => {
-			await I.selectOption(role('combobox', /Category/i), option)
+			const trigger = role('combobox', /Category/i)
+			await I.selectOption(trigger, option)
+			await I.click(trigger)
+			await I.retryTo(() => I.seeAttribute(trigger, 'aria-expanded', 'false'), 10)
 		},
 		applyStockFilter: async (option: string) => {
-			await I.selectOption(role('combobox', /Stock/i), option)
+			const trigger = role('combobox', /Stock/i)
+			await I.selectOption(trigger, option)
+			await I.click(trigger)
+			await I.retryTo(() => I.seeAttribute(trigger, 'aria-expanded', 'false'), 10)
 		},
 		applyPriceSort: async () => {
-			await I.selectOption(role('combobox', /Sort by/i), 'Price')
+			const trigger = role('combobox', /Sort by/i)
+			await I.selectOption(trigger, 'Price')
+			await I.click(trigger)
+			await I.retryTo(() => I.seeAttribute(trigger, 'aria-expanded', 'false'), 10)
 		},
 		toggleSortDirection: async () => {
 			await I.click(role('button', /Asc|Desc/))

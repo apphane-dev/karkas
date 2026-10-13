@@ -4,8 +4,8 @@ dependencies:
 - repo_url: apphane-dev/kahraman
   name: kahraman
   host: github.com
-  resolved_commit: fb984ed4c2f3b7bf77414d03526f6353a8f894f5
-  resolved_ref: v0.3.1
+  resolved_commit: ca3197939ca7b87ffa3c78fc70e5d8ba5eb018cf
+  resolved_ref: v0.4.0
   version: unknown
   package_type: skill_bundle
   deployed_files:
@@ -13,7 +13,7 @@ dependencies:
   - .agents/skills/kahraman-storybook-testing/SKILL.md
   deployed_file_hashes:
     .agents/skills/kahraman-storybook-testing/SKILL.md: sha256:92883384858f07732f62e04b679f7c0d3750beb2c5eac26a4b92da0c7d87c3eb
-  content_hash: sha256:e271e09b53f348ac1e86e3a4bd9906433a1295ad5d2f043470940f101c6a7220
+  content_hash: sha256:506d3e418e1e5fe3aa25d4e2cc3e86017b57aa1ed68846b9c23f4f6731f8e95e
 - repo_url: cursor/plugins
   name: typescript-best-practices
   host: github.com

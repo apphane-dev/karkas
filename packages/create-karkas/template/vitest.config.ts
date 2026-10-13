@@ -28,7 +28,7 @@ const storybookFocusVisibleCompat = {
 
 export default defineConfig({
 	optimizeDeps: {
-		include: ['react', 'react/jsx-dev-runtime'],
+		include: ['react', 'react-dom', 'react/jsx-dev-runtime'],
 	},
 	test: {
 		globals: true,

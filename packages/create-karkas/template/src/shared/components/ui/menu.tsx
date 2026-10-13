@@ -3,10 +3,10 @@ import { Menu, useMenuItemContext } from '@ark-ui/react/menu'
 import { CheckIcon, ChevronDownIcon } from 'lucide-react'
 import { type ComponentProps } from 'react'
 
-import { createStyleContext, type HTMLStyledProps } from '#styled-system/jsx'
+import { createSlotRecipeContext, type HTMLStyledProps } from '#styled-system/jsx'
 import { menu } from '#styled-system/recipes'
 
-const { withRootProvider, withContext } = createStyleContext(menu)
+const { withRootProvider, withContext } = createSlotRecipeContext(menu)
 
 export type RootProps = ComponentProps<typeof Root>
 export const Root = withRootProvider(Menu.Root, {

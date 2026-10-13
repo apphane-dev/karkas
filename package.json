@@ -22,18 +22,18 @@
 		"site"
 	],
 	"devDependencies": {
-		"@changesets/cli": "^3.0.2",
-		"fallow": "^3.22.0"
+		"@changesets/cli": "^3.0.3",
+		"fallow": "^3.33.1"
 	},
 	"devEngines": {
 		"packageManager": {
 			"name": "nub",
-			"version": "^0.7.5",
+			"version": "^0.9.6",
 			"onFail": "warn"
 		}
 	},
-	"packageManager": "nub@0.7.5",
-	"allowBuilds": {
+	"packageManager": "nub@0.9.6",
+	"allowScripts": {
 		"sharp": false,
 		"esbuild": true,
 		"msw": true

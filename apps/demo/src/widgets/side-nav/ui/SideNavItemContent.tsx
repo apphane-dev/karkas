@@ -23,7 +23,9 @@ export function SideNavItemContent({ Icon, label, trailing }: Props) {
 			<styled.span
 				flex="1"
 				minW="0"
-				truncate
+				overflow="hidden"
+				textOverflow="ellipsis"
+				whiteSpace="nowrap"
 				className={css({ '[data-sidebar-collapsed] &': { display: 'none' } })}
 			>
 				{label}
