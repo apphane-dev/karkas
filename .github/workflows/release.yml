@@ -51,8 +51,8 @@ jobs:
       - name: Create release PR or publish to npm
         uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
-          version: nub exec changeset version
-          publish: nub run release
+          version-script: nub exec changeset version
+          publish-script: nub run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
