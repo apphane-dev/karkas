@@ -62,7 +62,7 @@ running the workspace lifecycle.
 ## Vite+ test runtime
 
 `apps/demo/package.json` keeps `vitest`, `@vitest/browser-playwright`, and
-`@vitest/coverage-istanbul` on the upstream Vitest version bundled by Vite+. The matching versions
+`@vitest/coverage-v8` on the upstream Vitest version bundled by Vite+. The matching versions
 let Storybook's Vitest addon and browser provider share one peer context while `vp test`
 remains the task entry point.
 

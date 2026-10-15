@@ -58,7 +58,7 @@
 		"@typescript/native": "npm:typescript@^7.0.2",
 		"@vitejs/plugin-react": "^6.1.2",
 		"@vitest/browser-playwright": "5.0.3",
-		"@vitest/coverage-istanbul": "5.0.3",
+		"@vitest/coverage-v8": "5.0.3",
 		"fallow": "^3.33.1",
 		"msw-storybook-addon": "^3.0.3",
 		"playwright": "^1.64.0",

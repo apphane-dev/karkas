@@ -278,12 +278,10 @@ mise run test                   # watch mode
 
 ## Coverage
 
-Coverage uses `@vitest/coverage-istanbul` through `vp test run --coverage`.
-The provider is pinned to the upstream Vitest version bundled by Vite+.
-Istanbul instruments the configured application files rather than recording
-precise coverage for the entire browser dependency graph, which avoids V8's
-memory pressure and long stalls on smaller runners. Coverage thresholds and
-excluded files are unchanged.
+Coverage uses `@vitest/coverage-v8` through `vp test run --coverage`.
+Vite+ 1.1 uses upstream Vitest 5. Keep the coverage provider pinned to the
+same upstream version as `vitest` and `@vitest/browser-playwright`.
+See `docs/tooling.md` for the runtime and memory limits.
 
 Thresholds:
 

@@ -33,7 +33,7 @@ export default defineConfig({
 	test: {
 		globals: true,
 		coverage: {
-			provider: 'istanbul',
+			provider: 'v8',
 			reportsDirectory: process.env['COVERAGE_DIR'] ?? '.var/coverage',
 			include: ['src/**/*.{ts,tsx}'],
 			exclude: [
