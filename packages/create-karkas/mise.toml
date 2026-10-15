@@ -36,4 +36,4 @@ run = "nub exec vp lint src tsup.config.ts vite.config.ts --fix --type-aware --t
 
 [tasks.typecheck]
 description = "Type check create-karkas"
-run = "nub exec tsc --noEmit"
+run = "nub exec tsc6 --noEmit"

@@ -133,6 +133,7 @@ run = "nub exec vp test run"
 
 [tasks."test:coverage"]
 description = "Run tests with coverage"
+env = { NODE_OPTIONS = "--max-old-space-size=1024" }
 run = "nub exec vp test run --coverage --maxWorkers 1"
 
 [tasks.format]
@@ -153,7 +154,7 @@ run = "nub exec vp lint --fix"
 
 [tasks.typecheck]
 description = "Type check demo with TypeScript 7"
-run = "nub exec tsc -b"
+run = "nub {{ vars.repo_root }}/node_modules/@typescript/native/bin/tsc -b"
 
 [tasks."lint:steiger"]
 description = "Check demo FSD architecture with steiger"

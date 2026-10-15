@@ -25,6 +25,9 @@
 		"@changesets/cli": "^3.0.3",
 		"fallow": "^3.33.1"
 	},
+	"overrides": {
+		"vite": "npm:@voidzero-dev/vite-plus-core@^1.1.0"
+	},
 	"devEngines": {
 		"packageManager": {
 			"name": "nub",

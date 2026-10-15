@@ -60,11 +60,11 @@ export async function assertNoRouteLoaderAbortErrors(routeName: string) {
 	}
 }
 
+const rejectionError = (payload: unknown): unknown =>
+	typeof payload === 'object' && payload !== null && 'error' in payload ? payload.error : undefined
+
 const recordAbort = (actionName: string, payload: unknown) => {
-	const error =
-		typeof payload === 'object' && payload !== null && 'error' in payload
-			? payload.error
-			: undefined
+	const error = rejectionError(payload)
 	if (isAbort(error)) {
 		collected.push({ actionName, message: error.message })
 	}

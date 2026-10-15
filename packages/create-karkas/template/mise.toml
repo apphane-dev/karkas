@@ -176,6 +176,7 @@ run = "nub exec vp test run"
 
 [tasks."test:coverage"]
 description = "Run tests with coverage"
+env = { NODE_OPTIONS = "--max-old-space-size=1024" }
 alias = "tcov"
 run = "nub exec vp test run --coverage"
 
@@ -200,7 +201,7 @@ run = "nub exec vp lint --fix"
 [tasks.typecheck]
 description = "Type check with TypeScript 7"
 alias = "tc"
-run = "nub exec tsc -b"
+run = "nub ./node_modules/@typescript/native/bin/tsc -b"
 
 [tasks.check]
 description = "Run hk quality checks"

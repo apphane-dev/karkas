@@ -51,6 +51,7 @@ progress*.txt
 # vitest browser-mode failure screenshots
 __screenshots__/
 .vitest-attachments/
+.vitest/
 
 # APM dependencies
 apm_modules/

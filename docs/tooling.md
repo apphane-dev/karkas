@@ -62,11 +62,31 @@ running the workspace lifecycle.
 ## Vite+ test runtime
 
 `apps/demo/package.json` keeps `vitest`, `@vitest/browser-playwright`, and
-`@vitest/coverage-v8` on the upstream Vitest version bundled by Vite+. The matching versions
+`@vitest/coverage-istanbul` on the upstream Vitest version bundled by Vite+. The matching versions
 let Storybook's Vitest addon and browser provider share one peer context while `vp test`
 remains the task entry point.
 
+The root and scaffold override `vite` with the same Vite+ core package so
+plugins do not install a second Vite engine. The demo and scaffold also declare
+`@storybook/react` alongside `@storybook/react-vite`. This keeps the renderer,
+addons, and MSW type augmentation on one Storybook peer context.
+
+Panda's base and theme presets are explicit dependencies. Panda Studio is not
+used and was removed because it installed a separate legacy React/Vite/Panda stack.
+
+## TypeScript compilers
+
+The demo and generated projects call `@typescript/native/bin/tsc` explicitly for
+TypeScript 7 checks. Both compilers export a binary named `tsc`, so using the
+hoisted `node_modules/.bin/tsc` can silently select TypeScript 6 instead.
+
+The `typescript` alias retains the TypeScript 6 JavaScript API for tools that
+import it. The initializer uses that compiler's unambiguous `tsc6` binary.
+
 ## Fallow and coverage
+
+Browser tests cap the Chromium JavaScript heap at 768 MiB. Coverage tasks also
+cap Node at 1024 MiB so both processes leave room for the other CI tools.
 
 `hk check` runs one concise combined Fallow command. Use `mise run lint:fallow` for separate
 dead-code, duplicate, and health output. The health task generates demo coverage first and

@@ -1,4 +1,4 @@
-import type { StoryContext } from '@storybook/react-vite'
+import type { StoryContext } from '@storybook/react'
 import type { BaseActor } from 'kahraman'
 
 import { createActor as createKahramanActor } from 'kahraman'
