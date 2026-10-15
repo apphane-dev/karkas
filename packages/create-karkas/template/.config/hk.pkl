@@ -16,7 +16,7 @@ local typecheck = new Step {
 }
 
 local fallow = new Step {
-  check = "nub exec fallow audit --config .config/fallow.toml --format json --quiet >/dev/null"
+  check = "mise run lint:fallow:audit >/dev/null"
 }
 
 local hygieneSteps = new Mapping<String, Step> {

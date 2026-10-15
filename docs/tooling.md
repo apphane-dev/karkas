@@ -89,7 +89,13 @@ Browser tests cap the Chromium JavaScript heap at 768 MiB. Coverage tasks also
 cap Node at 1024 MiB so both processes leave room for the other CI tools.
 
 `hk check` runs Fallow's changed-file audit, matching the PR quality gate. Use
-`mise run lint:fallow` for full dead-code, duplicate, and health output. The health task generates demo coverage first and
+`mise run lint:fallow` for full dead-code, duplicate, and health output. The audit's
+base is explicit: `FALLOW_AUDIT_BASE` overrides the GitHub PR target, then the
+remote default branch is used, with `origin/main`, `origin/master`, and local
+`main`/`master` as fallbacks. It never uses the feature branch's own upstream.
+If no base is available, the audit fails with a fetch/configuration hint rather
+than reporting a misleading empty pass. Run `mise run lint:fallow:audit` to see
+the JSON report. The health task generates demo coverage first and
 passes `.var/coverage` to Fallow; raw complexity output without coverage assumes uncovered
 code and is not the repository health signal.
 
