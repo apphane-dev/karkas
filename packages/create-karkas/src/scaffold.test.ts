@@ -27,9 +27,6 @@ test('copies the template and replaces project metadata', async () => {
 		'<title>Hello Karkas</title>',
 	)
 	expect(await readFile(join(targetDirectory, '.gitignore'), 'utf8')).toContain('node_modules')
-	expect(await readFile(join(targetDirectory, '.gitattributes'), 'utf8')).toContain(
-		'*.ts text diff',
-	)
 	expect(await readFile(join(targetDirectory, '.npmrc'), 'utf8')).toContain('node-linker=hoisted')
 })
 
