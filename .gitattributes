@@ -1,0 +1,3 @@
+# Keep TypeScript source reviewable, including revisions with embedded NUL bytes.
+*.ts text diff
+*.tsx text diff
