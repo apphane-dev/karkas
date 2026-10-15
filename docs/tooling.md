@@ -88,8 +88,8 @@ import it. The initializer uses that compiler's unambiguous `tsc6` binary.
 Browser tests cap the Chromium JavaScript heap at 768 MiB. Coverage tasks also
 cap Node at 1024 MiB so both processes leave room for the other CI tools.
 
-`hk check` runs one concise combined Fallow command. Use `mise run lint:fallow` for separate
-dead-code, duplicate, and health output. The health task generates demo coverage first and
+`hk check` runs Fallow's changed-file audit, matching the PR quality gate. Use
+`mise run lint:fallow` for full dead-code, duplicate, and health output. The health task generates demo coverage first and
 passes `.var/coverage` to Fallow; raw complexity output without coverage assumes uncovered
 code and is not the repository health signal.
 
