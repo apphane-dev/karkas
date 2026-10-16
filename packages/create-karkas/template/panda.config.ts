@@ -25,6 +25,7 @@ assert(outdir, 'PANDA_OUTDIR env var is not set')
 
 export default defineConfig({
 	jsxFramework: 'react',
+	presets: ['@pandacss/preset-base', '@pandacss/preset-panda'],
 	// Whether to use css reset
 	preflight: true,
 

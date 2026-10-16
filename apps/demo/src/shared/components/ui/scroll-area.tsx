@@ -3,10 +3,10 @@ import type { ComponentProps } from 'react'
 
 import { ScrollArea } from '@ark-ui/react/scroll-area'
 
-import { createStyleContext } from '#styled-system/jsx'
+import { createSlotRecipeContext } from '#styled-system/jsx'
 import { scrollArea } from '#styled-system/recipes'
 
-const { withProvider, withContext } = createStyleContext(scrollArea)
+const { withProvider, withContext } = createSlotRecipeContext(scrollArea)
 
 export type RootProps = ComponentProps<typeof Root>
 export type ContentProps = ComponentProps<typeof Content>

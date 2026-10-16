@@ -66,10 +66,36 @@ running the workspace lifecycle.
 let Storybook's Vitest addon and browser provider share one peer context while `vp test`
 remains the task entry point.
 
+The root and scaffold override `vite` with the same Vite+ core package so
+plugins do not install a second Vite engine. The demo and scaffold also declare
+`@storybook/react` alongside `@storybook/react-vite`. This keeps the renderer,
+addons, and MSW type augmentation on one Storybook peer context.
+
+Panda's base and theme presets are explicit dependencies. Panda Studio is not
+used and was removed because it installed a separate legacy React/Vite/Panda stack.
+
+## TypeScript compilers
+
+The demo and generated projects call `@typescript/native/bin/tsc` explicitly for
+TypeScript 7 checks. Both compilers export a binary named `tsc`, so using the
+hoisted `node_modules/.bin/tsc` can silently select TypeScript 6 instead.
+
+The `typescript` alias retains the TypeScript 6 JavaScript API for tools that
+import it. The initializer uses that compiler's unambiguous `tsc6` binary.
+
 ## Fallow and coverage
 
-`hk check` runs one concise combined Fallow command. Use `mise run lint:fallow` for separate
-dead-code, duplicate, and health output. The health task generates demo coverage first and
+Browser tests cap the Chromium JavaScript heap at 768 MiB. Coverage tasks also
+cap Node at 1024 MiB so both processes leave room for the other CI tools.
+
+`hk check` runs Fallow's changed-file audit, matching the PR quality gate. Use
+`mise run lint:fallow` for full dead-code, duplicate, and health output. The audit's
+base is explicit: `FALLOW_AUDIT_BASE` overrides the GitHub PR target, then the
+remote default branch is used, with `origin/main`, `origin/master`, and local
+`main`/`master` as fallbacks. It never uses the feature branch's own upstream.
+If no base is available, the audit fails with a fetch/configuration hint rather
+than reporting a misleading empty pass. Run `mise run lint:fallow:audit` to see
+the JSON report. The health task generates demo coverage first and
 passes `.var/coverage` to Fallow; raw complexity output without coverage assumes uncovered
 code and is not the repository health signal.
 
@@ -78,7 +104,7 @@ excluding generated Panda, Paraglide, Park UI, template snapshot, and site files
 
 ## Dependency build scripts
 
-Nub denies dependency install/build scripts unless `package.json#allowBuilds` records a
+Nub denies dependency install/build scripts unless `package.json#allowScripts` records a
 decision.
 
 - `esbuild`: allowed; Vite and related tooling require its platform binary setup.

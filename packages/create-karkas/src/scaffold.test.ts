@@ -30,6 +30,20 @@ test('copies the template and replaces project metadata', async () => {
 	expect(await readFile(join(targetDirectory, '.npmrc'), 'utf8')).toContain('node-linker=hoisted')
 })
 
+test('ships a lockfile that supports a frozen install', async () => {
+	const root = await createTemporaryDirectory()
+	const targetDirectory = join(root, 'frozen-install')
+	await scaffoldProject({ targetDirectory, packageName: 'frozen-install' })
+
+	const lockfilePath = join(targetDirectory, 'pnpm-lock.yaml')
+	const lockfile = await readFile(lockfilePath, 'utf8')
+	execFileSync('nub', ['install', '--frozen-lockfile', '--lockfile-only', '--ignore-scripts'], {
+		cwd: targetDirectory,
+		stdio: 'pipe',
+	})
+	expect(await readFile(lockfilePath, 'utf8')).toBe(lockfile)
+})
+
 test('does not replace a non-empty directory without force', async () => {
 	const root = await createTemporaryDirectory()
 	const targetDirectory = join(root, 'existing-project')

@@ -4,10 +4,10 @@ import type { ComponentProps } from 'react'
 import { Dialog } from '@ark-ui/react/dialog'
 import { ark } from '@ark-ui/react/factory'
 
-import { createStyleContext } from '#styled-system/jsx'
+import { createSlotRecipeContext } from '#styled-system/jsx'
 import { drawer } from '#styled-system/recipes'
 
-const { withRootProvider, withContext } = createStyleContext(drawer)
+const { withRootProvider, withContext } = createSlotRecipeContext(drawer)
 
 export type RootProps = ComponentProps<typeof Root>
 export const Root = withRootProvider(Dialog.Root, {

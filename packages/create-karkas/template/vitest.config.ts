@@ -28,7 +28,7 @@ const storybookFocusVisibleCompat = {
 
 export default defineConfig({
 	optimizeDeps: {
-		include: ['react', 'react/jsx-dev-runtime'],
+		include: ['react', 'react-dom', 'react/jsx-dev-runtime'],
 	},
 	test: {
 		globals: true,
@@ -76,9 +76,14 @@ export default defineConfig({
 						headless: true,
 						// Artifact-on-failure, mirroring a CodeceptJS-style reporter
 						// (see docs/testing.md, Failure diagnostics). Screenshots land in
-						// __screenshots__/ next to the story file (gitignored).
+						// .vitest/attachments/failure-screenshots/ (gitignored).
 						screenshotFailures: true,
-						provider: playwright(),
+						provider: playwright({
+							launchOptions: {
+								// Leave memory for Vitest while collecting browser coverage on CI runners.
+								args: ['--js-flags=--max-old-space-size=768'],
+							},
+						}),
 						instances: [{ browser: 'chromium' }],
 					},
 				},

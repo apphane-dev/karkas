@@ -3,10 +3,13 @@ import '../src/setup'
 
 import '../src/index.css'
 
+import type { KahramanParameters } from 'kahraman/preview'
+import type { PreviewAddon } from 'storybook/internal/csf'
+
 import { reatomContext } from '@reatom/react'
 import addonA11y from '@storybook/addon-a11y'
 import { definePreview } from '@storybook/react-vite'
-import { configureDiagnostics } from 'kahraman/preview'
+import kahraman from 'kahraman'
 import addonMsw from 'msw-storybook-addon'
 import { setupWorker } from 'msw/browser'
 
@@ -38,7 +41,7 @@ const nativeHTMLElementFocus = globalThis.HTMLElement
 async function setupMswWorker() {
 	const worker = setupWorker(...handlersArray)
 	await worker.start({
-		onUnhandledRequest: 'bypass',
+		onUnhandledFrame: 'bypass',
 		quiet: true,
 		serviceWorker: {
 			url: `${import.meta.env['BASE_URL']}mockServiceWorker.js`,
@@ -70,13 +73,17 @@ function ReatomDecorator({
 			clearAbortErrors()
 			queueMicrotask(clearAbortErrors)
 		}
+		// oxlint-disable-next-line react/exhaustive-effect-dependencies -- the cleanup must run when the frame is replaced
 	}, [frame])
 
 	return <reatomContext.Provider value={frame}>{children}</reatomContext.Provider>
 }
 
+// Name the addon's public parameter type for TypeScript composite-project inference.
+const kahramanAddon: PreviewAddon<{ parameters: KahramanParameters }> = kahraman()
+
 const preview = definePreview({
-	addons: [addonA11y(), addonMsw(setupMswWorker)],
+	addons: [addonA11y(), addonMsw(setupMswWorker), kahramanAddon],
 	decorators: [
 		(Story, { parameters }) => (
 			<ReatomDecorator
@@ -96,7 +103,7 @@ const preview = definePreview({
 		a11y: { test: 'todo' },
 	},
 	// fallow-ignore-next-line complexity
-	beforeEach: async ({ globals, parameters }) => {
+	beforeEach: async ({ globals }) => {
 		// Run before a story mounts, so Zag observes the native focus method.
 		if (nativeHTMLElementFocus) {
 			Object.defineProperty(HTMLElement.prototype, 'focus', {
@@ -104,7 +111,6 @@ const preview = definePreview({
 				value: nativeHTMLElementFocus,
 			})
 		}
-		configureDiagnostics(parameters['kahraman'])
 		clearAbortErrors()
 		if (!(globalThis as Record<string, unknown>)['__vitest_worker__']) return
 		const { page } = await import('vite-plus/test/browser')

@@ -1,7 +1,7 @@
 min_version = "2026.4.18"
 
 [tools]
-"npm:@nubjs/nub" = "0.7.5"
+"npm:@nubjs/nub" = "0.9.6"
 node = "lts"
 jq = "latest"
 vp = "latest"
@@ -176,6 +176,7 @@ run = "nub exec vp test run"
 
 [tasks."test:coverage"]
 description = "Run tests with coverage"
+env = { NODE_OPTIONS = "--max-old-space-size=1024" }
 alias = "tcov"
 run = "nub exec vp test run --coverage"
 
@@ -200,7 +201,7 @@ run = "nub exec vp lint --fix"
 [tasks.typecheck]
 description = "Type check with TypeScript 7"
 alias = "tc"
-run = "nub exec tsc -b"
+run = "nub ./node_modules/@typescript/native/bin/tsc -b"
 
 [tasks.check]
 description = "Run hk quality checks"
@@ -222,6 +223,10 @@ run = "nub scripts/check-tree-shaking.ts"
 [tasks."lint:fallow"]
 description = "Check dead code, duplication, and coverage-aware complexity"
 run = [{ tasks = ["lint:fallow:dead-code", "lint:fallow:dupes", "lint:fallow:health"] }]
+
+[tasks."lint:fallow:audit"]
+description = "Audit changes against the target/default branch"
+run = "bash .config/scripts/fallow-audit.sh"
 
 [tasks."lint:fallow:dead-code"]
 description = "Check dead-code findings against the Fallow baseline"

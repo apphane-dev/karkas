@@ -207,12 +207,15 @@ so manual Storybook rendering is untouched.
 - **Abort guard** (`abortErrorGuard.ts`) — the `beforeEach` teardown drains
   Reatom `AbortError`s and **throws** if any leaked during a story; the decorator
   clears them on unmount. A story that leaks an abort will fail loudly.
-- **Diagnostics** — `configureDiagnostics(parameters['kahraman'])` runs in the
-  existing `beforeEach`, so kahraman's tamed element-not-found output is active
-  for every story **and** per-story `parameters.kahraman` overrides
-  (`captureRoleListing`, `maxLength`, a custom `getElementError`) take effect.
-  Don't reintroduce a module-top `configureDiagnostics()` call — it would ignore
-  those overrides.
+- **Diagnostics** — the kahraman preview addon is registered in
+  `definePreview.addons` (`kahramanAddon`, typed as
+  `PreviewAddon<{ parameters: KahramanParameters }>`, which also gives story
+  files their `meta.story()` / `.test()` typing). The addon's own `beforeEach`
+  runs `configureDiagnostics` per story, so kahraman's tamed element-not-found
+  output is active for every story **and** per-story `parameters.kahraman`
+  overrides (`captureRoleListing`, `maxLength`, a custom `getElementError`)
+  take effect. Don't reintroduce a module-top `configureDiagnostics()` call —
+  it would ignore those overrides.
 
 ## Scripts
 

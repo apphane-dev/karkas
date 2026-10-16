@@ -32,6 +32,12 @@ export const recipes = {
 	input,
 	badge,
 	skeleton,
+	icon,
+	kbd,
+	text,
+	heading,
+}
+export const slotRecipes = {
 	avatar,
 	card,
 	drawer,
@@ -44,12 +50,7 @@ export const recipes = {
 	field,
 	breadcrumb,
 	toast,
-	icon,
-	kbd,
 	switchRecipe,
-	text,
-	heading,
 	alert,
 	fieldset,
 }
-export const slotRecipes = {}

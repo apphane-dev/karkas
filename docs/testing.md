@@ -174,7 +174,7 @@ comparison experiment preserved on the `experiment/codecept-comparison` branch):
 - For failed role queries, the accessible-roles listing is filtered to the queried
   role, so the near-miss candidate is what you see.
 - The code frame is retargeted to the page-actor or story call site, rather than kahraman internals.
-- A failure screenshot is written to `__screenshots__/` next to the story file
+- A failure screenshot is written to `.vitest/attachments/failure-screenshots/`
   (gitignored).
 - `VITE_TEST_STEPS=true mise run test:run <file>` logs each actor step live, like
   `codeceptjs run --steps`.
@@ -279,8 +279,9 @@ mise run test                   # watch mode
 ## Coverage
 
 Coverage uses `@vitest/coverage-v8` through `vp test run --coverage`.
-
-Vite+ currently aliases `vitest` to `@voidzero-dev/vite-plus-test`. Because that package reports its Vite+ package version while bundling upstream Vitest internally, coverage can warn about mixed `vitest@0.1.x` and `@vitest/coverage-v8@4.1.x` versions. Keep `@vitest/coverage-v8` pinned to the bundled upstream Vitest version and treat the warning as a Vite+ alpha aliasing false-positive. See `docs/tooling.md`.
+Vite+ 1.1 uses upstream Vitest 5. Keep the coverage provider pinned to the
+same upstream version as `vitest` and `@vitest/browser-playwright`.
+See `docs/tooling.md` for the runtime and memory limits.
 
 Thresholds:
 

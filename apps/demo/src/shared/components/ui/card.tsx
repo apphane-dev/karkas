@@ -3,10 +3,10 @@ import type { ComponentProps } from 'react'
 
 import { ark } from '@ark-ui/react/factory'
 
-import { createStyleContext } from '#styled-system/jsx'
+import { createSlotRecipeContext } from '#styled-system/jsx'
 import { card } from '#styled-system/recipes'
 
-const { withProvider, withContext } = createStyleContext(card)
+const { withProvider, withContext } = createSlotRecipeContext(card)
 
 export type RootProps = ComponentProps<typeof Root>
 export const Root = withProvider(ark.div, 'root')

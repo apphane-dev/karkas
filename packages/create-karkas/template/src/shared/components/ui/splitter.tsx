@@ -3,10 +3,10 @@ import type { ComponentProps } from 'react'
 
 import { Splitter } from '@ark-ui/react/splitter'
 
-import { createStyleContext } from '#styled-system/jsx'
+import { createSlotRecipeContext } from '#styled-system/jsx'
 import { splitter } from '#styled-system/recipes'
 
-const { withProvider, withContext } = createStyleContext(splitter)
+const { withProvider, withContext } = createSlotRecipeContext(splitter)
 
 export type RootProps = ComponentProps<typeof Root>
 export const Root = withProvider(Splitter.Root, 'root')

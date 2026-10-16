@@ -3,10 +3,10 @@ import { ark } from '@ark-ui/react/factory'
 import { InfoIcon } from 'lucide-react'
 import { type ComponentProps } from 'react'
 
-import { createStyleContext } from '#styled-system/jsx'
+import { createSlotRecipeContext } from '#styled-system/jsx'
 import { alert } from '#styled-system/recipes'
 
-const { withProvider, withContext } = createStyleContext(alert)
+const { withProvider, withContext } = createSlotRecipeContext(alert)
 
 export type RootProps = ComponentProps<typeof Root>
 export const Root = withProvider(ark.div, 'root')
