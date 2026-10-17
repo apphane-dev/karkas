@@ -35,7 +35,7 @@ const desktopSidebarCollapsedAtom = reatomBoolean(false, 'desktopSidebar.collaps
 const measureRefAtom = atom<HTMLElement | null>(null, 'appShell.measureRef').extend(
 	withResizeObserver(),
 	(target) => ({
-		height: computed(() => target.sizeEntry()?.contentRect.height ?? 0, 'appShell.headerHeight'),
+		height: computed(() => target.size()?.height ?? 0, 'appShell.headerHeight'),
 	}),
 )
 
