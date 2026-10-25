@@ -1,6 +1,6 @@
 {
 	"name": "create-karkas",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Create a production-ready React application with the Karkas stack.",
 	"keywords": [
 		"create",
