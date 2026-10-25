@@ -62,7 +62,7 @@
 		"fallow": "^3.33.1",
 		"msw-storybook-addon": "^3.0.3",
 		"playwright": "^1.64.1",
-		"steiger": "^0.7.0",
+		"steiger": "^0.8.0",
 		"storybook": "~10.6.3",
 		"typescript": "npm:@typescript/typescript6@^6.0.2",
 		"vite": "npm:@voidzero-dev/vite-plus-core@^1.4.0",
