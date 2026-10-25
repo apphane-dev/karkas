@@ -60,7 +60,7 @@
 		"@vitejs/plugin-react": "^6.1.2",
 		"@vitest/browser-playwright": "5.0.5",
 		"@vitest/coverage-v8": "5.0.5",
-		"fallow": "^3.33.1",
+		"fallow": "^3.35.0",
 		"msw-storybook-addon": "^3.0.3",
 		"playwright": "^1.64.1",
 		"steiger": "^0.8.0",

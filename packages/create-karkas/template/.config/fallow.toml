@@ -17,6 +17,10 @@ ignoreDependencies = [
 # The skeleton keeps these shared extension points even when its starter screens do not
 # consume them yet.
 ignoreExports = [
+	# PostCSS reads `plugins` off the CJS config object; fallow sees a named export.
+	{ file = "postcss.config.cjs", exports = [
+		"plugins",
+	] },
 	{ file = "src/shared/api/index.ts", exports = [
 		"isApiError",
 	] },
