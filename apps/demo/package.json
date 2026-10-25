@@ -73,11 +73,11 @@
 	"devEngines": {
 		"packageManager": {
 			"name": "nub",
-			"version": "^0.9.6",
+			"version": "^0.9.7",
 			"onFail": "warn"
 		}
 	},
-	"packageManager": "nub@0.9.6",
+	"packageManager": "nub@0.9.7",
 	"msw": {
 		"workerDirectory": [
 			"public"

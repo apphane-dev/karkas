@@ -52,12 +52,12 @@
 	"devEngines": {
 		"packageManager": {
 			"name": "nub",
-			"version": "^0.9.6",
+			"version": "^0.9.7",
 			"onFail": "warn"
 		}
 	},
 	"engines": {
 		"node": ">=20.12.0"
 	},
-	"packageManager": "nub@0.9.6"
+	"packageManager": "nub@0.9.7"
 }
