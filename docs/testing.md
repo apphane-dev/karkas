@@ -279,7 +279,7 @@ mise run test                   # watch mode
 ## Coverage
 
 Coverage uses `@vitest/coverage-v8` through `vp test run --coverage`.
-Vite+ 1.1 uses upstream Vitest 5. Keep the coverage provider pinned to the
+Vite+ 1.4 uses upstream Vitest 5. Keep the coverage provider pinned to the
 same upstream version as `vitest` and `@vitest/browser-playwright`.
 See `docs/tooling.md` for the runtime and memory limits.
 

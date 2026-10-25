@@ -24,6 +24,9 @@ ignorePatterns = [
 	"site/**",
 ]
 
+# PostCSS reads `plugins` off the CJS config object; fallow sees a named export.
+ignoreExports = [{ file = "apps/demo/postcss.config.cjs", exports = ["plugins"] }]
+
 [duplicates]
 ignore = ["apps/demo/messages/**", "apps/demo/src/**/*.stories.tsx"]
 ignoreImports = true

@@ -12,15 +12,15 @@
 		"prepare": "mise run --no-deps prepare"
 	},
 	"devDependencies": {
-		"astro": "^7.3.8",
-		"vite-plus": "^1.1.0"
+		"astro": "^7.4.2",
+		"vite-plus": "^1.4.0"
 	},
 	"devEngines": {
 		"packageManager": {
 			"name": "nub",
-			"version": "^0.9.6",
+			"version": "^0.9.7",
 			"onFail": "warn"
 		}
 	},
-	"packageManager": "nub@0.9.6"
+	"packageManager": "nub@0.9.7"
 }

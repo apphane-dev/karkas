@@ -26,9 +26,11 @@ jobs:
           cache-dependency-path: '**/pnpm-lock.yaml'
 
       - name: Setup mise
-        uses: jdx/mise-action@2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca # v5.1.1
+        uses: jdx/mise-action@82a612c5ab8bcda7cc5db6b7e81a8e7584c3dc6e # v5.2.3
         with:
           install: true
+          # Child configs use `vars.repo_root`, which `mise install --monorepo` cannot resolve.
+          monorepo: false
           cache: true
 
       - name: Config mise
@@ -38,9 +40,9 @@ jobs:
         run: nub ci
 
       - name: Run Fallow audit
-        uses: fallow-rs/fallow@fccff887da0d83db1711379e0a3696dfc2460fdd # v3.33.1
+        uses: fallow-rs/fallow@1f5a08d9addde37d81aefcf10407600307da393b # v3.35.0
         with:
-          version: 3.33.1
+          version: 3.35.0
           command: audit
           config: .config/fallow.toml
           format: json

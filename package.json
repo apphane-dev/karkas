@@ -23,19 +23,19 @@
 	],
 	"devDependencies": {
 		"@changesets/cli": "^3.0.3",
-		"fallow": "^3.33.1"
+		"fallow": "^3.35.0"
 	},
 	"overrides": {
-		"vite": "npm:@voidzero-dev/vite-plus-core@^1.1.0"
+		"vite": "npm:@voidzero-dev/vite-plus-core@^1.4.0"
 	},
 	"devEngines": {
 		"packageManager": {
 			"name": "nub",
-			"version": "^0.9.6",
+			"version": "^0.9.7",
 			"onFail": "warn"
 		}
 	},
-	"packageManager": "nub@0.9.6",
+	"packageManager": "nub@0.9.7",
 	"allowScripts": {
 		"sharp": false,
 		"esbuild": true,

@@ -44,20 +44,20 @@
 	},
 	"devDependencies": {
 		"@types/node": "^26.6.5",
-		"tsup": "^8.5.1",
+		"tsup": "^9.0.0",
 		"typescript": "npm:@typescript/typescript6@^6.0.2",
-		"vite-plus": "^1.1.0",
-		"vitest": "5.0.3"
+		"vite-plus": "^1.4.0",
+		"vitest": "5.0.5"
 	},
 	"devEngines": {
 		"packageManager": {
 			"name": "nub",
-			"version": "^0.9.6",
+			"version": "^0.9.7",
 			"onFail": "warn"
 		}
 	},
 	"engines": {
 		"node": ">=20.12.0"
 	},
-	"packageManager": "nub@0.9.6"
+	"packageManager": "nub@0.9.7"
 }
