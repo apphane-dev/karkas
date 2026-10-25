@@ -13,7 +13,7 @@
 	},
 	"devDependencies": {
 		"astro": "^7.4.2",
-		"vite-plus": "^1.1.0"
+		"vite-plus": "^1.4.0"
 	},
 	"devEngines": {
 		"packageManager": {

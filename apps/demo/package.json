@@ -58,17 +58,17 @@
 		"@types/react-dom": "19.3.0",
 		"@typescript/native": "npm:typescript@^7.0.2",
 		"@vitejs/plugin-react": "^6.1.2",
-		"@vitest/browser-playwright": "5.0.3",
-		"@vitest/coverage-v8": "5.0.3",
+		"@vitest/browser-playwright": "5.0.5",
+		"@vitest/coverage-v8": "5.0.5",
 		"fallow": "^3.33.1",
 		"msw-storybook-addon": "^3.0.3",
 		"playwright": "^1.64.1",
 		"steiger": "^0.7.0",
 		"storybook": "~10.6.3",
 		"typescript": "npm:@typescript/typescript6@^6.0.2",
-		"vite": "npm:@voidzero-dev/vite-plus-core@^1.1.0",
-		"vite-plus": "^1.1.0",
-		"vitest": "5.0.3"
+		"vite": "npm:@voidzero-dev/vite-plus-core@^1.4.0",
+		"vite-plus": "^1.4.0",
+		"vitest": "5.0.5"
 	},
 	"devEngines": {
 		"packageManager": {
