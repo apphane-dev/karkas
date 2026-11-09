@@ -2,18 +2,19 @@
 
 Karkas is an opinionated React 19 starter and a working demo app built on it. Most
 templates stop once the app boots. Karkas also ships the conventions for growing the app and
-the checks that enforce them. A lint rule bans React's state and effect hooks in favor of
-Reatom, Steiger guards the Feature-Sliced Design layers, and the Storybook stories you
-browse are the browser test suite. Run `npm create karkas@latest` and you start with those decisions made and checked.
-The demo shows each one handling loading, errors, retries, and cancelled requests.
+the checks that enforce them. A lint rule bans importing React's state and effect hooks in
+favor of Reatom, Steiger guards the Feature-Sliced Design layers, and the Storybook stories
+you browse are the browser test suite. Run `npm create karkas@latest` and you start with
+those decisions made and checked. The demo shows each one handling loading, errors,
+retries, and cancelled requests.
 
 Try the [live demo](https://karkas.apphane.dev/demo/), browse its
 [Storybook](https://karkas.apphane.dev/storybook/), or read the
 [landing site](https://karkas.apphane.dev/).
 
 - **State lives in Reatom.** Atoms, actions, forms, persistence, async loaders, and routes
-  share one reactive model. An oxlint rule rejects `useState`, `useEffect`, `useMemo`,
-  `memo`, and seven other React hooks.
+  share one reactive model. An oxlint rule rejects named imports of `useState`,
+  `useEffect`, `useMemo`, seven other React hooks, and `memo`.
 - **Stories are the tests.** Vitest runs Storybook stories in Chromium through Playwright.
   The demo has 142 integration stories with 262 tests that find elements by role and
   accessible name.
@@ -25,8 +26,8 @@ Try the [live demo](https://karkas.apphane.dev/demo/), browse its
 - **Localized from the start.** ParaglideJS compiles English and Spanish catalogs, and a
   build check fails if a canary message the app never imports ends up in the bundle.
 - **One gate.** `mise run validate` formats, lints, tests with coverage thresholds,
-  typechecks, and runs Steiger and Fallow. `hk check` is the fast changed-file version, and
-  hk runs it before every push.
+  typechecks, and runs Steiger and Fallow. `hk check` is the fast pass: format, lint,
+  typecheck, and a Fallow audit, without tests. hk runs it before every push.
 
 A story from the demo. Storybook renders its error screen, and Vitest runs the same story as
 a test in Chromium:
