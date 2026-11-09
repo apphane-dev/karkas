@@ -2,9 +2,9 @@
 
 Karkas is an opinionated React 19 starter and a working demo app built on it. Most
 templates stop once the app boots. Karkas also ships the conventions for growing the app and
-the checks that enforce them. A lint rule keeps state in Reatom, Steiger guards the
-Feature-Sliced Design layers, and the Storybook stories you browse are the browser test
-suite. Run `npm create karkas@latest` and you start with those decisions made and checked.
+the checks that enforce them. A lint rule bans React's state and effect hooks in favor of
+Reatom, Steiger guards the Feature-Sliced Design layers, and the Storybook stories you
+browse are the browser test suite. Run `npm create karkas@latest` and you start with those decisions made and checked.
 The demo shows each one handling loading, errors, retries, and cancelled requests.
 
 Try the [live demo](https://karkas.apphane.dev/demo/), browse its
@@ -23,7 +23,7 @@ Try the [live demo](https://karkas.apphane.dev/demo/), browse its
   boundaries. Fallow reports dead code, duplication, and complexity weighted by test
   coverage.
 - **Localized from the start.** ParaglideJS compiles English and Spanish catalogs, and a
-  build check confirms unused messages are tree-shaken out of the bundle.
+  build check fails if a canary message the app never imports ends up in the bundle.
 - **One gate.** `mise run validate` formats, lints, tests with coverage thresholds,
   typechecks, and runs Steiger and Fallow. `hk check` is the fast changed-file version, and
   hk runs it before every push.
@@ -36,6 +36,7 @@ export const HandlesArticlesLoadServerError = meta.story({
 	beforeEach({ msw }) {
 		msw.use(articleList.error) // the articles API answers 500
 	},
+	play: () => I.waitExit(role('status')),
 })
 
 HandlesArticlesLoadServerError.test('keeps error state when retry also fails', async () => {
@@ -87,7 +88,8 @@ project's toolchain, including Nub.
    ```
 
 4. Install dependencies. Nub's prepare step also generates Panda CSS output, compiles
-   ParaglideJS messages, writes the MSW worker, and installs hk Git hooks.
+   ParaglideJS messages, and writes the MSW worker. Inside a Git repository it installs hk
+   Git hooks too.
 
    ```bash
    nub install
